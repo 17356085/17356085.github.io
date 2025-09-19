@@ -4,21 +4,20 @@
     "type": "split",
     "children": [
       {
-        "id": "a9c4711cec22f7c3",
+        "id": "6753979aad9a45f0",
         "type": "tabs",
         "children": [
           {
-            "id": "a7c2c091aae2b155",
+            "id": "45d0064db420f032",
             "type": "leaf",
             "state": {
-              "type": "markdown",
+              "type": "bases",
               "state": {
-                "file": "src/content/posts/2025/快速上手Axios.md",
-                "mode": "source",
-                "source": false
+                "file": "未命名 6.base",
+                "viewName": "表格"
               },
-              "icon": "lucide-file",
-              "title": "快速上手Axios"
+              "icon": "lucide-table",
+              "title": "未命名 6"
             }
           }
         ]
@@ -142,13 +141,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "src/content/posts/2025/阅读随记--如何阅读一本书（一）.md",
+                "file": "未命名 6.base",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "阅读随记--如何阅读一本书（一） 的大纲"
+              "title": "未命名 6 的大纲"
             }
           },
           {
@@ -166,7 +165,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 306.5
+    "width": 445.5
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -182,8 +181,13 @@
       "templater-obsidian:Templater": false
     }
   },
-  "active": "a7c2c091aae2b155",
+  "active": "45d0064db420f032",
   "lastOpenFiles": [
+    "未命名 5.base",
+    "未命名 6.base",
+    "未命名 4.base",
+    "未命名 3.base",
+    "src/content/posts/2025/快速上手Axios.md",
     "src/content/posts/2025/深夜反思.md",
     "src/content/posts/2025/Java反射机制与动态代理.md",
     "src/content/posts/2025/Java泛型的设计和使用.md",
@@ -192,7 +196,6 @@
     "src/content/posts/2025/CICD的基本概念.md",
     "src/content/posts/2025/Java多线程&JUC.md",
     "src/content/posts/2025/快速上手TailwindCSS.md",
-    "src/content/posts/2025/快速上手Axios.md",
     "public/img/中野梓.jpg",
     "src/content/posts/2025/快速上手Nginx.md",
     "src/content/posts/2025/搭建博客教程（一）.md",
@@ -217,9 +220,6 @@
     "dist/pagefind/pagefind.zh-cn_f4333fb2faf6c.pf_meta",
     "dist/manifest_BBI1EkJO.mjs",
     "dist/chunks/MainGridLayout_CvUEe8BQ.mjs",
-    "dist/_astro/KaTeX_Main-Regular.ypZvNtVU.ttf",
-    "dist/_astro/KaTeX_Fraktur-Regular.CB_wures.ttf",
-    "dist/_astro/KaTeX_Main-Italic.3WenGoN9.ttf",
     "dist/_astro/SpringIOC02.BZ2OO4Qc.png",
     "dist/_astro/SpringIOC01.BE0HGFki.png",
     "dist/_astro/Java动态代理.DLtpKqob_Z1shJgo.webp",
