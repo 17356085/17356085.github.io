@@ -11,13 +11,14 @@
             "id": "45d0064db420f032",
             "type": "leaf",
             "state": {
-              "type": "bases",
+              "type": "markdown",
               "state": {
-                "file": "未命名 6.base",
-                "viewName": "表格"
+                "file": "src/content/posts/2025/快速上手TailwindCSS.md",
+                "mode": "source",
+                "source": false
               },
-              "icon": "lucide-table",
-              "title": "未命名 6"
+              "icon": "lucide-file",
+              "title": "快速上手TailwindCSS"
             }
           }
         ]
@@ -183,8 +184,11 @@
   },
   "active": "45d0064db420f032",
   "lastOpenFiles": [
-    "未命名 5.base",
+    "src/content/posts/2025/SpringBoot底层实现原理.md",
+    "src/content/posts/2025/成功部署博客到GithubPages.md",
+    "src/content/posts/2025/测试使用obsidian模板快速创建博客文章.md",
     "未命名 6.base",
+    "未命名 5.base",
     "未命名 4.base",
     "未命名 3.base",
     "src/content/posts/2025/快速上手Axios.md",
@@ -199,9 +203,7 @@
     "public/img/中野梓.jpg",
     "src/content/posts/2025/快速上手Nginx.md",
     "src/content/posts/2025/搭建博客教程（一）.md",
-    "src/content/posts/2025/成功部署博客到GithubPages.md",
     "src/content/posts/2025/测试通过Obsidian管理博客文章.md",
-    "src/content/posts/2025/测试使用obsidian模板快速创建博客文章.md",
     "未命名 2.base",
     "未命名 1.base",
     "未命名.base",
@@ -219,7 +221,6 @@
     "dist/pagefind/fragment/zh-cn_906187e.pf_fragment",
     "dist/pagefind/pagefind.zh-cn_f4333fb2faf6c.pf_meta",
     "dist/manifest_BBI1EkJO.mjs",
-    "dist/chunks/MainGridLayout_CvUEe8BQ.mjs",
     "dist/_astro/SpringIOC02.BZ2OO4Qc.png",
     "dist/_astro/SpringIOC01.BE0HGFki.png",
     "dist/_astro/Java动态代理.DLtpKqob_Z1shJgo.webp",

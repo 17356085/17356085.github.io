@@ -8,7 +8,7 @@ import type {
 import { LinkPreset } from "./types/config";
 
 export const siteConfig: SiteConfig = {
-	title: "mioの小窝",
+	title: "mio的小窝",
 	subtitle: "四季正与你们擦肩而过",
 	lang: "zh_CN", // Language code, e.g. 'en', 'zh_CN', 'ja', etc.
 	themeColor: {
@@ -17,7 +17,7 @@ export const siteConfig: SiteConfig = {
 	},
 	banner: {
 		enable: true,
-		src: "/img/魔法使之夜.jpg", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
+		src: "/img/bg01.jpg", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
 		position: "center", // Equivalent to object-position, only supports 'top', 'center', 'bottom'. 'center' by default
 		credit: {
 			enable: false, // Display the credit text of the banner image
@@ -53,7 +53,7 @@ export const navBarConfig: NavBarConfig = {
 };
 
 export const profileConfig: ProfileConfig = {
-	avatar: "/img/久远寺有珠.jpg", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
+	avatar: "/img/older.jpg", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
 	name: "mio",
 	bio: "四季正与你们擦肩而过",
 	links: [
