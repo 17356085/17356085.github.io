@@ -36,7 +36,7 @@
   {/if}
 </section>
 
-<script>
+<script lang="ts">
 import { AUTO_MODE, DARK_MODE } from '@constants/constants.ts'
 import { onDestroy, onMount } from 'svelte'
 import { writable } from 'svelte/store';

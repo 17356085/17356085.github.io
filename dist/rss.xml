@@ -1,4 +1,1807 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>mioの小窝</title><description>四季正与你们擦肩而过</description><link>https://devmio.cc/</link><language>zh_CN</language><item><title>RESTFul编程风格</title><link>https://devmio.cc/posts/2025/restful%E7%BC%96%E7%A8%8B%E9%A3%8E%E6%A0%BC/</link><guid isPermaLink="true">https://devmio.cc/posts/2025/restful%E7%BC%96%E7%A8%8B%E9%A3%8E%E6%A0%BC/</guid><description>RESTFul编程风格</description><pubDate>Wed, 20 Aug 2025 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>mio的小窝</title><description>四季正与你们擦肩而过</description><link>https://devmio.cc/</link><language>zh_CN</language><item><title>快速上手TailwindCSS</title><link>https://devmio.cc/posts/2025/%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8Btailwindcss/</link><guid isPermaLink="true">https://devmio.cc/posts/2025/%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8Btailwindcss/</guid><description>TailwindCSS快速上手</description><pubDate>Mon, 15 Sep 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;1) 基本规则与“看懂类名”&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;原子类&lt;/strong&gt; = 单一样式：&lt;code&gt;p-4&lt;/code&gt;(内边距 1rem)、&lt;code&gt;text-gray-700&lt;/code&gt;、&lt;code&gt;lg:flex&lt;/code&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;类名结构&lt;/strong&gt;：&lt;code&gt;[可选变体]:[工具类]-[值]&lt;/code&gt;，如 &lt;code&gt;hover:bg-indigo-600&lt;/code&gt;、&lt;code&gt;md:rounded-2xl&lt;/code&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;负值&lt;/strong&gt;：前缀 &lt;code&gt;-&lt;/code&gt;，如 &lt;code&gt;-mt-2&lt;/code&gt;、&lt;code&gt;-translate-x-1/2&lt;/code&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;重要性&lt;/strong&gt;：前缀 &lt;code&gt;!&lt;/code&gt;，如 &lt;code&gt;!hidden&lt;/code&gt;、&lt;code&gt;!text-black&lt;/code&gt;（慎用）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;任意值&lt;/strong&gt;：用方括号 &lt;code&gt;[]&lt;/code&gt;：&lt;code&gt;w-[72px]&lt;/code&gt;、&lt;code&gt;bg-[rgba(0,0,0,0.4)]&lt;/code&gt;、&lt;code&gt;grid-cols-[1fr_200px]&lt;/code&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr /&gt;
+&lt;h1&gt;2) 响应式与变体（Modifiers）&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;响应式断点&lt;/strong&gt;：&lt;code&gt;sm&lt;/code&gt; &lt;code&gt;md&lt;/code&gt; &lt;code&gt;lg&lt;/code&gt; &lt;code&gt;xl&lt;/code&gt; &lt;code&gt;2xl&lt;/code&gt;（移动优先）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;div class=&quot;p-3 md:p-6 lg:p-10&quot;&amp;gt;…&amp;lt;/div&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;交互状态&lt;/strong&gt;：&lt;code&gt;hover:&lt;/code&gt; &lt;code&gt;focus:&lt;/code&gt; &lt;code&gt;active:&lt;/code&gt; &lt;code&gt;disabled:&lt;/code&gt; &lt;code&gt;focus-visible:&lt;/code&gt; &lt;code&gt;focus-within:&lt;/code&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;button class=&quot;bg-indigo-600 hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-600&quot;&amp;gt;…&amp;lt;/button&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;结构伪类&lt;/strong&gt;：&lt;code&gt;first:&lt;/code&gt; &lt;code&gt;last:&lt;/code&gt; &lt;code&gt;odd:&lt;/code&gt; &lt;code&gt;even:&lt;/code&gt; &lt;code&gt;only:&lt;/code&gt; &lt;code&gt;empty:&lt;/code&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;li class=&quot;first:pt-0 last:pb-0 odd:bg-gray-50&quot;&amp;gt;…&amp;lt;/li&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;表单/占位&lt;/strong&gt;：&lt;code&gt;placeholder:&lt;/code&gt; &lt;code&gt;file:&lt;/code&gt;（文件按钮）&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;选择文本&lt;/strong&gt;：&lt;code&gt;selection:&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;列表标记&lt;/strong&gt;：&lt;code&gt;marker:&lt;/code&gt;（&lt;code&gt;&amp;lt;li&amp;gt;&lt;/code&gt; 的圆点/编号）&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;对话框背景&lt;/strong&gt;：&lt;code&gt;backdrop:&lt;/code&gt;（配合 &lt;code&gt;&amp;lt;dialog&amp;gt;&lt;/code&gt; 或 ::backdrop）&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;父子联动&lt;/strong&gt;：&lt;code&gt;group&lt;/code&gt; / &lt;code&gt;group-hover:*&lt;/code&gt;、&lt;code&gt;peer&lt;/code&gt; / &lt;code&gt;peer-checked:*&lt;/code&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;label class=&quot;group block cursor-pointer&quot;&amp;gt;
+  &amp;lt;input type=&quot;checkbox&quot; class=&quot;peer sr-only&quot; /&amp;gt;
+  &amp;lt;span class=&quot;block rounded-xl p-4 border
+              group-hover:border-indigo-400
+              peer-checked:bg-indigo-50&quot;&amp;gt;
+    选我
+  &amp;lt;/span&amp;gt;
+&amp;lt;/label&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;ARIA / data 状态&lt;/strong&gt;：&lt;code&gt;aria-expanded:&lt;/code&gt;、&lt;code&gt;aria-selected:&lt;/code&gt;、&lt;code&gt;data-[state=open]:&lt;/code&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;button aria-expanded=&quot;false&quot; class=&quot;aria-expanded:bg-indigo-50&quot;&amp;gt;…&amp;lt;/button&amp;gt;
+&amp;lt;div data-state=&quot;open&quot; class=&quot;data-[state=open]:block hidden&quot;&amp;gt;内容&amp;lt;/div&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;主题与媒体&lt;/strong&gt;：&lt;code&gt;dark:&lt;/code&gt; &lt;code&gt;print:&lt;/code&gt; &lt;code&gt;motion-reduce:&lt;/code&gt; &lt;code&gt;portrait:&lt;/code&gt; &lt;code&gt;landscape:&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr /&gt;
+&lt;h1&gt;3) 布局与显示&lt;/h1&gt;
+&lt;h3&gt;Display&lt;/h3&gt;
+&lt;p&gt;&lt;code&gt;block&lt;/code&gt; &lt;code&gt;inline-block&lt;/code&gt; &lt;code&gt;inline&lt;/code&gt; &lt;code&gt;flex&lt;/code&gt; &lt;code&gt;inline-flex&lt;/code&gt; &lt;code&gt;grid&lt;/code&gt; &lt;code&gt;table&lt;/code&gt; &lt;code&gt;hidden&lt;/code&gt; &lt;code&gt;sr-only&lt;/code&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;div class=&quot;hidden sm:block&quot;&amp;gt;小屏隐藏，大屏显示&amp;lt;/div&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;容器与居中&lt;/h3&gt;
+&lt;p&gt;&lt;code&gt;container&lt;/code&gt; &lt;code&gt;mx-auto&lt;/code&gt; &lt;code&gt;max-w-*&lt;/code&gt;（&lt;code&gt;sm&lt;/code&gt;/&lt;code&gt;md&lt;/code&gt;/&lt;code&gt;lg&lt;/code&gt;/&lt;code&gt;xl&lt;/code&gt;/&lt;code&gt;2xl&lt;/code&gt;/像素）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;div class=&quot;container mx-auto px-4 max-w-5xl&quot;&amp;gt;…&amp;lt;/div&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Flex 常用&lt;/h3&gt;
+&lt;p&gt;&lt;code&gt;flex&lt;/code&gt; &lt;code&gt;flex-row|col&lt;/code&gt; &lt;code&gt;flex-wrap&lt;/code&gt; &lt;code&gt;items-*&lt;/code&gt; &lt;code&gt;justify-*&lt;/code&gt; &lt;code&gt;gap-*&lt;/code&gt; &lt;code&gt;flex-1&lt;/code&gt; &lt;code&gt;grow&lt;/code&gt; &lt;code&gt;shrink-0&lt;/code&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;div class=&quot;flex items-center justify-between gap-4&quot;&amp;gt;…&amp;lt;/div&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Grid 常用&lt;/h3&gt;
+&lt;p&gt;&lt;code&gt;grid&lt;/code&gt; &lt;code&gt;grid-cols-*&lt;/code&gt; &lt;code&gt;grid-rows-*&lt;/code&gt; &lt;code&gt;gap-*&lt;/code&gt; &lt;code&gt;col-span-*&lt;/code&gt; &lt;code&gt;row-span-*&lt;/code&gt; &lt;code&gt;place-items-center&lt;/code&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;ul class=&quot;grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6&quot;&amp;gt;…&amp;lt;/ul&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;定位&lt;/h3&gt;
+&lt;p&gt;&lt;code&gt;relative&lt;/code&gt; &lt;code&gt;absolute&lt;/code&gt; &lt;code&gt;fixed&lt;/code&gt; &lt;code&gt;sticky&lt;/code&gt; &lt;code&gt;inset-0&lt;/code&gt; &lt;code&gt;inset-x-0&lt;/code&gt; &lt;code&gt;top-0&lt;/code&gt;… &lt;code&gt;z-*&lt;/code&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;header class=&quot;sticky top-0 z-50 bg-white/80 backdrop-blur&quot;&amp;gt;…&amp;lt;/header&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;hr /&gt;
+&lt;h1&gt;4) 尺寸与间距&lt;/h1&gt;
+&lt;h3&gt;盒模型&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;内外边距&lt;/strong&gt;：&lt;code&gt;p-*&lt;/code&gt; / &lt;code&gt;m-*&lt;/code&gt;；轴向：&lt;code&gt;px&lt;/code&gt;/&lt;code&gt;py&lt;/code&gt;、单边：&lt;code&gt;pt&lt;/code&gt;/&lt;code&gt;pr&lt;/code&gt;/&lt;code&gt;pb&lt;/code&gt;/&lt;code&gt;pl&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;宽高&lt;/strong&gt;：&lt;code&gt;w-*&lt;/code&gt; &lt;code&gt;h-*&lt;/code&gt;；最小/最大：&lt;code&gt;min-w-*&lt;/code&gt; &lt;code&gt;max-h-*&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;常见值&lt;/strong&gt;：&lt;code&gt;0 0.5 1 1.5 2 … 96&lt;/code&gt;、&lt;code&gt;px&lt;/code&gt;(1px)、分数 &lt;code&gt;1/2 1/3 2/3 1/4…&lt;/code&gt;、&lt;code&gt;full&lt;/code&gt;、&lt;code&gt;screen&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;div class=&quot;p-4 md:p-8 w-full max-w-xl h-64&quot;&amp;gt;…&amp;lt;/div&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;比例&lt;/h3&gt;
+&lt;p&gt;&lt;code&gt;aspect-square&lt;/code&gt; &lt;code&gt;aspect-video&lt;/code&gt;（需插件或内置版本）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;div class=&quot;aspect-video bg-gray-200 rounded-xl&quot;&amp;gt;&amp;lt;/div&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;hr /&gt;
+&lt;h1&gt;5) 文字与排版&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;字号：&lt;code&gt;text-xs sm base lg xl 2xl … 9xl&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;字重：&lt;code&gt;font-light normal medium semibold bold black&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;行高：&lt;code&gt;leading-none tight snug normal relaxed loose&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;字间：&lt;code&gt;tracking-tighter tight normal wide wider widest&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;对齐：&lt;code&gt;text-left center right justify&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;截断：&lt;code&gt;truncate&lt;/code&gt;（单行） &lt;code&gt;line-clamp-2&lt;/code&gt;（多行，需插件）&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;文本色/不透明：&lt;code&gt;text-gray-700/80&lt;/code&gt;（等同 80% 透明）&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;p class=&quot;text-sm text-gray-600 leading-relaxed line-clamp-2&quot;&amp;gt;…&amp;lt;/p&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;hr /&gt;
+&lt;h1&gt;6) 颜色、背景与渐变&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;前景色：&lt;code&gt;text-*&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;背景：&lt;code&gt;bg-*&lt;/code&gt; / 图像：&lt;code&gt;bg-[url(&apos;/img/hero.png&apos;)]&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;渐变：&lt;code&gt;bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;不透明度：&lt;code&gt;bg-black/60&lt;/code&gt;、&lt;code&gt;text-white/90&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;div class=&quot;bg-gradient-to-br from-indigo-100 to-indigo-200 p-6 rounded-2xl&quot;&amp;gt;…&amp;lt;/div&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;hr /&gt;
+&lt;h1&gt;7) 边框、圆角、分割线、Ring/Outline&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;边框：&lt;code&gt;border&lt;/code&gt; &lt;code&gt;border-2&lt;/code&gt; &lt;code&gt;border-x&lt;/code&gt; &lt;code&gt;border-b-0&lt;/code&gt; &lt;code&gt;border-gray-200&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;圆角：&lt;code&gt;rounded&lt;/code&gt; &lt;code&gt;rounded-md&lt;/code&gt; &lt;code&gt;rounded-xl&lt;/code&gt; &lt;code&gt;rounded-full&lt;/code&gt;（或 &lt;code&gt;rounded-tl-2xl&lt;/code&gt;）&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;分割线（容器子元素间）：&lt;code&gt;divide-y&lt;/code&gt; &lt;code&gt;divide-gray-200&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;焦点环：&lt;code&gt;ring&lt;/code&gt; &lt;code&gt;ring-2&lt;/code&gt; &lt;code&gt;ring-indigo-600&lt;/code&gt; &lt;code&gt;ring-offset-2&lt;/code&gt; &lt;code&gt;ring-inset&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;轮廓线：&lt;code&gt;outline&lt;/code&gt; &lt;code&gt;outline-2&lt;/code&gt; &lt;code&gt;outline-red-500&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;button class=&quot;rounded-xl border px-4 py-2 ring-offset-2 focus:ring-2 focus:ring-indigo-600&quot;&amp;gt;…&amp;lt;/button&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;hr /&gt;
+&lt;h1&gt;8) 阴影、滤镜、Backdrop 与混合&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;阴影：&lt;code&gt;shadow&lt;/code&gt; &lt;code&gt;shadow-sm&lt;/code&gt; &lt;code&gt;shadow-lg&lt;/code&gt; &lt;code&gt;shadow-none&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;滤镜：&lt;code&gt;blur&lt;/code&gt; &lt;code&gt;blur-sm&lt;/code&gt; &lt;code&gt;brightness-110&lt;/code&gt; &lt;code&gt;grayscale&lt;/code&gt; &lt;code&gt;sepia&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Backdrop（毛玻璃）：&lt;code&gt;backdrop-blur&lt;/code&gt; &lt;code&gt;backdrop-brightness-90&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;混合与透明：&lt;code&gt;mix-blend-multiply&lt;/code&gt; &lt;code&gt;bg-white/70&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;div class=&quot;bg-white/70 backdrop-blur shadow-lg rounded-2xl&quot;&amp;gt;…&amp;lt;/div&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;hr /&gt;
+&lt;h1&gt;9) 溢出与滚动&lt;/h1&gt;
+&lt;p&gt;&lt;code&gt;overflow-hidden&lt;/code&gt; &lt;code&gt;overflow-x-auto&lt;/code&gt; &lt;code&gt;overscroll-contain&lt;/code&gt; &lt;code&gt;scroll-smooth&lt;/code&gt; &lt;code&gt;snap-x snap-mandatory snap-start&lt;/code&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;div class=&quot;overflow-x-auto snap-x snap-mandatory flex gap-4&quot;&amp;gt;…&amp;lt;/div&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;hr /&gt;
+&lt;h1&gt;10) 媒体与对象适配&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;对象适配：&lt;code&gt;object-contain&lt;/code&gt; &lt;code&gt;object-cover&lt;/code&gt; &lt;code&gt;object-center&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;图片圆角/边框同普通盒子类&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;img class=&quot;w-32 h-32 object-cover rounded-xl&quot; /&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;hr /&gt;
+&lt;h1&gt;11) 交互与可用性&lt;/h1&gt;
+&lt;p&gt;&lt;code&gt;cursor-pointer&lt;/code&gt; &lt;code&gt;select-none&lt;/code&gt; &lt;code&gt;pointer-events-none&lt;/code&gt; &lt;code&gt;disabled:opacity-50&lt;/code&gt; &lt;code&gt;disabled:pointer-events-none&lt;/code&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;button disabled class=&quot;cursor-not-allowed disabled:opacity-50&quot;&amp;gt;…&amp;lt;/button&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;hr /&gt;
+&lt;h1&gt;12) 过渡与动画&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;过渡：&lt;code&gt;transition&lt;/code&gt; &lt;code&gt;transition-colors&lt;/code&gt; &lt;code&gt;duration-300&lt;/code&gt; &lt;code&gt;ease-in-out&lt;/code&gt; &lt;code&gt;delay-150&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;预设动画：&lt;code&gt;animate-spin&lt;/code&gt; &lt;code&gt;animate-ping&lt;/code&gt; &lt;code&gt;animate-bounce&lt;/code&gt; &lt;code&gt;animate-pulse&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;div class=&quot;transition transform hover:scale-105 hover:-translate-y-1 duration-300&quot;&amp;gt;…&amp;lt;/div&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;hr /&gt;
+&lt;h1&gt;13) 变换（Transform）&lt;/h1&gt;
+&lt;p&gt;&lt;code&gt;transform&lt;/code&gt;（v3 起多数变换类会自动加 transform）&lt;br /&gt;
+&lt;code&gt;scale-*&lt;/code&gt; &lt;code&gt;rotate-*&lt;/code&gt; &lt;code&gt;translate-x-*&lt;/code&gt; &lt;code&gt;-translate-y-1/2&lt;/code&gt; &lt;code&gt;skew-x-*&lt;/code&gt; &lt;code&gt;origin-top&lt;/code&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;div class=&quot;rotate-6 hover:rotate-0 transition&quot;&amp;gt;…&amp;lt;/div&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;hr /&gt;
+&lt;h1&gt;14) 深色模式与环境首选项&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;深色&lt;/strong&gt;：在 &lt;code&gt;tailwind.config.js&lt;/code&gt; 配置 &lt;code&gt;darkMode: &apos;class&apos;&lt;/code&gt;，用 &lt;code&gt;dark:*&lt;/code&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;article class=&quot;bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100&quot;&amp;gt;…&amp;lt;/article&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;动效/对比度&lt;/strong&gt;：&lt;code&gt;motion-reduce:&lt;/code&gt; &lt;code&gt;contrast-more:&lt;/code&gt;（不同设备/系统设置）&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;打印&lt;/strong&gt;：&lt;code&gt;print:hidden&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr /&gt;
+&lt;h1&gt;15) 伪元素与特殊元素&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;before/after&lt;/strong&gt;（配合 &lt;code&gt;content-*&lt;/code&gt; 任意值）：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;h3 class=&quot;relative pl-4 before:content-[&apos;#&apos;] before:absolute before:left-0 before:text-indigo-600&quot;&amp;gt;标题&amp;lt;/h3&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;placeholder&lt;/strong&gt;：&lt;code&gt;placeholder-gray-400&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;file&lt;/strong&gt;：定制 &lt;code&gt;&amp;lt;input type=&quot;file&quot;&amp;gt;&lt;/code&gt; 的按钮：&lt;code&gt;file:rounded-lg file:bg-indigo-600 file:text-white&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;selection&lt;/strong&gt;：&lt;code&gt;selection:bg-yellow-200&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;marker&lt;/strong&gt;：&lt;code&gt;marker:text-indigo-600&lt;/code&gt;（列表圆点/编号）&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;backdrop&lt;/strong&gt;：模态遮罩样式：&lt;code&gt;backdrop:blur&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr /&gt;
+&lt;h1&gt;16) 任意值与任意 CSS 属性&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;任意值&lt;/strong&gt;：&lt;code&gt;w-[732px]&lt;/code&gt;、&lt;code&gt;text-[13px]&lt;/code&gt;、&lt;code&gt;leading-[1.35]&lt;/code&gt;、&lt;code&gt;tracking-[.02em]&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;任意属性&lt;/strong&gt;（更底层）：&lt;code&gt;[mask-image:linear-gradient(to_bottom,black,transparent)]&lt;/code&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;div class=&quot;bg-[url(&apos;/hero.jpg&apos;)] [mask-image:linear-gradient(to_bottom,black,transparent)]&quot;&amp;gt;…&amp;lt;/div&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr /&gt;
+&lt;h1&gt;17) 抽象与复用（@apply / @layer / @screen / theme）&lt;/h1&gt;
+&lt;p&gt;在你的全局 CSS（例如 &lt;code&gt;src/assets/main.css&lt;/code&gt;）里：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 抽象组件类 */
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center rounded-2xl font-medium
+           transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2
+           disabled:opacity-50 disabled:pointer-events-none;
+  }
+  .btn-primary { @apply bg-indigo-600 text-white hover:bg-indigo-700 focus:ring-indigo-600; }
+  .btn-secondary { @apply bg-gray-100 text-gray-900 hover:bg-gray-200 focus:ring-gray-400; }
+  .btn-sm { @apply h-8 px-3 text-sm; }
+  .btn-md { @apply h-10 px-4; }
+}
+
+/* 响应式指令：在 CSS 里写断点 */
+@screen md {
+  .card-md { @apply grid grid-cols-2 gap-6; }
+}
+
+/* 读取主题值 */
+.badge {
+  color: theme(&apos;colors.indigo.700&apos;);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;hr /&gt;
+&lt;h1&gt;18) 常见陷阱与解决&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;内容扫描（Purge）&lt;/strong&gt;：生产构建时只保留能“静态分析”到的类名。&lt;strong&gt;不要&lt;/strong&gt;拼接不可预测字符串：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;!-- ❌ 会被摇掉 --&amp;gt;
+&amp;lt;div :class=&quot;`bg-${color}-600`&quot;&amp;gt;&amp;lt;/div&amp;gt;
+
+&amp;lt;!-- ✅ 用映射或 safelist --&amp;gt;
+&amp;lt;div :class=&quot;({primary:&apos;bg-indigo-600&apos;, danger:&apos;bg-rose-600&apos;})[color] || &apos;bg-indigo-600&apos;&quot;&amp;gt;&amp;lt;/div&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Safelist&lt;/strong&gt;（&lt;code&gt;tailwind.config.js&lt;/code&gt;）：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;export default {
+  content: [&apos;./index.html&apos;, &apos;./src/**/*.{vue,js,ts,jsx,tsx}&apos;],
+  safelist: [&apos;bg-indigo-600&apos;, &apos;bg-rose-600&apos;, /^grid-cols-/],
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;命名冲突&lt;/strong&gt;：尽量不要把自定义类名与 Tailwind 工具类重名；自定义类放在 &lt;code&gt;@layer components&lt;/code&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;可读性&lt;/strong&gt;：装 &lt;code&gt;prettier-plugin-tailwindcss&lt;/code&gt; 自动排序类名。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr /&gt;
+&lt;h1&gt;19) 高频场景小抄（直接用）&lt;/h1&gt;
+&lt;p&gt;&lt;strong&gt;卡片&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;article class=&quot;rounded-2xl border bg-white p-5 shadow-sm hover:shadow transition&quot;&amp;gt;
+  &amp;lt;h3 class=&quot;font-semibold&quot;&amp;gt;标题&amp;lt;/h3&amp;gt;
+  &amp;lt;p class=&quot;mt-1 text-sm text-gray-600 line-clamp-2&quot;&amp;gt;说明文案……&amp;lt;/p&amp;gt;
+  &amp;lt;button class=&quot;mt-4 btn btn-primary btn-sm&quot;&amp;gt;操作&amp;lt;/button&amp;gt;
+&amp;lt;/article&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;响应式网格&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;section class=&quot;grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6&quot;&amp;gt;…&amp;lt;/section&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;粘性页眉 + 毛玻璃&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;header class=&quot;sticky top-0 z-50 bg-white/80 backdrop-blur border-b&quot;&amp;gt;
+  &amp;lt;div class=&quot;container mx-auto px-4 h-14 flex items-center justify-between&quot;&amp;gt;…&amp;lt;/div&amp;gt;
+&amp;lt;/header&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;图片裁剪&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;img class=&quot;w-32 h-32 object-cover rounded-xl&quot; src=&quot;/avatar.jpg&quot; alt=&quot;&quot;&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;按钮组（等分）&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;div class=&quot;grid grid-cols-3 gap-2&quot;&amp;gt;
+  &amp;lt;button class=&quot;btn btn-secondary&quot;&amp;gt;日&amp;lt;/button&amp;gt;
+  &amp;lt;button class=&quot;btn btn-secondary&quot;&amp;gt;周&amp;lt;/button&amp;gt;
+  &amp;lt;button class=&quot;btn btn-primary&quot;&amp;gt;月&amp;lt;/button&amp;gt;
+&amp;lt;/div&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;hr /&gt;
+&lt;h1&gt;20) 和 Vue 一起用的小技巧&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;:class&lt;/code&gt; 支持 &lt;strong&gt;数组/对象&lt;/strong&gt;，非常适合按条件切换：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;div :class=&quot;[&apos;p-4&apos;, isActive ? &apos;bg-indigo-50&apos; : &apos;bg-white&apos;]&quot;&amp;gt;…&amp;lt;/div&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;把变体/尺寸做成 &lt;strong&gt;映射表&lt;/strong&gt;：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;const variants = { primary:&apos;bg-indigo-600 text-white&apos;, ghost:&apos;bg-transparent&apos; }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;深色模式用 &lt;code&gt;darkMode: &apos;class&apos;&lt;/code&gt;，切换时改 &lt;code&gt;&amp;lt;html&amp;gt;&lt;/code&gt; 的 &lt;code&gt;classList&lt;/code&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr /&gt;
+&lt;p&gt;想更进阶的话，我可以按你的设计稿给你&lt;strong&gt;定制一份 &lt;code&gt;tailwind.config.js&lt;/code&gt; 主题&lt;/strong&gt;（品牌色、圆角、阴影、字号刻度等），或者把这些语法整理成&lt;strong&gt;Vue + Tailwind 的最小可运行模板&lt;/strong&gt;（含组件示例与最佳实践）。你更想先做哪一个？&lt;/p&gt;
+</content:encoded></item><item><title>快速上手Axios</title><link>https://devmio.cc/posts/2025/%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8Baxios/</link><guid isPermaLink="true">https://devmio.cc/posts/2025/%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8Baxios/</guid><description>前后端联调如何实现？</description><pubDate>Tue, 09 Sep 2025 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
+&lt;p&gt;什么是Axios？
+Axios 是一个基于 Promise 的 HTTP 客户端库，用于浏览器和 Node.js 环境。它提供了简洁的 API 来处理 HTTP 请求和响应。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;核心特性&lt;/strong&gt;：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;支持 Promise API，可以在浏览器和 Node.js 中使用&lt;/li&gt;
+&lt;li&gt;支持请求和响应拦截器&lt;/li&gt;
+&lt;li&gt;能够自动转换 JSON 数据&lt;/li&gt;
+&lt;li&gt;提供请求和响应数据转换功能，支持取消请求&lt;/li&gt;
+&lt;li&gt;具备客户端防护 XSRF 攻击的能力，并且支持上传进度监控&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2&gt;一、基础用法&lt;/h2&gt;
+&lt;h3&gt;1. 导入Axios&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;// ES6 模块
+import axios from &apos;axios&apos;;
+
+// CommonJS
+const axios = require(&apos;axios&apos;);
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;2. 发送GET请求&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;axios.get(&apos;https://api.example.com/users&apos;)
+  .then(response =&amp;gt; {
+    console.log(response.data);
+  })
+  .catch(error =&amp;gt; {
+    console.error(&apos;请求失败:&apos;, error);
+  });
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;二、HTTP方法支持&lt;/h2&gt;
+&lt;h3&gt;2.1 GET请求：&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;// 基本 GET 请求
+axios.get(&apos;/api/users&apos;)
+  .then(response =&amp;gt; console.log(response.data));
+
+// 带参数的 GET 请求
+axios.get(&apos;/api/users&apos;, {
+  params: {
+    page: 1,
+    limit: 10
+  }
+})
+.then(response =&amp;gt; console.log(response.data));
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;2.2 POST请求：&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;// 发送 POST 请求
+axios.post(&apos;/api/users&apos;, {
+  name: &apos;张三&apos;,
+  email: &apos;zhangsan@example.com&apos;
+})
+.then(response =&amp;gt; console.log(response.data));
+
+// 使用 async/await
+async function createUser() {
+  try {
+    const response = await axios.post(&apos;/api/users&apos;, {
+      name: &apos;李四&apos;,
+      email: &apos;lisi@example.com&apos;
+    });
+    console.log(response.data);
+  } catch (error) {
+    console.error(&apos;创建用户失败:&apos;, error);
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;2.3 其他HTTP方法&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;// PUT 请求 - 更新资源
+axios.put(&apos;/api/users/1&apos;, {
+  name: &apos;王五&apos;,
+  email: &apos;wangwu@example.com&apos;
+});
+
+// DELETE 请求 - 删除资源
+axios.delete(&apos;/api/users/1&apos;);
+
+// PATCH 请求 - 部分更新
+axios.patch(&apos;/api/users/1&apos;, {
+  name: &apos;赵六&apos;
+});
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;2.4 请求配置&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;常用配置选项解释：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;baseURL&lt;/code&gt;: 请求的基础 URL&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;timeout&lt;/code&gt;: 请求超时时间（毫秒）&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;headers&lt;/code&gt;: 自定义请求头&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;responseType&lt;/code&gt;: 响应数据类型（json、text、blob 等）&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;withCredentials&lt;/code&gt;: 跨域请求时是否携带凭证&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;const config = {
+  url: &apos;/api/users&apos;,
+  method: &apos;post&apos;,
+  baseURL: &apos;https://api.example.com&apos;,
+  headers: {
+    &apos;Content-Type&apos;: &apos;application/json&apos;,
+    &apos;Authorization&apos;: &apos;Bearer token123&apos;
+  },
+  data: {
+    name: &apos;用户名&apos;
+  },
+  timeout: 5000,
+  responseType: &apos;json&apos;
+};
+
+axios(config)
+  .then(response =&amp;gt; console.log(response.data));
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;三、拦截器&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;请求拦截器&lt;/strong&gt;：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;// 添加请求拦截器
+axios.interceptors.request.use(
+  config =&amp;gt; {
+    // 在发送请求之前做些什么
+    const token = localStorage.getItem(&apos;token&apos;);
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    console.log(&apos;请求发送:&apos;, config);
+    return config;
+  },
+  error =&amp;gt; {
+    // 请求错误时做些什么
+    return Promise.reject(error);
+  }
+);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;响应拦截器&lt;/strong&gt;：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;// 添加响应拦截器
+axios.interceptors.response.use(
+  response =&amp;gt; {
+    // 2xx 范围内的状态码都会触发该函数
+    console.log(&apos;响应接收:&apos;, response);
+    return response;
+  },
+  error =&amp;gt; {
+    // 超出 2xx 范围的状态码都会触发该函数
+    if (error.response.status === 401) {
+      // 处理未授权错误
+      localStorage.removeItem(&apos;token&apos;);
+      window.location.href = &apos;/login&apos;;
+    }
+    return Promise.reject(error);
+  }
+);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;四、错误处理&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;axios.get(&apos;/api/users&apos;)
+  .then(response =&amp;gt; {
+    console.log(response.data);
+  })
+  .catch(error =&amp;gt; {
+    if (error.response) {
+      // 服务器响应了错误状态码
+      console.log(&apos;响应错误:&apos;, error.response.data);
+      console.log(&apos;状态码:&apos;, error.response.status);
+    } else if (error.request) {
+      // 请求发出但没有收到响应
+      console.log(&apos;请求错误:&apos;, error.request);
+    } else {
+      // 其他错误
+      console.log(&apos;错误:&apos;, error.message);
+    }
+  });
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;五、取消请求&lt;/h2&gt;
+&lt;p&gt;可以使用 AbortController 或 Axios 的取消令牌来取消请求。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;使用 AbortController（推荐）：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;const controller = new AbortController();
+
+axios.get(&apos;/api/users&apos;, {
+  signal: controller.signal
+})
+.then(response =&amp;gt; {
+  console.log(response.data);
+})
+.catch(error =&amp;gt; {
+  if (axios.isCancel(error)) {
+    console.log(&apos;请求已取消&apos;);
+  }
+});
+
+// 取消请求
+controller.abort();
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;六、项目实战&lt;/h2&gt;
+&lt;h3&gt;6.1 构建API服务层&lt;/h3&gt;
+&lt;p&gt;在实际项目中，建议创建一个统一的 API 服务层来管理所有的网络请求。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;api/index.js - API 基础配置：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;import axios from &apos;axios&apos;;
+
+// 创建 Axios 实例
+const api = axios.create({
+  baseURL: process.env.VUE_APP_API_BASE_URL || &apos;http://localhost:3000/api&apos;,
+  timeout: 15000,
+  headers: {
+    &apos;Content-Type&apos;: &apos;application/json&apos;
+  }
+});
+
+// 请求拦截器
+api.interceptors.request.use(
+  config =&amp;gt; {
+    // 添加 loading 效果
+    const token = localStorage.getItem(&apos;accessToken&apos;);
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    
+    // 添加时间戳防止缓存
+    if (config.method === &apos;get&apos;) {
+      config.params = {
+        ...config.params,
+        _t: Date.now()
+      };
+    }
+    
+    return config;
+  },
+  error =&amp;gt; {
+    return Promise.reject(error);
+  }
+);
+
+// 响应拦截器
+api.interceptors.response.use(
+  response =&amp;gt; {
+    // 统一处理响应数据格式
+    if (response.data.code === 200) {
+      return response.data.data;
+    } else {
+      throw new Error(response.data.message || &apos;请求失败&apos;);
+    }
+  },
+  error =&amp;gt; {
+    // 统一错误处理
+    let message = &apos;网络错误&apos;;
+    
+    if (error.response) {
+      switch (error.response.status) {
+        case 401:
+          message = &apos;未授权，请重新登录&apos;;
+          // 清除本地存储的用户信息
+          localStorage.removeItem(&apos;accessToken&apos;);
+          // 跳转到登录页
+          window.location.href = &apos;/login&apos;;
+          break;
+        case 403:
+          message = &apos;拒绝访问&apos;;
+          break;
+        case 404:
+          message = &apos;请求地址不存在&apos;;
+          break;
+        case 500:
+          message = &apos;服务器内部错误&apos;;
+          break;
+        default:
+          message = error.response.data?.message || &apos;请求失败&apos;;
+      }
+    }
+    
+    // 这里可以集成消息提示组件
+    console.error(&apos;API Error:&apos;, message);
+    return Promise.reject(new Error(message));
+  }
+);
+
+export default api;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;6.2 用户管理模块&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;api/user.js - 用户相关 API：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;import api from &apos;./index&apos;;
+
+export const userApi = {
+  // 用户登录
+  login(credentials) {
+    return api.post(&apos;/auth/login&apos;, credentials);
+  },
+
+  // 获取用户信息
+  getUserInfo() {
+    return api.get(&apos;/user/profile&apos;);
+  },
+
+  // 更新用户信息
+  updateUserInfo(userInfo) {
+    return api.put(&apos;/user/profile&apos;, userInfo);
+  },
+
+  // 获取用户列表
+  getUserList(params) {
+    return api.get(&apos;/users&apos;, { params });
+  },
+
+  // 创建用户
+  createUser(userData) {
+    return api.post(&apos;/users&apos;, userData);
+  },
+
+  // 删除用户
+  deleteUser(userId) {
+    return api.delete(`/users/${userId}`);
+  },
+
+  // 上传头像
+  uploadAvatar(formData, onUploadProgress) {
+    return api.post(&apos;/user/avatar&apos;, formData, {
+      headers: {
+        &apos;Content-Type&apos;: &apos;multipart/form-data&apos;
+      },
+      onUploadProgress
+    });
+  }
+};
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;6.3 在Vue组件中使用&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;components/UserManager.vue：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;template&amp;gt;
+  &amp;lt;div class=&quot;user-manager&quot;&amp;gt;
+    &amp;lt;div class=&quot;actions&quot;&amp;gt;
+      &amp;lt;button @click=&quot;loadUsers&quot; :disabled=&quot;loading&quot;&amp;gt;
+        {{ loading ? &apos;加载中...&apos; : &apos;刷新用户列表&apos; }}
+      &amp;lt;/button&amp;gt;
+      &amp;lt;button @click=&quot;showCreateDialog&quot;&amp;gt;添加用户&amp;lt;/button&amp;gt;
+    &amp;lt;/div&amp;gt;
+
+    &amp;lt;div class=&quot;user-list&quot;&amp;gt;
+      &amp;lt;div v-for=&quot;user in users&quot; :key=&quot;user.id&quot; class=&quot;user-card&quot;&amp;gt;
+        &amp;lt;h3&amp;gt;{{ user.name }}&amp;lt;/h3&amp;gt;
+        &amp;lt;p&amp;gt;{{ user.email }}&amp;lt;/p&amp;gt;
+        &amp;lt;div class=&quot;user-actions&quot;&amp;gt;
+          &amp;lt;button @click=&quot;editUser(user)&quot;&amp;gt;编辑&amp;lt;/button&amp;gt;
+          &amp;lt;button @click=&quot;deleteUser(user.id)&quot; class=&quot;danger&quot;&amp;gt;删除&amp;lt;/button&amp;gt;
+        &amp;lt;/div&amp;gt;
+      &amp;lt;/div&amp;gt;
+    &amp;lt;/div&amp;gt;
+
+    &amp;lt;!-- 用户创建/编辑对话框 --&amp;gt;
+    &amp;lt;div v-if=&quot;showDialog&quot; class=&quot;dialog-overlay&quot;&amp;gt;
+      &amp;lt;div class=&quot;dialog&quot;&amp;gt;
+        &amp;lt;h3&amp;gt;{{ editingUser ? &apos;编辑用户&apos; : &apos;创建用户&apos; }}&amp;lt;/h3&amp;gt;
+        &amp;lt;form @submit.prevent=&quot;saveUser&quot;&amp;gt;
+          &amp;lt;input 
+            v-model=&quot;userForm.name&quot; 
+            placeholder=&quot;姓名&quot; 
+            required 
+          /&amp;gt;
+          &amp;lt;input 
+            v-model=&quot;userForm.email&quot; 
+            type=&quot;email&quot; 
+            placeholder=&quot;邮箱&quot; 
+            required 
+          /&amp;gt;
+          &amp;lt;div class=&quot;dialog-actions&quot;&amp;gt;
+            &amp;lt;button type=&quot;button&quot; @click=&quot;closeDialog&quot;&amp;gt;取消&amp;lt;/button&amp;gt;
+            &amp;lt;button type=&quot;submit&quot; :disabled=&quot;saving&quot;&amp;gt;
+              {{ saving ? &apos;保存中...&apos; : &apos;保存&apos; }}
+            &amp;lt;/button&amp;gt;
+          &amp;lt;/div&amp;gt;
+        &amp;lt;/form&amp;gt;
+      &amp;lt;/div&amp;gt;
+    &amp;lt;/div&amp;gt;
+  &amp;lt;/div&amp;gt;
+&amp;lt;/template&amp;gt;
+
+&amp;lt;script&amp;gt;
+import { userApi } from &apos;../api/user&apos;;
+
+export default {
+  name: &apos;UserManager&apos;,
+  data() {
+    return {
+      users: [],
+      loading: false,
+      showDialog: false,
+      saving: false,
+      editingUser: null,
+      userForm: {
+        name: &apos;&apos;,
+        email: &apos;&apos;
+      }
+    };
+  },
+
+  async created() {
+    await this.loadUsers();
+  },
+
+  methods: {
+    async loadUsers() {
+      this.loading = true;
+      try {
+        this.users = await userApi.getUserList({
+          page: 1,
+          limit: 20
+        });
+      } catch (error) {
+        this.$message.error(`加载用户列表失败: ${error.message}`);
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    showCreateDialog() {
+      this.editingUser = null;
+      this.userForm = { name: &apos;&apos;, email: &apos;&apos; };
+      this.showDialog = true;
+    },
+
+    editUser(user) {
+      this.editingUser = user;
+      this.userForm = { ...user };
+      this.showDialog = true;
+    },
+
+    closeDialog() {
+      this.showDialog = false;
+      this.editingUser = null;
+      this.userForm = { name: &apos;&apos;, email: &apos;&apos; };
+    },
+
+    async saveUser() {
+      this.saving = true;
+      try {
+        if (this.editingUser) {
+          // 更新用户
+          await userApi.updateUserInfo({
+            id: this.editingUser.id,
+            ...this.userForm
+          });
+          this.$message.success(&apos;用户更新成功&apos;);
+        } else {
+          // 创建用户
+          await userApi.createUser(this.userForm);
+          this.$message.success(&apos;用户创建成功&apos;);
+        }
+        
+        this.closeDialog();
+        await this.loadUsers();
+      } catch (error) {
+        this.$message.error(`操作失败: ${error.message}`);
+      } finally {
+        this.saving = false;
+      }
+    },
+
+    async deleteUser(userId) {
+      if (!confirm(&apos;确定要删除这个用户吗？&apos;)) {
+        return;
+      }
+
+      try {
+        await userApi.deleteUser(userId);
+        this.$message.success(&apos;用户删除成功&apos;);
+        await this.loadUsers();
+      } catch (error) {
+        this.$message.error(`删除用户失败: ${error.message}`);
+      }
+    }
+  }
+};
+&amp;lt;/script&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;6.4 文件上传功能&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;utils/upload.js - 文件上传工具：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;import api from &apos;../api&apos;;
+
+export class FileUploader {
+  constructor(options = {}) {
+    this.baseURL = options.baseURL || &apos;/api/upload&apos;;
+    this.allowedTypes = options.allowedTypes || [&apos;image/jpeg&apos;, &apos;image/png&apos;, &apos;image/gif&apos;];
+    this.maxSize = options.maxSize || 5 * 1024 * 1024; // 5MB
+  }
+
+  // 验证文件
+  validateFile(file) {
+    if (!this.allowedTypes.includes(file.type)) {
+      throw new Error(&apos;不支持的文件类型&apos;);
+    }
+
+    if (file.size &amp;gt; this.maxSize) {
+      throw new Error(&apos;文件大小超出限制&apos;);
+    }
+
+    return true;
+  }
+
+  // 单文件上传
+  async uploadFile(file, onProgress) {
+    this.validateFile(file);
+
+    const formData = new FormData();
+    formData.append(&apos;file&apos;, file);
+
+    try {
+      const response = await api.post(this.baseURL, formData, {
+        headers: {
+          &apos;Content-Type&apos;: &apos;multipart/form-data&apos;
+        },
+        onUploadProgress: (progressEvent) =&amp;gt; {
+          if (onProgress) {
+            const percent = Math.round(
+              (progressEvent.loaded * 100) / progressEvent.total
+            );
+            onProgress(percent);
+          }
+        }
+      });
+
+      return response.data;
+    } catch (error) {
+      throw new Error(`上传失败: ${error.message}`);
+    }
+  }
+
+  // 多文件上传
+  async uploadMultipleFiles(files, onProgress) {
+    const uploadPromises = Array.from(files).map(async (file, index) =&amp;gt; {
+      return this.uploadFile(file, (percent) =&amp;gt; {
+        if (onProgress) {
+          onProgress(index, percent);
+        }
+      });
+    });
+
+    return Promise.all(uploadPromises);
+  }
+}
+
+// 使用示例
+export default new FileUploader({
+  baseURL: &apos;/api/upload&apos;,
+  allowedTypes: [&apos;image/jpeg&apos;, &apos;image/png&apos;, &apos;image/gif&apos;],
+  maxSize: 10 * 1024 * 1024 // 10MB
+});
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;6.5 优化缓存和防抖&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;// utils/cache.js
+class RequestCache {
+  constructor() {
+    this.cache = new Map();
+    this.pendingRequests = new Map();
+  }
+
+  // 生成缓存键
+  generateKey(config) {
+    return `${config.method}_${config.url}_${JSON.stringify(config.params)}`;
+  }
+
+  // 获取缓存或发起请求
+  async request(config, cacheTime = 5 * 60 * 1000) {
+    const key = this.generateKey(config);
+    
+    // 检查是否有正在进行的相同请求
+    if (this.pendingRequests.has(key)) {
+      return this.pendingRequests.get(key);
+    }
+
+    // 检查缓存
+    if (this.cache.has(key)) {
+      const { data, timestamp } = this.cache.get(key);
+      if (Date.now() - timestamp &amp;lt; cacheTime) {
+        return Promise.resolve(data);
+      } else {
+        this.cache.delete(key);
+      }
+    }
+
+    // 发起新请求
+    const requestPromise = api(config)
+      .then(response =&amp;gt; {
+        // 缓存响应
+        this.cache.set(key, {
+          data: response,
+          timestamp: Date.now()
+        });
+        
+        // 清除待处理请求
+        this.pendingRequests.delete(key);
+        
+        return response;
+      })
+      .catch(error =&amp;gt; {
+        // 清除待处理请求
+        this.pendingRequests.delete(key);
+        throw error;
+      });
+
+    this.pendingRequests.set(key, requestPromise);
+    return requestPromise;
+  }
+
+  // 清除缓存
+  clearCache(pattern) {
+    if (pattern) {
+      for (const key of this.cache.keys()) {
+        if (key.includes(pattern)) {
+          this.cache.delete(key);
+        }
+      }
+    } else {
+      this.cache.clear();
+    }
+  }
+}
+
+export default new RequestCache();
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>SpringBoot底层实现原理</title><link>https://devmio.cc/posts/2025/springboot%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/</link><guid isPermaLink="true">https://devmio.cc/posts/2025/springboot%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/</guid><description>SpringBoot底层实现原理</description><pubDate>Fri, 05 Sep 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h2&gt;自动配置的核心机制&lt;/h2&gt;
+&lt;h3&gt;1. @SpringBootApplication注解&lt;/h3&gt;
+&lt;p&gt;这是自动配置的起点，它实际上是三个注解的组合：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@SpringBootConfiguration  // 标识为配置类
+@EnableAutoConfiguration  // 启用自动配置
+@ComponentScan           // 组件扫描
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;2. @EnableAutoConfiguration的工作原理&lt;/h3&gt;
+&lt;p&gt;这个注解是自动配置的关键，它通过&lt;code&gt;@Import&lt;/code&gt;导入了&lt;code&gt;AutoConfigurationImportSelector&lt;/code&gt;：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Import(AutoConfigurationImportSelector.class)
+public @interface EnableAutoConfiguration {
+    // ...
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;3. AutoConfigurationImportSelector的实现&lt;/h3&gt;
+&lt;p&gt;这个类负责选择并加载自动配置类：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class AutoConfigurationImportSelector implements ImportSelector {
+    
+    @Override
+    public String[] selectImports(AnnotationMetadata annotationMetadata) {
+        // 获取所有自动配置类
+        List&amp;lt;String&amp;gt; configurations = getCandidateConfigurations(annotationMetadata, attributes);
+        // 去重、排除、过滤
+        configurations = removeDuplicates(configurations);
+        configurations = getExcluded(configurations);
+        configurations = filter(configurations, autoConfigurationMetadata);
+        // 返回需要导入的配置类
+        return configurations.toArray(new String[0]);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;4. 加载自动配置类的过程&lt;/h3&gt;
+&lt;p&gt;Spring Boot通过&lt;code&gt;SpringFactoriesLoader&lt;/code&gt;加载配置：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;protected List&amp;lt;String&amp;gt; getCandidateConfigurations(AnnotationMetadata metadata, AnnotationAttributes attributes) {
+    List&amp;lt;String&amp;gt; configurations = SpringFactoriesLoader.loadFactoryNames(
+        getSpringFactoriesLoaderFactoryClass(), 
+        getBeanClassLoader()
+    );
+    return configurations;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;它会扫描所有jar包下的&lt;code&gt;META-INF/spring.factories&lt;/code&gt;文件，查找key为&lt;code&gt;org.springframework.boot.autoconfigure.EnableAutoConfiguration&lt;/code&gt;的配置。&lt;/p&gt;
+&lt;h3&gt;5. 条件注解的使用&lt;/h3&gt;
+&lt;p&gt;自动配置类通常使用条件注解来决定是否生效：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;@ConditionalOnClass&lt;/strong&gt;: 当classpath中存在指定类时&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;@ConditionalOnMissingBean&lt;/strong&gt;: 当容器中不存在指定Bean时&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;@ConditionalOnProperty&lt;/strong&gt;: 当配置文件中有指定属性时&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;@ConditionalOnWebApplication&lt;/strong&gt;: 当是Web应用时&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;示例：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Configuration
+@ConditionalOnClass(DataSource.class)
+@ConditionalOnProperty(prefix = &quot;spring.datasource&quot;, name = &quot;url&quot;)
+public class DataSourceAutoConfiguration {
+    
+    @Bean
+    @ConditionalOnMissingBean
+    public DataSource dataSource() {
+        // 创建数据源
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;6. 配置属性绑定&lt;/h3&gt;
+&lt;p&gt;通过&lt;code&gt;@ConfigurationProperties&lt;/code&gt;将配置文件中的属性绑定到Java对象：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@ConfigurationProperties(prefix = &quot;spring.datasource&quot;)
+public class DataSourceProperties {
+    private String url;
+    private String username;
+    private String password;
+    // getters and setters
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;7. 自动配置的执行顺序&lt;/h3&gt;
+&lt;p&gt;使用以下注解控制加载顺序：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;@AutoConfigureAfter&lt;/strong&gt;: 在指定配置类之后配置&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;@AutoConfigureBefore&lt;/strong&gt;: 在指定配置类之前配置&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;@AutoConfigureOrder&lt;/strong&gt;: 指定配置顺序&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;8. 自动配置报告&lt;/h3&gt;
+&lt;p&gt;可以通过以下方式查看哪些自动配置生效了：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;启动时添加&lt;code&gt;--debug&lt;/code&gt;参数&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;在配置文件中设置&lt;code&gt;debug=true&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;使用Actuator的&lt;code&gt;/conditions&lt;/code&gt;端点&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;自动配置的完整流程&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;启动应用&lt;/strong&gt; → SpringApplication.run()&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;解析@SpringBootApplication&lt;/strong&gt; → 发现@EnableAutoConfiguration&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;导入AutoConfigurationImportSelector&lt;/strong&gt; → 执行selectImports()&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;加载spring.factories&lt;/strong&gt; → 获取所有自动配置类列表&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;应用条件过滤&lt;/strong&gt; → 根据@Conditional注解决定是否加载&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;创建配置Bean&lt;/strong&gt; → 将符合条件的配置类注册到容器&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;属性绑定&lt;/strong&gt; → 将配置文件中的值绑定到配置类&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2&gt;Web自动配置的核心组件&lt;/h2&gt;
+&lt;h3&gt;1. WebMvcAutoConfiguration&lt;/h3&gt;
+&lt;p&gt;这是Spring MVC的核心自动配置类：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Configuration(proxyBeanMethods = false)
+@ConditionalOnWebApplication(type = Type.SERVLET)
+@ConditionalOnClass({ Servlet.class, DispatcherServlet.class, WebMvcConfigurer.class })
+@ConditionalOnMissingBean(WebMvcConfigurationSupport.class)
+@AutoConfigureOrder(Ordered.HIGHEST_PRECEDENCE + 10)
+@AutoConfigureAfter({ DispatcherServletAutoConfiguration.class, TaskExecutionAutoConfiguration.class,
+        ValidationAutoConfiguration.class })
+public class WebMvcAutoConfiguration {
+    // Web MVC相关配置
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;2. 内嵌服务器的自动配置&lt;/h3&gt;
+&lt;h4&gt;ServletWebServerFactoryAutoConfiguration&lt;/h4&gt;
+&lt;p&gt;负责配置内嵌的Servlet容器：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Configuration(proxyBeanMethods = false)
+@AutoConfigureOrder(Ordered.HIGHEST_PRECEDENCE)
+@ConditionalOnClass(ServletRequest.class)
+@ConditionalOnWebApplication(type = Type.SERVLET)
+@EnableConfigurationProperties(ServerProperties.class)
+@Import({ ServletWebServerFactoryAutoConfiguration.BeanPostProcessorsRegistrar.class,
+        ServletWebServerFactoryConfiguration.EmbeddedTomcat.class,
+        ServletWebServerFactoryConfiguration.EmbeddedJetty.class,
+        ServletWebServerFactoryConfiguration.EmbeddedUndertow.class })
+public class ServletWebServerFactoryAutoConfiguration {
+    
+    @Bean
+    public ServletWebServerFactoryCustomizer servletWebServerFactoryCustomizer(
+            ServerProperties serverProperties) {
+        return new ServletWebServerFactoryCustomizer(serverProperties);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;内嵌Tomcat的配置&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;@Configuration(proxyBeanMethods = false)
+@ConditionalOnClass({ Servlet.class, Tomcat.class, UpgradeProtocol.class })
+@ConditionalOnMissingBean(value = ServletWebServerFactory.class, search = SearchStrategy.CURRENT)
+static class EmbeddedTomcat {
+    
+    @Bean
+    TomcatServletWebServerFactory tomcatServletWebServerFactory(
+            ObjectProvider&amp;lt;TomcatConnectorCustomizer&amp;gt; connectorCustomizers,
+            ObjectProvider&amp;lt;TomcatContextCustomizer&amp;gt; contextCustomizers,
+            ObjectProvider&amp;lt;TomcatProtocolHandlerCustomizer&amp;lt;?&amp;gt;&amp;gt; protocolHandlerCustomizers) {
+        TomcatServletWebServerFactory factory = new TomcatServletWebServerFactory();
+        // 配置Tomcat
+        return factory;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;3. DispatcherServlet的自动配置&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;@AutoConfigureOrder(Ordered.HIGHEST_PRECEDENCE)
+@Configuration(proxyBeanMethods = false)
+@ConditionalOnWebApplication(type = Type.SERVLET)
+@ConditionalOnClass(DispatcherServlet.class)
+@AutoConfigureAfter(ServletWebServerFactoryAutoConfiguration.class)
+public class DispatcherServletAutoConfiguration {
+    
+    @Configuration(proxyBeanMethods = false)
+    @Conditional(DefaultDispatcherServletCondition.class)
+    @ConditionalOnClass(ServletRegistration.class)
+    @EnableConfigurationProperties({ HttpProperties.class, WebMvcProperties.class })
+    protected static class DispatcherServletConfiguration {
+        
+        @Bean(name = DEFAULT_DISPATCHER_SERVLET_BEAN_NAME)
+        public DispatcherServlet dispatcherServlet(HttpProperties httpProperties, 
+                WebMvcProperties webMvcProperties) {
+            DispatcherServlet dispatcherServlet = new DispatcherServlet();
+            dispatcherServlet.setDispatchOptionsRequest(webMvcProperties.isDispatchOptionsRequest());
+            dispatcherServlet.setDispatchTraceRequest(webMvcProperties.isDispatchTraceRequest());
+            // 其他配置...
+            return dispatcherServlet;
+        }
+    }
+    
+    @Configuration(proxyBeanMethods = false)
+    @Conditional(DispatcherServletRegistrationCondition.class)
+    @ConditionalOnClass(ServletRegistration.class)
+    @EnableConfigurationProperties(WebMvcProperties.class)
+    @Import(DispatcherServletConfiguration.class)
+    protected static class DispatcherServletRegistrationConfiguration {
+        
+        @Bean(name = DEFAULT_DISPATCHER_SERVLET_REGISTRATION_BEAN_NAME)
+        @ConditionalOnBean(value = DispatcherServlet.class, name = DEFAULT_DISPATCHER_SERVLET_BEAN_NAME)
+        public DispatcherServletRegistrationBean dispatcherServletRegistration(
+                DispatcherServlet dispatcherServlet, WebMvcProperties webMvcProperties,
+                ObjectProvider&amp;lt;MultipartConfigElement&amp;gt; multipartConfig) {
+            DispatcherServletRegistrationBean registration = new DispatcherServletRegistrationBean(
+                    dispatcherServlet, webMvcProperties.getServlet().getPath());
+            registration.setName(DEFAULT_DISPATCHER_SERVLET_BEAN_NAME);
+            registration.setLoadOnStartup(webMvcProperties.getServlet().getLoadOnStartup());
+            multipartConfig.ifAvailable(registration::setMultipartConfig);
+            return registration;
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;4. Web MVC核心组件的配置&lt;/h3&gt;
+&lt;h4&gt;视图解析器配置&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;@Configuration(proxyBeanMethods = false)
+@ConditionalOnMissingBean(name = &quot;viewResolver&quot;, value = ContentNegotiatingViewResolver.class)
+public static class WebMvcAutoConfigurationAdapter implements WebMvcConfigurer {
+    
+    @Bean
+    @ConditionalOnBean(ViewResolver.class)
+    @ConditionalOnMissingBean(name = &quot;viewResolver&quot;, value = ContentNegotiatingViewResolver.class)
+    public ContentNegotiatingViewResolver viewResolver(BeanFactory beanFactory) {
+        ContentNegotiatingViewResolver resolver = new ContentNegotiatingViewResolver();
+        resolver.setContentNegotiationManager(beanFactory.getBean(ContentNegotiationManager.class));
+        resolver.setOrder(Ordered.HIGHEST_PRECEDENCE);
+        return resolver;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;静态资源处理&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;@Override
+public void addResourceHandlers(ResourceHandlerRegistry registry) {
+    if (!this.resourceProperties.isAddMappings()) {
+        logger.debug(&quot;Default resource handling disabled&quot;);
+        return;
+    }
+    // 配置静态资源路径
+    addResourceHandler(registry, &quot;/webjars/**&quot;, &quot;classpath:/META-INF/resources/webjars/&quot;);
+    addResourceHandler(registry, this.mvcProperties.getStaticPathPattern(), 
+        this.resourceProperties.getStaticLocations());
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;5. HttpMessageConverters自动配置&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;@Configuration(proxyBeanMethods = false)
+@ConditionalOnClass(HttpMessageConverter.class)
+@Conditional(NotReactiveWebApplicationCondition.class)
+@AutoConfigureAfter({ GsonAutoConfiguration.class, JacksonAutoConfiguration.class })
+@Import({ JacksonHttpMessageConvertersConfiguration.class,
+        GsonHttpMessageConvertersConfiguration.class })
+public class HttpMessageConvertersAutoConfiguration {
+    
+    @Bean
+    @ConditionalOnMissingBean
+    public HttpMessageConverters messageConverters(ObjectProvider&amp;lt;HttpMessageConverter&amp;lt;?&amp;gt;&amp;gt; converters) {
+        return new HttpMessageConverters(converters.orderedStream().collect(Collectors.toList()));
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;6. Web服务器启动流程&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;// SpringApplication.run() 最终会调用
+private void createWebServer() {
+    WebServer webServer = this.webServer;
+    ServletContext servletContext = getServletContext();
+    if (webServer == null &amp;amp;&amp;amp; servletContext == null) {
+        // 获取ServletWebServerFactory
+        ServletWebServerFactory factory = getWebServerFactory();
+        // 创建WebServer
+        this.webServer = factory.getWebServer(getSelfInitializer());
+    }
+}
+
+// Tomcat的实现
+@Override
+public WebServer getWebServer(ServletContextInitializer... initializers) {
+    Tomcat tomcat = new Tomcat();
+    File baseDir = (this.baseDirectory != null) ? this.baseDirectory : createTempDir(&quot;tomcat&quot;);
+    tomcat.setBaseDir(baseDir.getAbsolutePath());
+    Connector connector = new Connector(this.protocol);
+    connector.setThrowOnFailure(true);
+    tomcat.getService().addConnector(connector);
+    customizeConnector(connector);
+    tomcat.setConnector(connector);
+    tomcat.getHost().setAutoDeploy(false);
+    configureEngine(tomcat.getEngine());
+    prepareContext(tomcat.getHost(), initializers);
+    return getTomcatWebServer(tomcat);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;7. 自动配置的属性配置&lt;/h3&gt;
+&lt;p&gt;通过&lt;code&gt;application.properties&lt;/code&gt;或&lt;code&gt;application.yml&lt;/code&gt;配置：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;server:
+  port: 8080
+  servlet:
+    context-path: /app
+  tomcat:
+    max-threads: 200
+    connection-timeout: 20000
+
+spring:
+  mvc:
+    view:
+      prefix: /WEB-INF/views/
+      suffix: .jsp
+    static-path-pattern: /static/**
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;Web自动配置的完整流程&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;应用启动&lt;/strong&gt; → 检测到Web环境（通过classpath中的Servlet类）&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;加载Web相关自动配置&lt;/strong&gt; → ServletWebServerFactoryAutoConfiguration等&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;创建内嵌服务器工厂&lt;/strong&gt; → 如TomcatServletWebServerFactory&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;配置DispatcherServlet&lt;/strong&gt; → 通过DispatcherServletAutoConfiguration&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;配置Web MVC组件&lt;/strong&gt; → 视图解析器、消息转换器、静态资源等&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;创建并启动Web服务器&lt;/strong&gt; → 调用factory.getWebServer()&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;注册Servlet和Filter&lt;/strong&gt; → 通过ServletContextInitializer&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;服务器就绪&lt;/strong&gt; → 开始接收HTTP请求&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+</content:encoded></item><item><title>阅读随记--如何阅读一本书（一）</title><link>https://devmio.cc/posts/2025/%E9%98%85%E8%AF%BB%E9%9A%8F%E8%AE%B0--%E5%A6%82%E4%BD%95%E9%98%85%E8%AF%BB%E4%B8%80%E6%9C%AC%E4%B9%A6%E4%B8%80/</link><guid isPermaLink="true">https://devmio.cc/posts/2025/%E9%98%85%E8%AF%BB%E9%9A%8F%E8%AE%B0--%E5%A6%82%E4%BD%95%E9%98%85%E8%AF%BB%E4%B8%80%E6%9C%AC%E4%B9%A6%E4%B8%80/</guid><description>失踪人口回归</description><pubDate>Mon, 01 Sep 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;阅读的层次&lt;/h1&gt;
+&lt;h2&gt;1. 阅读的活力&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;ol&gt;
+&lt;li&gt;阅读是一门“主动发现”的艺术，而非被动接受资讯。&lt;/li&gt;
+&lt;li&gt;主动阅读需要读者不断提出问题并运用观察、记忆、想象、分析与反思等多重心智活动来理解文本。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;​阅读是一种“主动发现”的艺术​&lt;/strong&gt;​，而非被动接收信息。真正的阅读要求读者不断向文本发问、搜寻与验证答案- 。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;​&lt;strong&gt;​主动阅读的核心在于五种心智活动​&lt;/strong&gt;​：观察、记忆、想象、分析与反思。只有同时调动这些能力，才能真正“发现”文本意义&lt;/li&gt;
+&lt;li&gt;​&lt;strong&gt;​与被动消费资讯相比​&lt;/strong&gt;​，主动阅读能让人获得更深的理解与更大的满足；阅读越主动，收获越大&lt;/li&gt;
+&lt;li&gt;​&lt;strong&gt;​作者把阅读置于人的成长维度​&lt;/strong&gt;​：如果缺乏内在心智活动，人的思考会停止，心灵与智力随之衰退；阅读恰好是维持心智活力的“支撑物”&lt;/li&gt;
+&lt;li&gt;​&lt;strong&gt;​读者与作者的关系类比为“投手—捕手”​&lt;/strong&gt;​：作者尽力“控球”清晰表达，读者则需积极“接球”，双方技巧契合才能完成有效沟通&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;2. 阅读的层次&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;ol&gt;
+&lt;li&gt;阅读效果完全取决于读者的投入与技巧。&lt;/li&gt;
+&lt;li&gt;四个层次：基础阅读 → 检视阅读 → 分析阅读 → 主题阅读；后者皆以前者为基石，但逐层增加复杂度与系统性。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;
+&lt;h3&gt;2.1 各层次核心目标与提问&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;基础阅读：认字、掌握句子意义——典型问题是“这个句子在说什么？”&lt;/li&gt;
+&lt;li&gt;检视阅读：在限定时间内抓架构、判类别——典型问题是“这本书在谈什么？它的结构如何？”&lt;/li&gt;
+&lt;li&gt;分析阅读：系统咀嚼一本书，直至与作者达成充分理解——“这本书究竟在说什么？作者如何论证？”&lt;/li&gt;
+&lt;li&gt;主题阅读：同时研读多本书，围绕同一主题比较、综合观点——“面对这一主题，诸书分别说了什么？彼此异同何在？”&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2&gt;3. 基础阅读&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;基础阅读是阅读旅程的“地基”​&lt;/strong&gt;​&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3&gt;3.1 渐进式学习阶段​&lt;/h3&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;阶段&lt;/th&gt;
+&lt;th&gt;关键任务&lt;/th&gt;
+&lt;th&gt;典型能力&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;阅读准备&lt;/td&gt;
+&lt;td&gt;感知符号、了解纸张方向&lt;/td&gt;
+&lt;td&gt;能区分字母、跟随朗读&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;认字&lt;/td&gt;
+&lt;td&gt;建立音形对应，掌握基本词汇&lt;/td&gt;
+&lt;td&gt;独立朗读简单句子&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;词汇与课文运用&lt;/td&gt;
+&lt;td&gt;词汇量扩展，能在短文中理解含义&lt;/td&gt;
+&lt;td&gt;读懂句子、完成简单填空&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;技巧精炼&lt;/td&gt;
+&lt;td&gt;流畅、精确、有感情地阅读&lt;/td&gt;
+&lt;td&gt;在九年级左右达到”功能性读写“水平&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3&gt;3.2 心智活动与主动学习&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;艾德勒把阅读视为“主动发现”的过程，即便在基础阶段，也需要观察、记忆、想象、分析与反思五种心智活动。&lt;/li&gt;
+&lt;li&gt;只有带着问题阅读、做笔记、练习并内化为习惯，阅读才能真正滋养思考能力。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;4. 检视阅读&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&quot;在一定的时间内抓出一本书的重点&quot;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3&gt;4.1 两步法&lt;/h3&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;步骤&lt;/th&gt;
+&lt;th&gt;时间分配&lt;/th&gt;
+&lt;th&gt;目标&lt;/th&gt;
+&lt;th&gt;典型问题&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;系统略读&lt;/td&gt;
+&lt;td&gt;约5~15分钟&lt;/td&gt;
+&lt;td&gt;判断这本书值不值得深入&lt;/td&gt;
+&lt;td&gt;”这本书谈了什么?结构如何？“&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;粗浅阅读&lt;/td&gt;
+&lt;td&gt;约15~30分钟&lt;/td&gt;
+&lt;td&gt;对全书获得初步整理理解&lt;/td&gt;
+&lt;td&gt;”主要观点是什么？作者如何展开论述？“&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;两步可单独使用也可在分析阅读前反复使用&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3&gt;4.2 提问框架&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;基础阅读问：“这个句子在说什么？”&lt;/li&gt;
+&lt;li&gt;检视阅读问：“这本书在谈什么？”以及“这本书的架构如何？”&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;4.3 关键技巧&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;​速度​&lt;/strong&gt;​：大部分速读训练集中在此层次；难点在于保持理解率的同时提升速度- 。&lt;/li&gt;
+&lt;li&gt;​&lt;strong&gt;​系统化​&lt;/strong&gt;​：先扫目录、序言、结论，再快速浏览章节开头与结尾，最后决定是否精读。&lt;/li&gt;
+&lt;li&gt;​&lt;strong&gt;​提问驱动​&lt;/strong&gt;​：始终围绕“主题—结构—主要论点”三方面发问，以问题牵引略读。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;5. 做一个自我要求的读者&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;主动阅读是“自我要求”阅读的核心​&lt;/strong&gt;​&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;阅读若想真正带来理解力的提升，读者必须保持清醒与专注，主动向文本发问并尝试作答。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;​四个基本问题指引阅读全过程​&lt;/strong&gt;​&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;任何高于基础阅读的层次，都要依序提出并回答四类关键问题——主题、作者主要论点、论证结构、作者说服方式。这些问题既是阅读方向标，也是检验理解深度的标尺。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;“检视阅读”为自我要求阅读提供框架​&lt;/strong&gt;​&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;在有限时间里先用“两步法”快速抓住书的骨架，再决定是否投入深读；这既节省时间，又避免在无关细节上耗费心智。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;​技巧与习惯：让主动阅读成为自动化能力​&lt;/strong&gt;​&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;​&lt;strong&gt;​提问—作答​&lt;/strong&gt;​循环需反复练习，最终内化为习惯；一支笔或纸笔记是外部提醒，帮助大脑持续追踪问题与答案。&lt;/li&gt;
+&lt;li&gt;​&lt;strong&gt;​自我要求阅读者的三大特质​&lt;/strong&gt;​：
+&lt;ol&gt;
+&lt;li&gt;永远保持问题意识；&lt;/li&gt;
+&lt;li&gt;坚持做批注与摘要；&lt;/li&gt;
+&lt;li&gt;定期复盘自己的理解与作者观点的差距。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+</content:encoded></item><item><title>快速上手Nginx</title><link>https://devmio.cc/posts/2025/%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8Bnginx/</link><guid isPermaLink="true">https://devmio.cc/posts/2025/%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8Bnginx/</guid><description>仅仅只是快速上手nginx，并未深入了解</description><pubDate>Sat, 23 Aug 2025 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
+&lt;p&gt;Nginx是一个高性能的HTTP和方向=代理服务器，同时也是一个IMAP/POP3/SMTP代理服务器。它以高性能、稳定性、丰富的功能集、简单的配置文件和低系统资源消耗而闻名。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2&gt;1. nginx基础概念&lt;/h2&gt;
+&lt;h3&gt;1.1 核心特性&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;高并发处理&lt;/strong&gt;：采用异步、事件驱动的架构，能够处理数万个并发连接，内存占用极低。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;模块化设计&lt;/strong&gt;：核心功能通过模块实现，支持动态加载模块，便于扩展功能（如第三方模块如Lua支持）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;反向代理与负载均衡&lt;/strong&gt;：提供强大的代理功能和多种负载均衡算法，包括轮询、IP哈希、最少连接等。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;静态文件服务&lt;/strong&gt;：高效处理静态文件，支持gzip压缩、缓存控制等优化功能。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;SSL/TLS支持&lt;/strong&gt;：内置SSL支持，可配置HTTPS服务，并支持现代加密标准。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;其他&lt;/strong&gt;：支持WebSocket、gRPC、流媒体服务等。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;1.2 应用场景&lt;/h3&gt;
+&lt;p&gt;Nginx广泛应用于Web服务器、反向代理、负载均衡器、API网关、静态资源服务器等场景。许多知名网站如Netflix、Airbnb、GitHub等都在生产环境中使用Nginx。它也常用于微服务架构、容器化环境（如Kubernetes的Ingress控制器）。&lt;/p&gt;
+&lt;h2&gt;2. 环境配置（win环境下）&lt;/h2&gt;
+&lt;h3&gt;2.1 目录结构&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;C:\nginx\            # 主安装目录
+├── nginx.exe        # 主可执行文件
+├── conf\            # 配置目录
+│   ├── nginx.conf   # 主配置文件
+│   ├── mime.types   # MIME 类型定义
+│   └── ...          # 其他配置文件
+├── html\            # 默认网站根目录
+│   ├── index.html   # 默认欢迎页面
+│   └── 50x.html     # 默认错误页面
+├── logs\            # 日志目录（运行后创建）
+│   ├── access.log   # 访问日志
+│   └── error.log    # 错误日志
+├── temp\            # 临时文件目录（运行后创建）
+└── contrib\         # 附加工具和脚本
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;3. 基础配置&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;基本语法规则&lt;/strong&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;指令&lt;/strong&gt;：以分号&lt;code&gt;;&lt;/code&gt;结束，如&lt;code&gt;worker_processes auto;&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;块&lt;/strong&gt;：用&lt;code&gt;{}&lt;/code&gt;包围，可嵌套。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;注释&lt;/strong&gt;：用&lt;code&gt;#&lt;/code&gt;开头。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;变量&lt;/strong&gt;：用&lt;code&gt;$&lt;/code&gt;前缀，如&lt;code&gt;$remote_addr&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;包含&lt;/strong&gt;：&lt;code&gt;include /etc/nginx/conf.d/*.conf;&lt;/code&gt; 用于模块化配置。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;配置验证：&lt;code&gt;nginx -t&lt;/code&gt; 检查语法错误。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3&gt;3.1 配置文件结构&lt;/h3&gt;
+&lt;p&gt;Nginx配置文件采用了层次化结构，主要块包括：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;全局块&lt;/strong&gt;：用于设置Nginx服务器的全局参数。如进程管理、用户权限和日志设置。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;user nginx;                  # 运行用户
+worker_processes auto;       # 进程数（auto为CPU核数）
+error_log /var/log/nginx/error.log warn;  # 错误日志
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;events块&lt;/strong&gt;：配置 Nginx 的事件驱动模型和连接处理参数。Nginx 使用异步、非阻塞的事件机制来处理高并发连接，这个块主要优化 worker 进程的连接管理和事件处理效率。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;events {
+    worker_connections 1024;  # 每个进程最大连接数
+    use epoll;                # 事件模型（Linux推荐）
+    multi_accept on;          # 同时接受多个连接
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;http块&lt;/strong&gt;：这是 HTTP 协议的核心配置块，用于设置所有 HTTP/HTTPS 相关的全局参数，如 MIME 类型、日志格式、gzip 压缩、缓存等。它是 server 块的父级容器，可以包含多个 server 块，实现虚拟主机管理。一个http块可以有多个server块。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;http {
+    log_format main &apos;$remote_addr - $remote_user [$time_local] &quot;$request&quot; &apos;
+                    &apos;$status $body_bytes_sent &quot;$http_referer&quot; &apos;
+                    &apos;&quot;$http_user_agent&quot; &quot;$http_x_forwarded_for&quot;&apos;;
+    access_log /var/log/nginx/access.log main;
+    sendfile on;              # 高效文件传输
+    keepalive_timeout 65;     # 连接超时
+    gzip on;                  # 压缩启用
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;server块&lt;/strong&gt;：定义一个虚拟主机（Virtual Host），&lt;strong&gt;用于处理特定域名、IP 或端口的请求。每个 server 块对应一个独立的网站或服务配置，包括监听端口、服务器名称、根目录等&lt;/strong&gt;。它是 Nginx 处理 HTTP 请求的入口点，可以实现基于域名/IP/端口的区分。一个server块可以有多个location块。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;server {
+    listen 80;
+    server_name www.example.com;
+    root /var/www/example;
+    index index.html;
+}
+...
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;location块&lt;/strong&gt;：用于匹配具体的 URI（请求路径），并定义该路径下的处理规则，如静态文件服务、代理转发、重定向等。它是配置中最细粒度的部分，支持多种匹配模式（精确、前缀、正则等），允许针对不同路径应用不同的策略。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;location = / { return 200 &quot;Home&quot;; }  # 精确
+location ~ \.jpg$ { root /images; }   # 正则
+location / { root /var/www; }         # 通用
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;示例nginx.conf：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# 全局块
+user nginx;
+worker_processes auto;
+
+# events块
+events {
+    worker_connections 1024;
+}
+
+# http块
+http {
+    include /etc/nginx/mime.types;
+    default_type application/octet-stream;
+    
+    server {
+        listen 80;
+        server_name example.com;
+        
+        location / {
+            root /var/www/html;
+            index index.html;
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;3. 核心功能&lt;/h2&gt;
+&lt;h3&gt;3.1 反向代理&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;反向代理是指 Nginx 作为==中间服务器==，接收来自客户端（比如浏览器）的请求，然后将这些请求转发到后端的真实服务器（上游服务器），并将后端服务器的响应返回给客户端。(客户端只看到 Nginx 的地址，而不知道后端服务器的真实 IP 或结构。)&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre&gt;&lt;code&gt;http {
+    upstream backend {
+        server backend1.example.com:8080;  # 后端服务器
+    }
+
+    server {
+        listen 80;
+        server_name example.com;
+
+        location / {
+            proxy_pass http://backend;  # 转发请求到上游
+            proxy_set_header Host $host;  # 传递头部信息
+            proxy_set_header X-Real-IP $remote_addr;
+        }
+    }
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;3.2 负载均衡&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;负载均衡是将 incoming 的请求均匀分发到多个后端服务器上，以避免单一服务器过载。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre&gt;&lt;code&gt;http {
+    upstream backend_servers {
+        server backend1.example.com:8080 weight=1;  # 权重为1
+        server backend2.example.com:8080 weight=2;  # 权重更高，接收更多请求
+        server backend3.example.com:8080 backup;    # 备份服务器，只在其他宕机时使用
+    }
+
+    server {
+        listen 80;
+        server_name example.com;
+
+        location / {
+            proxy_pass http://backend_servers;  # 指向 upstream 组，实现负载均衡
+            health_check;  # 可选：启用健康检查
+        }
+    }
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;3.3 静态文件服务&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;location /static/ {
+    root /var/www;
+    expires 30d;  # 缓存30天
+    gzip_static on;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;3.4 目前仅做了解&lt;/h3&gt;
+&lt;p&gt;1️⃣ URL重写与重定向&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;server {
+    if ($host ~* ^www\.(.*)) { return 301 https://$1$request_uri; }
+    rewrite ^/old/(.*)$ /new/$1 permanent;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;2️⃣缓存控制&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;proxy_cache_path /var/cache/nginx levels=1:2 keys_zone=my_cache:10m;
+location /api/ {
+    proxy_cache my_cache;
+    proxy_cache_valid 200 10m;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;3️⃣ 限速与限流&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;limit_req_zone $binary_remote_addr zone=one:10m rate=1r/s;
+location /login {
+    limit_req zone=one burst=5;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;4️⃣ HTTPS与SSL配置&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;server {
+    listen 443 ssl;
+    ssl_certificate /etc/ssl/cert.crt;
+    ssl_certificate_key /etc/ssl/key.key;
+    ssl_protocols TLSv1.3;
+}
+server { listen 80; return 301 https://$host$request_uri; }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;4. 实战案例&lt;/h2&gt;
+&lt;p&gt;1️⃣ &lt;strong&gt;门户网站&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;配置静态页面、API代理、文件上传。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;upstream api_backend {
+    server 192.168.1.10:3000;
+    server 192.168.1.11:3000;
+    keepalive 16;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name corporate.example.com;
+    ssl_certificate /etc/ssl/corporate.crt;
+    ssl_certificate_key /etc/ssl/corporate.key;
+
+    location / {
+        root /var/www/corporate;
+        index index.html;
+        try_files $uri $uri/ /index.html;
+    }
+
+    location /static/ {
+        root /var/www/corporate;
+        expires 1y;
+        gzip_static on;
+    }
+
+    location /api/ {
+        limit_req zone=api burst=20 nodelay;
+        proxy_pass http://api_backend/;
+        proxy_http_version 1.1;
+        proxy_set_header Connection &quot;&quot;;
+        proxy_cache api_cache;
+        proxy_cache_key $scheme$request_method$host$request_uri;
+        proxy_cache_valid 200 302 10m;
+        proxy_cache_valid 404 1m;
+        add_header X-Cache-Status $upstream_cache_status;
+    }
+
+    location /upload/ {
+        client_max_body_size 100m;
+        proxy_pass http://file_backend/;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;2️⃣ &lt;strong&gt;高可用负载均衡集群&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;为Node.js应用构建负载均衡。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;upstream app_servers {
+    least_conn;
+    server app1.example.com:3000 max_fails=3 fail_timeout=30s;
+    server app2.example.com:3000 max_fails=3 fail_timeout=30s;
+    server app3.example.com:3000 backup;
+}
+
+server {
+    listen 80;
+    server_name app.example.com;
+
+    location / {
+        proxy_pass http://app_servers;
+        proxy_next_upstream error timeout http_502;
+        health_check;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;3️⃣ &lt;strong&gt;API网关与微服务&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;使用Nginx作为API网关，路由到不同微服务。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;map $request_uri $service {
+    ~^/user/    user_service;
+    ~^/product/ product_service;
+    default     default_service;
+}
+
+upstream user_service { server user:8080; }
+upstream product_service { server product:8081; }
+
+server {
+    location / {
+        proxy_pass http://$service;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>深夜反思</title><link>https://devmio.cc/posts/2025/%E6%B7%B1%E5%A4%9C%E5%8F%8D%E6%80%9D/</link><guid isPermaLink="true">https://devmio.cc/posts/2025/%E6%B7%B1%E5%A4%9C%E5%8F%8D%E6%80%9D/</guid><description>为什么自己这么菜啊！！！！</description><pubDate>Fri, 22 Aug 2025 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;这几天都是一觉睡到中午十二点，下午使劲摸鱼，今天也是如此。晚上突然对博客改造来了兴致，就想着给自己博客加个文章目录。一通胡乱折腾，照着ai的东搞西搞，花了一个钟头，总算明白哪里要改了，然后对着tailwindcss的属性值，反复改了一刻钟，博客的文章目录总算是实现了……（移动端我没做适配）估计没法看吧……&lt;/p&gt;
+&lt;p&gt;现在反思一下自己吧，自己的基础是不是太不扎实了？前几天敲苍穹项目，发现Spring全家桶，自己的了解程度大概只停留在’半桶水的程度‘，代码稍微有一点不一样，人就开始蒙圈了。然后说回今天搁那乱改tailwindcss属性值这事儿，老早之前我就盘算着要学一下tailwindcss了，拿他改进自己博客的设计，结果……沉迷vibecodding无法自拔，自己的水平一点没提升上来。被自己整无语住了😅😅&lt;/p&gt;
+&lt;p&gt;自己执行力真的差劲👎👎，老实说我那英语摆烂了这么久，现在越想越痛苦了，稍微查点资料，那些文档一个都看不懂……还有我的吉他、乐理，都是挖坑不填……我离想成为的那个自己越来越远了——&lt;/p&gt;
+&lt;p&gt;挖坑不填列表如下&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;英语（到现在也就记了那么几个单词，语法也懒得学……）&lt;/li&gt;
+&lt;li&gt;tailwindcss&lt;/li&gt;
+&lt;li&gt;vue(学完，不复习代码，不拿来实战)&lt;/li&gt;
+&lt;li&gt;SpringBoot（美其名曰，边敲边学，现在成烂尾工程了）&lt;/li&gt;
+&lt;li&gt;吉他🎸（听摇滚的自己哪儿去了，这么多年一点长进都没有）&lt;/li&gt;
+&lt;li&gt;乐理（只会C大调音阶，搁那do ra mi fa so la shi，闹麻了）&lt;/li&gt;
+&lt;/ul&gt;
+</content:encoded></item><item><title>RESTFul编程风格</title><link>https://devmio.cc/posts/2025/restful%E7%BC%96%E7%A8%8B%E9%A3%8E%E6%A0%BC/</link><guid isPermaLink="true">https://devmio.cc/posts/2025/restful%E7%BC%96%E7%A8%8B%E9%A3%8E%E6%A0%BC/</guid><description>RESTFul编程风格</description><pubDate>Wed, 20 Aug 2025 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
 &lt;p&gt;RESTFul是WEB服务器接口的一种设计风格。
 RESTFul对URL的约束和规范的核心：通过采用&lt;strong&gt;不同的请求方法&lt;/strong&gt;+&lt;strong&gt;URL&lt;/strong&gt;来确定WEB服务中的资源&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -4062,7 +5865,7 @@ language: &apos;&apos; &amp;lt;!-- 可有可无，按需设置 --&amp;gt;
 &lt;ul&gt;
 &lt;li&gt;[x] maven对于父子依赖存在有疑问，在实操过程中花去大半时间&lt;/li&gt;
 &lt;li&gt;[ ] ngin配置文件该怎么写？如何部署？是如何打通前后端之间的‘通信’？&lt;/li&gt;
-&lt;li&gt;[ ] 对于如何正确使用git分支不是很理解&lt;/li&gt;
+&lt;li&gt;[√] 对于如何正确使用git分支不是很理解&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;strong&gt;后续进一步优化项目的知识点&lt;/strong&gt;&lt;/p&gt;
 &lt;ul&gt;
