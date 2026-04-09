@@ -2,6 +2,7 @@
 import { onDestroy, onMount, tick } from "svelte";
 
 export let audioList = [];
+export let autoplay = false;
 let audio;
 let currentIndex = 0;
 let playing = false;
@@ -30,19 +31,28 @@ function togglePlay() {
 	if (!audio) return;
 	if (playing) {
 		audio.pause();
+		playing = false;
 	} else {
-		audio.play();
+		void safePlay();
 	}
-	playing = !playing;
+}
+
+async function safePlay() {
+	if (!audio) return;
+	try {
+		await audio.play();
+		playing = true;
+	} catch {
+		playing = false;
+	}
 }
 
 function playCurrent() {
 	const track = audioList[currentIndex];
 	if (!track || !audio) return;
 	audio.src = track.src;
-	audio.play().then(() => {
-		playing = true;
-	});
+	current = 0;
+	void safePlay();
 	setupScroll();
 }
 
@@ -76,7 +86,11 @@ onMount(async () => {
 	});
 	audio.addEventListener("ended", () => next());
 
-	playCurrent();
+		if (autoplay) playCurrent();
+		else {
+			const track = audioList[currentIndex];
+			if (track) audio.src = track.src;
+		}
 	timer = setInterval(() => {
 		if (audio) current = audio.currentTime;
 	}, 200);
