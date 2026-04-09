@@ -86,11 +86,11 @@ onMount(async () => {
 	});
 	audio.addEventListener("ended", () => next());
 
-		if (autoplay) playCurrent();
-		else {
-			const track = audioList[currentIndex];
-			if (track) audio.src = track.src;
-		}
+	if (autoplay) playCurrent();
+	else {
+		const track = audioList[currentIndex];
+		if (track) audio.src = track.src;
+	}
 	timer = setInterval(() => {
 		if (audio) current = audio.currentTime;
 	}, 200);
