@@ -7,7 +7,7 @@ author: mio
 tags:
   - 编程学习
 category: 后端
-draft: true
+draft: false
 ---
 **CDN**（Content Delivery Network/Content Distribution Network）内容分发网络
 - 内容：指的是静态资源，包括图片、视频、文档、Javascript、CSS、HTML等。
