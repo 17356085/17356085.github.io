@@ -9,6 +9,8 @@ tags:
 category: 后端
 draft: false
 ---
+>图片来自https://javaguide.cn/，侵删
+
 **CDN**（Content Delivery Network/Content Distribution Network）内容分发网络
 - 内容：指的是静态资源，包括图片、视频、文档、Javascript、CSS、HTML等。
 - 分发网络：指的是将这些静态资源分发到位于多个不同地理位置机房中的服务器上，从而实现**就近访问**——例如北京的用户直接访问北京机房的数据。
@@ -54,5 +56,3 @@ draft: false
 
 ## 2. CDN的工作原理
 ![](https://oss.javaguide.cn/github/javaguide/high-performance/cdn/cdn-full-life-cycle-of-cdn-cache.png)
-
->图片来自https://javaguide.cn/，侵删
