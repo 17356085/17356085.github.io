@@ -1,6 +1,8 @@
 ---
 import type { CollectionEntry } from "astro:content";
-import { getNoteUrlBySlug } from "../utils/url-utils";
+import Chip from "@components/atoms/action/Chip.astro";
+import Card from "@components/atoms/display/Card.svelte";
+import { getNoteUrl } from "../utils/notes";
 import NoteMeta from "./NoteMeta.astro";
 
 interface Props {
@@ -9,35 +11,39 @@ interface Props {
 	style?: string;
 }
 
-const { entry } = Astro.props;
-const className = Astro.props.class;
-const { remarkPluginFrontmatter } = await entry.render();
-const description = entry.data.description || remarkPluginFrontmatter.excerpt;
+const { entry, class: className, style } = Astro.props;
 const statusLabels: Record<string, string> = {
 	seed: "Seed",
 	learning: "学习中",
 	reviewed: "已复盘",
 	stable: "稳定",
-} as const;
+};
 ---
 
-<article class:list={["card-base flex flex-col w-full rounded-[var(--radius-large)] overflow-hidden relative", className]} style={Astro.props.style}>
-    <div class="px-6 md:px-9 py-6 relative">
-        <a href={getNoteUrlBySlug(entry.slug)} class="transition group w-full block font-bold mb-3 text-2xl text-90 hover:text-[var(--primary)] dark:hover:text-[var(--primary)]">
-            {entry.data.title}
-            <span class="transition text-[var(--primary)] ml-2 opacity-0 group-hover:opacity-100">→</span>
-        </a>
+<Card variant="elevated" class={className}>
+	<div class="px-6 py-6 md:px-8" style={style}>
+		<a
+			href={getNoteUrl(entry.id)}
+			class="group block text-2xl font-bold text-[var(--on-surface)] transition hover:text-[var(--primary)]"
+		>
+			{entry.data.title}
+			<span class="ml-2 text-[var(--primary)] opacity-0 transition group-hover:opacity-100">→</span>
+		</a>
 
-        <NoteMeta
-            created={entry.data.created}
-            updated={entry.data.updated}
-            tags={entry.data.tags}
-            category={entry.data.category}
-            class="mb-4"
-        />
+		<NoteMeta
+			created={entry.data.created}
+			updated={entry.data.updated}
+			tags={entry.data.tags}
+			category={entry.data.category}
+			class="mt-4"
+		/>
 
-        <p class="transition text-75 mb-3.5 pr-4 line-clamp-3">{description || "这是一篇正在持续完善的公开笔记。"}</p>
+		<p class="mt-4 line-clamp-3 text-[var(--on-surface-variant)]">
+			{entry.data.description || "这是一篇正在持续完善的公开笔记。"}
+		</p>
 
-        <span class="text-sm text-black/40 dark:text-white/40">{statusLabels[entry.data.status]}</span>
-    </div>
-</article>
+		<Chip variant="tonal" class="mt-4" label={statusLabels[entry.data.status]}>
+			{statusLabels[entry.data.status]}
+		</Chip>
+	</div>
+</Card>

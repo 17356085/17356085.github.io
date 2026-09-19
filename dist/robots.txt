@@ -1,4 +1,0 @@
-User-agent: *
-Disallow: /_astro/
-
-Sitemap: https://17356085.github.io/sitemap-index.xml

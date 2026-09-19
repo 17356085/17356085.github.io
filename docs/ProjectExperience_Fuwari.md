@@ -1,4 +1,7 @@
-# 个人项目经历｜Fuwari 静态博客与主题系统
+# 个人项目经历｜Fuwari 静态博客与主题系统（历史记录）
+
+> 本文记录迁移到 Shirone 之前的 Fuwari 实现，不代表当前仓库的文件布局。
+> 当前架构、命令与验收结果请参阅 [Shirone 迁移说明](shirone-migration.md)。
 
 **项目类型**：个人作品 / 技术博客站点（静态站点）
 
@@ -66,4 +69,3 @@
 - Markdown/代码块管线：`astro.config.mjs`、`src/plugins/*`
 - Swup 转场与灯箱初始化：`src/layouts/Layout.astro`
 - 页面入口：`src/pages/*`
-

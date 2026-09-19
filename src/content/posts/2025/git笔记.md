@@ -5,7 +5,7 @@ description: '一些git常用的指令。'
 author: 'Astro 学习者'
 tags: ["git", "后端开发"]
 category: 后端 
-image: '../../../assets/images/祥子.png'
+image: /img/祥子.png
 updated: 2025-08-13
 ---
 

@@ -1,45 +1,60 @@
 ---
-import { Icon } from "astro-icon/components";
+import Card from "@components/atoms/display/Card.svelte";
+import MainGridLayout from "@layouts/MainGridLayout.astro";
 import NoteCard from "../../components/NoteCard.astro";
-import MainGridLayout from "../../layouts/MainGridLayout.astro";
-import { getNoteCategoryList, getSortedNotes } from "../../utils/content-utils";
+import { getNoteCategoryList, getSortedNotes } from "../../utils/notes";
 
 const notes = await getSortedNotes();
 const categories = await getNoteCategoryList();
 ---
 
 <MainGridLayout title="笔记" description="持续更新的公开学习笔记与知识索引。">
-    <div class="flex flex-col gap-4">
-        <section class="card-base rounded-[var(--radius-large)] px-6 md:px-9 py-7">
-            <div class="flex items-start gap-3">
-                <Icon name="material-symbols:auto-stories-outline-rounded" class="text-[2rem] text-[var(--primary)] shrink-0"></Icon>
-                <div>
-                    <h1 class="text-2xl font-bold text-90 mb-2">公开笔记</h1>
-                    <p class="text-75 leading-7">这里记录可以持续补充、检索和关联的知识。成熟内容再整理成正式文章。</p>
-                </div>
-            </div>
-        </section>
+	<div class="flex flex-col gap-4">
+		<Card variant="elevated" class="p-6 md:p-8">
+			<div class="flex items-start gap-4">
+				<div class="text-4xl" aria-hidden="true">▤</div>
+				<div>
+					<h1 class="text-2xl font-bold text-[var(--on-surface)]">公开笔记</h1>
+					<p class="mt-2 leading-7 text-[var(--on-surface-variant)]">
+						这里记录可以持续补充、检索和关联的知识。成熟内容再整理成正式文章。
+					</p>
+				</div>
+			</div>
+		</Card>
 
-        {categories.length > 0 && <section class="card-base rounded-[var(--radius-large)] px-6 md:px-9 py-7">
-            <h2 class="text-xl font-bold text-90 mb-4">知识领域</h2>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                {categories.map((category) => (
-                    <div class="rounded-xl bg-black/[0.04] dark:bg-white/[0.06] px-4 py-3">
-                        <div class="font-medium text-90">{category.name}</div>
-                        <div class="text-sm text-50 mt-1">{category.count} 篇笔记</div>
-                    </div>
-                ))}
-            </div>
-        </section>}
+		{categories.length > 0 && (
+			<Card variant="filled" class="p-6 md:p-8">
+				<h2 class="text-xl font-bold text-[var(--on-surface)]">知识领域</h2>
+				<div class="mt-4 grid grid-cols-2 gap-3 md:grid-cols-4">
+					{categories.map((category) => (
+						<div class="rounded-[var(--shape-corner-m)] bg-[var(--surface-container)] px-4 py-3">
+							<div class="font-medium text-[var(--on-surface)]">{category.name}</div>
+							<div class="mt-1 text-sm text-[var(--on-surface-variant)]">{category.count} 篇笔记</div>
+						</div>
+					))}
+				</div>
+			</Card>
+		)}
 
-        {notes.length > 0 ? <section class="flex flex-col gap-4">
-            <div class="flex items-center justify-between px-1">
-                <h2 class="text-xl font-bold text-90">最近更新</h2>
-                <span class="text-sm text-50">共 {notes.length} 篇</span>
-            </div>
-            {notes.map((entry, index) => <NoteCard entry={entry} class="onload-animation" style={`animation-delay: calc(var(--content-delay) + ${index * 50}ms);`} />)}
-        </section> : <section class="card-base rounded-[var(--radius-large)] px-6 md:px-9 py-7 text-75">
-            还没有公开笔记。之后可以从一个稳定的知识主题开始创建 `src/content/notes/` 下的 Markdown 文件。
-        </section>}
-    </div>
+		{notes.length > 0 ? (
+			<section class="flex flex-col gap-4">
+				<div class="flex items-center justify-between px-1">
+					<h2 class="text-xl font-bold text-[var(--on-surface)]">最近更新</h2>
+					<span class="text-sm text-[var(--on-surface-variant)]">共 {notes.length} 篇</span>
+				</div>
+				{notes.map((entry, index) => (
+					<NoteCard
+						entry={entry}
+						class="onload-animation"
+						style={`animation-delay: calc(var(--content-delay) + ${index * 50}ms);`}
+					/>
+				))}
+			</section>
+		) : (
+			<Card variant="filled" class="p-6 text-[var(--on-surface-variant)] md:p-8">
+				还没有公开笔记。之后可以从一个稳定的知识主题开始创建
+				<code>src/content/notes/</code> 下的 Markdown 文件。
+			</Card>
+		)}
+	</div>
 </MainGridLayout>

@@ -1,5 +1,14 @@
 # build output
-# dist/
+dist/
+
+# integration cache (esbuild config bundles, plugin-mode font subsets)
+.shirones/
+
+# content repository working copy, provenance, and safe cleanup backups
+.content-src/
+.content-backup/
+content.lock.json
+Shirone-Content/
 
 # generated types
 .astro/
@@ -28,10 +37,43 @@ yarn.lock
 
 # ide
 .idea
+
+# generated font subsets
+src/assets/fonts/.subset/
+
+# generated local icon collection
+src/generated/local-icon-collections.ts
 *.iml
 
-# vscode
-.vscode
+# anime snapshot data & downloaded covers
+shirones/config/data/anime-snapshots/*.json
+public/assets/anime/covers/*
+!public/assets/anime/covers/.gitkeep
 
-# github
-# .github
+# generated responsive moment thumbnails
+public/assets/moments/thumbnails/*
+!public/assets/moments/thumbnails/.gitkeep
+
+# local tooling artifacts
+.tmp/
+.zcode/
+.codex-*.log
+research/
+
+# playwright
+.playwright-cli/
+test-results/
+playwright-report/
+tests/site/visual.spec.ts-snapshots/
+
+# Lighthouse local reports
+artifacts/lighthouse/*
+!artifacts/lighthouse/.gitkeep
+.lighthouseci/
+
+# generated AI skills plugin packages
+artifacts/shirone-ai-*
+
+# shirones integration cache
+.shirones/
+.shirones-backup/
