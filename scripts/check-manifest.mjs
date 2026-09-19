@@ -3,6 +3,7 @@ import { join, resolve } from "node:path";
 
 const root = resolve(import.meta.dirname, "..");
 const packagePath = join(root, "node_modules", "shirones", "package.json");
+const rootPackagePath = join(root, "package.json");
 
 function fail(message) {
 	console.error(`[manifest] ${message}`);
@@ -23,13 +24,33 @@ if (!existsSync(packagePath)) {
 	}
 }
 
+if (existsSync(rootPackagePath)) {
+	const rootPackage = JSON.parse(readFileSync(rootPackagePath, "utf8"));
+	if (rootPackage.packageManager !== "pnpm@9.14.4") {
+		fail("packageManager must remain pnpm@9.14.4.");
+	}
+} else {
+	fail("missing package.json.");
+}
+
+for (const forbiddenLockfile of ["package-lock.json", "npm-shrinkwrap.json"]) {
+	if (existsSync(join(root, forbiddenLockfile))) {
+		fail(`forbidden lockfile exists: ${forbiddenLockfile}.`);
+	}
+}
+
 const requiredPaths = [
 	"astro.config.mjs",
 	"src/content.config.ts",
 	"src/content/posts",
 	"src/content/notes",
+	"src/pages/posts/index.astro",
 	"src/pages/notes/index.astro",
 	"src/pages/notes/[...slug].astro",
+	"docs/knowledge-system.md",
+	"templates/知识笔记模板.md",
+	"scripts/sync-blog.mjs",
+	"public/robots.txt",
 	"shirones/config/siteConfig.ts",
 	"shirones/config/commentConfig.ts",
 ];

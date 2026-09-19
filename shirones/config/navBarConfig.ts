@@ -148,6 +148,7 @@ const defaultNavBarConfig: NavBarConfig = {
 		LinkPresets.Home,
 		LinkPresets.Archive,
 		LinkPresets.Notes,
+		LinkPresets.Anime,
 		LinkPresets.About,
 		LinkPresets.GitHub,
 	],

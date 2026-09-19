@@ -308,13 +308,21 @@ function main() {
 		return 1;
 	}
 
-	const updateArgs = ["merge", "--ff-only", "origin/main"];
+	// `readAheadBehind()` has already proved that HEAD is an ancestor of
+	// origin/main. Update the local branch ref directly so this safety command
+	// never invokes a merge operation or creates a commit.
+	const updateArgs = [
+		"update-ref",
+		"refs/heads/main",
+		"refs/remotes/origin/main",
+		"HEAD",
+	];
 	console.log(
-		`本地落后 origin/main ${counts.behind} 个提交，正在执行 fast-forward-only 更新…`,
+		`本地落后 origin/main ${counts.behind} 个提交，正在执行 fast-forward-only ref 更新…`,
 	);
 	const update = runGit(updateArgs);
 	if (!update.ok) {
-		reportGitFailure("fast-forward-only 更新", updateArgs, update);
+		reportGitFailure("fast-forward-only ref 更新", updateArgs, update);
 		return 1;
 	}
 

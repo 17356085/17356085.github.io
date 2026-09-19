@@ -87,7 +87,7 @@ Posts 继续使用既有的 `published` / `updated` Schema；历史文章中的 
 pnpm sync
 ```
 
-同步器只允许在正确的公开博客仓库、`main` 分支和 clean working tree 上运行。它会 fetch `origin`，相同则结束，仅 behind 则 fast-forward；ahead 或 diverged 会停止并要求人工处理。它不会 stash、merge、rebase、reset、checkout、force push、自动解决冲突、创建 commit 或 push。
+同步器只允许在正确的公开博客仓库、`main` 分支和 clean working tree 上运行。它会 fetch `origin`，相同则结束，仅 behind 则直接更新本地分支 ref 到 `origin/main`；ahead 或 diverged 会停止并要求人工处理。它不会 stash、merge、rebase、reset、checkout、force push、自动解决冲突、创建 commit 或 push。
 
 本地编辑建议：
 
@@ -112,6 +112,7 @@ pnpm sync
 pnpm sync   # 安全同步 GitHub main
 pnpm dev    # 本地预览
 pnpm build  # Astro 构建并生成 Pagefind 索引
+pnpm check:output  # 验证路由、内容计数、图片、Giscus 与 Pagefind 语义检索
 ```
 
 公开站点是 `https://17356085.github.io/`。GitHub Actions 负责构建和 GitHub Pages 发布；本地构建成功不等于线上发布已经完成，发布后仍需检查站点、RSS、Sitemap、Notes 路由和搜索。

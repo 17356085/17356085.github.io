@@ -10,7 +10,6 @@ export default defineConfig({
 			pagefind: false,
 			excludeRoutes: [
 				"/albums",
-				"/anime",
 				"/compass",
 				"/devices",
 				"/friends",

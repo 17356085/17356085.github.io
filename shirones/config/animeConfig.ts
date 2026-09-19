@@ -21,7 +21,7 @@ import { withUserConfig } from "@/utils/config-overlay.ts";
  * ─────────────────────────────────────────────────────────────────────────────
  * 【常用配置场景】
  * ─────────────────────────────────────────────────────────────────────────────
- * 场景 A：使用本地手写数据（默认，最稳定安全）
+ * 场景 A：使用本地手写数据（最稳定安全）
  *   ```ts
  *   source: { kind: "local" }
  *   ```
@@ -39,8 +39,8 @@ import { withUserConfig } from "@/utils/config-overlay.ts";
  * ─────────────────────────────────────────────────────────────────────────────
  */
 export const animeConfig: AnimeConfig = withUserConfig("anime", {
-	/** 是否启用番剧页；false 时导航入口同步隐藏，访问 /anime/ 跳转 404 */
-	enable: false,
+	/** 保留空数据的番剧页结构；没有 Bangumi ID 时不猜测或填入条目。 */
+	enable: true,
 	title: "$t:anime",
 	description: "$t:animeBanner",
 
@@ -52,9 +52,9 @@ export const animeConfig: AnimeConfig = withUserConfig("anime", {
 		// fetchOnDev: true,
 	},
 
-	/** 异常降级策略（快照丢失或解析失败时回退本地数据） */
+	/** 无快照时保持空页，避免回退到任何演示数据。 */
 	fallback: {
-		kind: "local",
+		kind: "empty",
 	},
 
 	/** 外部提供方配置 */

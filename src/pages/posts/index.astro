@@ -1,0 +1,15 @@
+---
+import PostPage from "@components/organisms/PostPage.astro";
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import { getSortedPosts } from "@utils/content-utils";
+
+const page = { data: await getSortedPosts() };
+---
+
+<MainGridLayout
+	title="Posts"
+	description="已经整理成文章的技术笔记与学习记录。"
+	page="home"
+>
+	<PostPage page={page}></PostPage>
+</MainGridLayout>

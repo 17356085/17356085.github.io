@@ -73,3 +73,6 @@ jobs:
 
       - name: Build
         run: pnpm build
+
+      - name: Check generated output
+        run: pnpm check:output

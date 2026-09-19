@@ -4,6 +4,8 @@
 
 本地迁移分支为 `migration/shirone`，使用 `shirones@0.1.4` 的 npm package mode。
 仓库根目录保留站点自己的内容与配置覆盖，不把 Shirone 上游源码复制进项目。
+迁移日期：`2026-09-19`。主题源码：[Shirone](https://github.com/LyraVoid/Shirone)，
+实际依赖包：[shirones](https://github.com/yCENzh/shirones) `0.1.4`。
 官方参考：[Shirone](https://github.com/LyraVoid/Shirone)、
 [shirones package pipeline](https://github.com/yCENzh/shirones)、
 [官方文档](https://docs.shirone.mysqil.com/)。
@@ -14,8 +16,9 @@
 - 1 个公开笔记保留在 `src/content/notes/`，笔记列表与详情页仍由仓库自定义页面提供。
 - 公开文章与公开笔记是站点内容；Obsidian 私人工作区不纳入内容集合。
 - `shirones/config/` 保存站点、个人资料、导航、评论、音乐和功能开关覆盖。
-- Shirone 默认演示功能已关闭：相册、动漫、指南针、设备、友链、游戏、动态、项目、系列、技能与时间线均不生成站内入口。
-- 导航保留主页、归档、笔记、关于和个人 GitHub；原 Giscus 仓库、分类与主题参数保持不变。
+- Shirone 默认演示功能已关闭：相册、指南针、设备、友链、游戏、动态、项目、系列、技能与时间线均不生成站内入口。
+- Anime 页面保留 `/anime/` 结构与导航入口，但本地数据为空、外部提供方关闭且降级策略为 `empty`；没有用户提供的 Bangumi ID 时不猜测条目，也不带入主题示例数据。
+- 导航保留主页、归档、笔记、Anime、关于和个人 GitHub；原 Giscus 仓库、分类与主题参数保持不变。
 
 ## 本地验证
 
@@ -25,8 +28,15 @@ pnpm check
 pnpm type-check
 pnpm check:manifest
 pnpm build
+pnpm check:output
 pnpm preview
 ```
+
+`pnpm sync` 仍然是公开博客仓库的安全 Git 主干同步命令：只在 `main`、正确的
+`origin` 和 clean worktree 上执行 fetch；本地落后时只更新到 `origin/main` 的
+fast-forward ref，不执行 merge、rebase、stash、reset、checkout 或 push。当前工作区
+有任何 tracked/untracked 修改时会在 fetch 前停止。未来如果启用 Shirone 的外部
+Content Repository，`pnpm content:sync` 才表示内容仓同步，两者不合并。
 
 `pnpm build` 先运行 Astro，再执行 `scripts/build-pagefind.mjs` 生成
 `dist/pagefind/`。Shirones `0.1.4` 的集成构建钩子在 Windows 路径下会把盘符拼成
@@ -35,7 +45,7 @@ pnpm preview
 
 ## URL 与发布
 
-原构建中存在的主页、归档、关于、笔记、`/posts/guide/`、
+原构建中存在的主页、`/posts/` 列表、归档、关于、笔记、`/posts/guide/`、
 `/posts/2025/spring-aop/`、`/posts/2025/spring-ioc/`、`rss.xml`、
 `robots.txt`、站点地图、Google/Bing 验证文件均保留。新增文章 URL 按内容文件路径生成，
 英文大小写会按 Astro 内容 ID 归一化为小写。

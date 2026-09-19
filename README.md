@@ -20,6 +20,7 @@ pnpm check
 pnpm type-check
 pnpm check:manifest
 pnpm build
+pnpm check:output
 pnpm preview
 ```
 

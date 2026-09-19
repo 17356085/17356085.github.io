@@ -10,6 +10,7 @@
 		"check": "astro check",
 		"type-check": "tsc --noEmit --isolatedDeclarations",
 		"check:manifest": "node scripts/check-manifest.mjs",
+		"check:output": "node scripts/check-migration-output.mjs",
 		"build": "astro build && node scripts/build-pagefind.mjs",
 		"preview": "astro preview",
 		"astro": "astro",
