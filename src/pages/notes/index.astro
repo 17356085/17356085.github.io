@@ -1,0 +1,45 @@
+---
+import { Icon } from "astro-icon/components";
+import NoteCard from "../../components/NoteCard.astro";
+import MainGridLayout from "../../layouts/MainGridLayout.astro";
+import { getNoteCategoryList, getSortedNotes } from "../../utils/content-utils";
+
+const notes = await getSortedNotes();
+const categories = await getNoteCategoryList();
+---
+
+<MainGridLayout title="笔记" description="持续更新的公开学习笔记与知识索引。">
+    <div class="flex flex-col gap-4">
+        <section class="card-base rounded-[var(--radius-large)] px-6 md:px-9 py-7">
+            <div class="flex items-start gap-3">
+                <Icon name="material-symbols:auto-stories-outline-rounded" class="text-[2rem] text-[var(--primary)] shrink-0"></Icon>
+                <div>
+                    <h1 class="text-2xl font-bold text-90 mb-2">公开笔记</h1>
+                    <p class="text-75 leading-7">这里记录可以持续补充、检索和关联的知识。成熟内容再整理成正式文章。</p>
+                </div>
+            </div>
+        </section>
+
+        {categories.length > 0 && <section class="card-base rounded-[var(--radius-large)] px-6 md:px-9 py-7">
+            <h2 class="text-xl font-bold text-90 mb-4">知识领域</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                {categories.map((category) => (
+                    <div class="rounded-xl bg-black/[0.04] dark:bg-white/[0.06] px-4 py-3">
+                        <div class="font-medium text-90">{category.name}</div>
+                        <div class="text-sm text-50 mt-1">{category.count} 篇笔记</div>
+                    </div>
+                ))}
+            </div>
+        </section>}
+
+        {notes.length > 0 ? <section class="flex flex-col gap-4">
+            <div class="flex items-center justify-between px-1">
+                <h2 class="text-xl font-bold text-90">最近更新</h2>
+                <span class="text-sm text-50">共 {notes.length} 篇</span>
+            </div>
+            {notes.map((entry, index) => <NoteCard entry={entry} class="onload-animation" style={`animation-delay: calc(var(--content-delay) + ${index * 50}ms);`} />)}
+        </section> : <section class="card-base rounded-[var(--radius-large)] px-6 md:px-9 py-7 text-75">
+            还没有公开笔记。之后可以从一个稳定的知识主题开始创建 `src/content/notes/` 下的 Markdown 文件。
+        </section>}
+    </div>
+</MainGridLayout>

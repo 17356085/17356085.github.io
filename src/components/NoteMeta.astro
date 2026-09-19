@@ -1,0 +1,45 @@
+---
+import { Icon } from "astro-icon/components";
+import { formatDateToYYYYMMDD } from "../utils/date-utils";
+
+interface Props {
+	class?: string;
+	created: Date;
+	updated: Date;
+	tags: string[];
+	category: string;
+}
+
+const { created, updated, tags, category } = Astro.props;
+const className = Astro.props.class;
+---
+
+<div class:list={["flex flex-wrap text-neutral-500 dark:text-neutral-400 items-center gap-4 gap-x-4 gap-y-2", className]}>
+    <div class="flex items-center" aria-label={`创建于 ${formatDateToYYYYMMDD(created)}`}>
+        <div class="meta-icon">
+            <Icon name="material-symbols:calendar-today-outline-rounded" class="text-xl"></Icon>
+        </div>
+        <span class="text-50 text-sm font-medium">创建 {formatDateToYYYYMMDD(created)}</span>
+    </div>
+
+    {updated.getTime() !== created.getTime() && <div class="flex items-center" aria-label={`更新于 ${formatDateToYYYYMMDD(updated)}`}>
+        <div class="meta-icon">
+            <Icon name="material-symbols:edit-calendar-outline-rounded" class="text-xl"></Icon>
+        </div>
+        <span class="text-50 text-sm font-medium">更新 {formatDateToYYYYMMDD(updated)}</span>
+    </div>}
+
+    <div class="flex items-center">
+        <div class="meta-icon">
+            <Icon name="material-symbols:book-2-outline-rounded" class="text-xl"></Icon>
+        </div>
+        <span class="text-50 text-sm font-medium">{category || "未分类"}</span>
+    </div>
+
+    {tags.length > 0 && <div class="flex items-center">
+        <div class="meta-icon">
+            <Icon name="material-symbols:tag-rounded" class="text-xl"></Icon>
+        </div>
+        <span class="text-50 text-sm font-medium">{tags.join(" / ")}</span>
+    </div>}
+</div>

@@ -1,0 +1,1 @@
+import{s as _}from"./config.BpUkQ52o.js";import{t as n,i as c,v as s,a as o,k as r,j as e,z as h,b as u,e as a,c as f}from"./zh_TW.CjpisbDd.js";const g=a,l={es:f,en:a,en_us:a,en_gb:a,en_au:a,zh_cn:u,zh_tw:h,ja:e,ja_jp:e,ko:r,ko_kr:r,th:o,th_th:o,vi:s,vi_vn:s,id:c,tr:n,tr_tr:n};function m(t){return l[t.toLowerCase()]||g}function j(t){const i=_.lang;return m(i)[t]}export{j as i};

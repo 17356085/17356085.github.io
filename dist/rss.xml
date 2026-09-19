@@ -1,4 +1,54 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>mio的小窝</title><description>四季正与你们擦肩而过</description><link>https://devmio.cc/</link><language>zh_CN</language><item><title>快速上手TailwindCSS</title><link>https://devmio.cc/posts/2025/%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8Btailwindcss/</link><guid isPermaLink="true">https://devmio.cc/posts/2025/%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8Btailwindcss/</guid><description>TailwindCSS快速上手</description><pubDate>Mon, 15 Sep 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;1) 基本规则与“看懂类名”&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>mio的小窝</title><description>四季正与你们擦肩而过</description><link>https://17356085.github.io/</link><language>zh_CN</language><item><title>简单了解CDN</title><link>https://17356085.github.io/posts/2026/%E5%BF%AB%E9%80%9F%E4%BA%86%E8%A7%A3cdn/</link><guid isPermaLink="true">https://17356085.github.io/posts/2026/%E5%BF%AB%E9%80%9F%E4%BA%86%E8%A7%A3cdn/</guid><description>未命名</description><pubDate>Fri, 17 Apr 2026 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
+&lt;p&gt;图片来自https://javaguide.cn/，侵删&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;CDN&lt;/strong&gt;（Content Delivery Network/Content Distribution Network）内容分发网络&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;内容：指的是静态资源，包括图片、视频、文档、Javascript、CSS、HTML等。&lt;/li&gt;
+&lt;li&gt;分发网络：指的是将这些静态资源分发到位于多个不同地理位置机房中的服务器上，从而实现&lt;strong&gt;就近访问&lt;/strong&gt;——例如北京的用户直接访问北京机房的数据。
+&lt;img src=&quot;https://oss.javaguide.cn/github/javaguide/high-performance/cdn/cdn-101.png&quot; alt=&quot;&quot; /&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;1. CDN加速和全站加速&lt;/h2&gt;
+&lt;h3&gt;1.1 CDN加速&lt;/h3&gt;
+&lt;p&gt;📌 核心作用：把网站的&lt;strong&gt;静态资源缓存到全球节点&lt;/strong&gt;，用户就近访问。&lt;/p&gt;
+&lt;p&gt;🧠 工作原理：用户访问 → CDN节点有缓存 → 直接返回（不走你的服务器）。比如说，用户在日本访问，而你的服务器在新加坡，CDN就会在日本节点缓存一份资源。&lt;/p&gt;
+&lt;p&gt;✅ 优点&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;非常快（直接命中缓存）&lt;/li&gt;
+&lt;li&gt;减轻服务器压力&lt;/li&gt;
+&lt;li&gt;成本低&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;❌ 局限&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;不适合动态请求&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;登录&lt;/li&gt;
+&lt;li&gt;下单&lt;/li&gt;
+&lt;li&gt;API请求&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;每次都要回源服务器&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;1.2 全站加速（DCDN / 全站 CDN）&lt;/h3&gt;
+&lt;p&gt;📌 核心作用：不仅缓存，还优化&lt;strong&gt;动态请求的传输路径&lt;/strong&gt;。
+📦 加速内容&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;静态资源 ✅（和 CDN 一样）&lt;/li&gt;
+&lt;li&gt;动态请求 ✅（核心区别），比如 登录接口 &lt;code&gt;/login&lt;/code&gt; 获取用户信息 &lt;code&gt;/api/user&lt;/code&gt;，下单 &lt;code&gt;/order&lt;/code&gt;。
+🧠 工作原理（重点）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;智能路由（选最快路径）&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;TCP优化 / QUIC加速&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;连接复用&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;边缘节点中转&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;👉 变成：&lt;br /&gt;
+用户 → 最近加速节点 → 优化链路 → 源站
+而不是：&lt;br /&gt;
+用户 → 直接跨国访问服务器&lt;/p&gt;
+&lt;h2&gt;2. CDN的工作原理&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&quot;https://oss.javaguide.cn/github/javaguide/high-performance/cdn/cdn-full-life-cycle-of-cdn-cache.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+</content:encoded></item><item><title>快速上手TailwindCSS</title><link>https://17356085.github.io/posts/2025/%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8Btailwindcss/</link><guid isPermaLink="true">https://17356085.github.io/posts/2025/%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8Btailwindcss/</guid><description>TailwindCSS快速上手</description><pubDate>Mon, 15 Sep 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;1) 基本规则与“看懂类名”&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;&lt;strong&gt;原子类&lt;/strong&gt; = 单一样式：&lt;code&gt;p-4&lt;/code&gt;(内边距 1rem)、&lt;code&gt;text-gray-700&lt;/code&gt;、&lt;code&gt;lg:flex&lt;/code&gt;。&lt;/p&gt;
@@ -388,7 +438,7 @@
 &lt;/ul&gt;
 &lt;hr /&gt;
 &lt;p&gt;想更进阶的话，我可以按你的设计稿给你&lt;strong&gt;定制一份 &lt;code&gt;tailwind.config.js&lt;/code&gt; 主题&lt;/strong&gt;（品牌色、圆角、阴影、字号刻度等），或者把这些语法整理成&lt;strong&gt;Vue + Tailwind 的最小可运行模板&lt;/strong&gt;（含组件示例与最佳实践）。你更想先做哪一个？&lt;/p&gt;
-</content:encoded></item><item><title>快速上手Axios</title><link>https://devmio.cc/posts/2025/%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8Baxios/</link><guid isPermaLink="true">https://devmio.cc/posts/2025/%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8Baxios/</guid><description>前后端联调如何实现？</description><pubDate>Tue, 09 Sep 2025 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
+</content:encoded></item><item><title>快速上手Axios</title><link>https://17356085.github.io/posts/2025/%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8Baxios/</link><guid isPermaLink="true">https://17356085.github.io/posts/2025/%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8Baxios/</guid><description>前后端联调如何实现？</description><pubDate>Tue, 09 Sep 2025 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
 &lt;p&gt;什么是Axios？
 Axios 是一个基于 Promise 的 HTTP 客户端库，用于浏览器和 Node.js 环境。它提供了简洁的 API 来处理 HTTP 请求和响应。&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -1006,7 +1056,7 @@ class RequestCache {
 
 export default new RequestCache();
 &lt;/code&gt;&lt;/pre&gt;
-</content:encoded></item><item><title>SpringBoot底层实现原理</title><link>https://devmio.cc/posts/2025/springboot%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/</link><guid isPermaLink="true">https://devmio.cc/posts/2025/springboot%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/</guid><description>SpringBoot底层实现原理</description><pubDate>Fri, 05 Sep 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h2&gt;自动配置的核心机制&lt;/h2&gt;
+</content:encoded></item><item><title>SpringBoot底层实现原理</title><link>https://17356085.github.io/posts/2025/springboot%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/</link><guid isPermaLink="true">https://17356085.github.io/posts/2025/springboot%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/</guid><description>SpringBoot底层实现原理</description><pubDate>Fri, 05 Sep 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h2&gt;自动配置的核心机制&lt;/h2&gt;
 &lt;h3&gt;1. @SpringBootApplication注解&lt;/h3&gt;
 &lt;p&gt;这是自动配置的起点，它实际上是三个注解的组合：&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;@SpringBootConfiguration  // 标识为配置类
@@ -1356,157 +1406,7 @@ spring:
 &lt;p&gt;&lt;strong&gt;服务器就绪&lt;/strong&gt; → 开始接收HTTP请求&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
-</content:encoded></item><item><title>阅读随记--如何阅读一本书（一）</title><link>https://devmio.cc/posts/2025/%E9%98%85%E8%AF%BB%E9%9A%8F%E8%AE%B0--%E5%A6%82%E4%BD%95%E9%98%85%E8%AF%BB%E4%B8%80%E6%9C%AC%E4%B9%A6%E4%B8%80/</link><guid isPermaLink="true">https://devmio.cc/posts/2025/%E9%98%85%E8%AF%BB%E9%9A%8F%E8%AE%B0--%E5%A6%82%E4%BD%95%E9%98%85%E8%AF%BB%E4%B8%80%E6%9C%AC%E4%B9%A6%E4%B8%80/</guid><description>失踪人口回归</description><pubDate>Mon, 01 Sep 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;阅读的层次&lt;/h1&gt;
-&lt;h2&gt;1. 阅读的活力&lt;/h2&gt;
-&lt;blockquote&gt;
-&lt;ol&gt;
-&lt;li&gt;阅读是一门“主动发现”的艺术，而非被动接受资讯。&lt;/li&gt;
-&lt;li&gt;主动阅读需要读者不断提出问题并运用观察、记忆、想象、分析与反思等多重心智活动来理解文本。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;​阅读是一种“主动发现”的艺术​&lt;/strong&gt;​，而非被动接收信息。真正的阅读要求读者不断向文本发问、搜寻与验证答案- 。&lt;/li&gt;
-&lt;/ol&gt;
-&lt;/blockquote&gt;
-&lt;ul&gt;
-&lt;li&gt;​&lt;strong&gt;​主动阅读的核心在于五种心智活动​&lt;/strong&gt;​：观察、记忆、想象、分析与反思。只有同时调动这些能力，才能真正“发现”文本意义&lt;/li&gt;
-&lt;li&gt;​&lt;strong&gt;​与被动消费资讯相比​&lt;/strong&gt;​，主动阅读能让人获得更深的理解与更大的满足；阅读越主动，收获越大&lt;/li&gt;
-&lt;li&gt;​&lt;strong&gt;​作者把阅读置于人的成长维度​&lt;/strong&gt;​：如果缺乏内在心智活动，人的思考会停止，心灵与智力随之衰退；阅读恰好是维持心智活力的“支撑物”&lt;/li&gt;
-&lt;li&gt;​&lt;strong&gt;​读者与作者的关系类比为“投手—捕手”​&lt;/strong&gt;​：作者尽力“控球”清晰表达，读者则需积极“接球”，双方技巧契合才能完成有效沟通&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2&gt;2. 阅读的层次&lt;/h2&gt;
-&lt;blockquote&gt;
-&lt;ol&gt;
-&lt;li&gt;阅读效果完全取决于读者的投入与技巧。&lt;/li&gt;
-&lt;li&gt;四个层次：基础阅读 → 检视阅读 → 分析阅读 → 主题阅读；后者皆以前者为基石，但逐层增加复杂度与系统性。&lt;/li&gt;
-&lt;/ol&gt;
-&lt;/blockquote&gt;
-&lt;h3&gt;2.1 各层次核心目标与提问&lt;/h3&gt;
-&lt;ol&gt;
-&lt;li&gt;基础阅读：认字、掌握句子意义——典型问题是“这个句子在说什么？”&lt;/li&gt;
-&lt;li&gt;检视阅读：在限定时间内抓架构、判类别——典型问题是“这本书在谈什么？它的结构如何？”&lt;/li&gt;
-&lt;li&gt;分析阅读：系统咀嚼一本书，直至与作者达成充分理解——“这本书究竟在说什么？作者如何论证？”&lt;/li&gt;
-&lt;li&gt;主题阅读：同时研读多本书，围绕同一主题比较、综合观点——“面对这一主题，诸书分别说了什么？彼此异同何在？”&lt;/li&gt;
-&lt;/ol&gt;
-&lt;h2&gt;3. 基础阅读&lt;/h2&gt;
-&lt;blockquote&gt;
-&lt;p&gt;&lt;strong&gt;基础阅读是阅读旅程的“地基”​&lt;/strong&gt;​&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;h3&gt;3.1 渐进式学习阶段​&lt;/h3&gt;
-&lt;table&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th&gt;阶段&lt;/th&gt;
-&lt;th&gt;关键任务&lt;/th&gt;
-&lt;th&gt;典型能力&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td&gt;阅读准备&lt;/td&gt;
-&lt;td&gt;感知符号、了解纸张方向&lt;/td&gt;
-&lt;td&gt;能区分字母、跟随朗读&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;认字&lt;/td&gt;
-&lt;td&gt;建立音形对应，掌握基本词汇&lt;/td&gt;
-&lt;td&gt;独立朗读简单句子&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;词汇与课文运用&lt;/td&gt;
-&lt;td&gt;词汇量扩展，能在短文中理解含义&lt;/td&gt;
-&lt;td&gt;读懂句子、完成简单填空&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;技巧精炼&lt;/td&gt;
-&lt;td&gt;流畅、精确、有感情地阅读&lt;/td&gt;
-&lt;td&gt;在九年级左右达到”功能性读写“水平&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;h3&gt;3.2 心智活动与主动学习&lt;/h3&gt;
-&lt;ul&gt;
-&lt;li&gt;艾德勒把阅读视为“主动发现”的过程，即便在基础阶段，也需要观察、记忆、想象、分析与反思五种心智活动。&lt;/li&gt;
-&lt;li&gt;只有带着问题阅读、做笔记、练习并内化为习惯，阅读才能真正滋养思考能力。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2&gt;4. 检视阅读&lt;/h2&gt;
-&lt;blockquote&gt;
-&lt;p&gt;&quot;在一定的时间内抓出一本书的重点&quot;&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;h3&gt;4.1 两步法&lt;/h3&gt;
-&lt;table&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th&gt;步骤&lt;/th&gt;
-&lt;th&gt;时间分配&lt;/th&gt;
-&lt;th&gt;目标&lt;/th&gt;
-&lt;th&gt;典型问题&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td&gt;系统略读&lt;/td&gt;
-&lt;td&gt;约5~15分钟&lt;/td&gt;
-&lt;td&gt;判断这本书值不值得深入&lt;/td&gt;
-&lt;td&gt;”这本书谈了什么?结构如何？“&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;粗浅阅读&lt;/td&gt;
-&lt;td&gt;约15~30分钟&lt;/td&gt;
-&lt;td&gt;对全书获得初步整理理解&lt;/td&gt;
-&lt;td&gt;”主要观点是什么？作者如何展开论述？“&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;两步可单独使用也可在分析阅读前反复使用&lt;/td&gt;
-&lt;td&gt;&lt;/td&gt;
-&lt;td&gt;&lt;/td&gt;
-&lt;td&gt;&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;h3&gt;4.2 提问框架&lt;/h3&gt;
-&lt;ul&gt;
-&lt;li&gt;基础阅读问：“这个句子在说什么？”&lt;/li&gt;
-&lt;li&gt;检视阅读问：“这本书在谈什么？”以及“这本书的架构如何？”&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h3&gt;4.3 关键技巧&lt;/h3&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;​速度​&lt;/strong&gt;​：大部分速读训练集中在此层次；难点在于保持理解率的同时提升速度- 。&lt;/li&gt;
-&lt;li&gt;​&lt;strong&gt;​系统化​&lt;/strong&gt;​：先扫目录、序言、结论，再快速浏览章节开头与结尾，最后决定是否精读。&lt;/li&gt;
-&lt;li&gt;​&lt;strong&gt;​提问驱动​&lt;/strong&gt;​：始终围绕“主题—结构—主要论点”三方面发问，以问题牵引略读。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2&gt;5. 做一个自我要求的读者&lt;/h2&gt;
-&lt;ol&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;主动阅读是“自我要求”阅读的核心​&lt;/strong&gt;​&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;阅读若想真正带来理解力的提升，读者必须保持清醒与专注，主动向文本发问并尝试作答。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;​四个基本问题指引阅读全过程​&lt;/strong&gt;​&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;任何高于基础阅读的层次，都要依序提出并回答四类关键问题——主题、作者主要论点、论证结构、作者说服方式。这些问题既是阅读方向标，也是检验理解深度的标尺。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;“检视阅读”为自我要求阅读提供框架​&lt;/strong&gt;​&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;在有限时间里先用“两步法”快速抓住书的骨架，再决定是否投入深读；这既节省时间，又避免在无关细节上耗费心智。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;​技巧与习惯：让主动阅读成为自动化能力​&lt;/strong&gt;​&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;​&lt;strong&gt;​提问—作答​&lt;/strong&gt;​循环需反复练习，最终内化为习惯；一支笔或纸笔记是外部提醒，帮助大脑持续追踪问题与答案。&lt;/li&gt;
-&lt;li&gt;​&lt;strong&gt;​自我要求阅读者的三大特质​&lt;/strong&gt;​：
-&lt;ol&gt;
-&lt;li&gt;永远保持问题意识；&lt;/li&gt;
-&lt;li&gt;坚持做批注与摘要；&lt;/li&gt;
-&lt;li&gt;定期复盘自己的理解与作者观点的差距。&lt;/li&gt;
-&lt;/ol&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;/ol&gt;
-</content:encoded></item><item><title>快速上手Nginx</title><link>https://devmio.cc/posts/2025/%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8Bnginx/</link><guid isPermaLink="true">https://devmio.cc/posts/2025/%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8Bnginx/</guid><description>仅仅只是快速上手nginx，并未深入了解</description><pubDate>Sat, 23 Aug 2025 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
+</content:encoded></item><item><title>快速上手Nginx</title><link>https://17356085.github.io/posts/2025/%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8Bnginx/</link><guid isPermaLink="true">https://17356085.github.io/posts/2025/%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8Bnginx/</guid><description>仅仅只是快速上手nginx，并未深入了解</description><pubDate>Sat, 23 Aug 2025 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
 &lt;p&gt;Nginx是一个高性能的HTTP和方向=代理服务器，同时也是一个IMAP/POP3/SMTP代理服务器。它以高性能、稳定性、丰富的功能集、简单的配置文件和低系统资源消耗而闻名。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;h2&gt;1. nginx基础概念&lt;/h2&gt;
@@ -1789,19 +1689,7 @@ server {
     }
 }
 &lt;/code&gt;&lt;/pre&gt;
-</content:encoded></item><item><title>深夜反思</title><link>https://devmio.cc/posts/2025/%E6%B7%B1%E5%A4%9C%E5%8F%8D%E6%80%9D/</link><guid isPermaLink="true">https://devmio.cc/posts/2025/%E6%B7%B1%E5%A4%9C%E5%8F%8D%E6%80%9D/</guid><description>为什么自己这么菜啊！！！！</description><pubDate>Fri, 22 Aug 2025 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;这几天都是一觉睡到中午十二点，下午使劲摸鱼，今天也是如此。晚上突然对博客改造来了兴致，就想着给自己博客加个文章目录。一通胡乱折腾，照着ai的东搞西搞，花了一个钟头，总算明白哪里要改了，然后对着tailwindcss的属性值，反复改了一刻钟，博客的文章目录总算是实现了……（移动端我没做适配）估计没法看吧……&lt;/p&gt;
-&lt;p&gt;现在反思一下自己吧，自己的基础是不是太不扎实了？前几天敲苍穹项目，发现Spring全家桶，自己的了解程度大概只停留在’半桶水的程度‘，代码稍微有一点不一样，人就开始蒙圈了。然后说回今天搁那乱改tailwindcss属性值这事儿，老早之前我就盘算着要学一下tailwindcss了，拿他改进自己博客的设计，结果……沉迷vibecodding无法自拔，自己的水平一点没提升上来。被自己整无语住了😅😅&lt;/p&gt;
-&lt;p&gt;自己执行力真的差劲👎👎，老实说我那英语摆烂了这么久，现在越想越痛苦了，稍微查点资料，那些文档一个都看不懂……还有我的吉他、乐理，都是挖坑不填……我离想成为的那个自己越来越远了——&lt;/p&gt;
-&lt;p&gt;挖坑不填列表如下&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;英语（到现在也就记了那么几个单词，语法也懒得学……）&lt;/li&gt;
-&lt;li&gt;tailwindcss&lt;/li&gt;
-&lt;li&gt;vue(学完，不复习代码，不拿来实战)&lt;/li&gt;
-&lt;li&gt;SpringBoot（美其名曰，边敲边学，现在成烂尾工程了）&lt;/li&gt;
-&lt;li&gt;吉他🎸（听摇滚的自己哪儿去了，这么多年一点长进都没有）&lt;/li&gt;
-&lt;li&gt;乐理（只会C大调音阶，搁那do ra mi fa so la shi，闹麻了）&lt;/li&gt;
-&lt;/ul&gt;
-</content:encoded></item><item><title>RESTFul编程风格</title><link>https://devmio.cc/posts/2025/restful%E7%BC%96%E7%A8%8B%E9%A3%8E%E6%A0%BC/</link><guid isPermaLink="true">https://devmio.cc/posts/2025/restful%E7%BC%96%E7%A8%8B%E9%A3%8E%E6%A0%BC/</guid><description>RESTFul编程风格</description><pubDate>Wed, 20 Aug 2025 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
+</content:encoded></item><item><title>RESTFul编程风格</title><link>https://17356085.github.io/posts/2025/restful%E7%BC%96%E7%A8%8B%E9%A3%8E%E6%A0%BC/</link><guid isPermaLink="true">https://17356085.github.io/posts/2025/restful%E7%BC%96%E7%A8%8B%E9%A3%8E%E6%A0%BC/</guid><description>RESTFul编程风格</description><pubDate>Wed, 20 Aug 2025 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
 &lt;p&gt;RESTFul是WEB服务器接口的一种设计风格。
 RESTFul对URL的约束和规范的核心：通过采用&lt;strong&gt;不同的请求方法&lt;/strong&gt;+&lt;strong&gt;URL&lt;/strong&gt;来确定WEB服务中的资源&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -1884,7 +1772,7 @@ DELETE /users/123 # 删除特定用户
 &lt;li&gt;&lt;strong&gt;互操作性&lt;/strong&gt;：标准化接口便于不同系统间的集成&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;缓存友好&lt;/strong&gt;：GET请求可以被缓存，提高性能&lt;/li&gt;
 &lt;/ul&gt;
-</content:encoded></item><item><title>Java泛型的设计和使用</title><link>https://devmio.cc/posts/2025/java%E6%B3%9B%E5%9E%8B%E7%9A%84%E8%AE%BE%E8%AE%A1%E5%92%8C%E4%BD%BF%E7%94%A8/</link><guid isPermaLink="true">https://devmio.cc/posts/2025/java%E6%B3%9B%E5%9E%8B%E7%9A%84%E8%AE%BE%E8%AE%A1%E5%92%8C%E4%BD%BF%E7%94%A8/</guid><description>API响应会涉及到泛型类的设计……</description><pubDate>Wed, 20 Aug 2025 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
+</content:encoded></item><item><title>Java泛型的设计和使用</title><link>https://17356085.github.io/posts/2025/java%E6%B3%9B%E5%9E%8B%E7%9A%84%E8%AE%BE%E8%AE%A1%E5%92%8C%E4%BD%BF%E7%94%A8/</link><guid isPermaLink="true">https://17356085.github.io/posts/2025/java%E6%B3%9B%E5%9E%8B%E7%9A%84%E8%AE%BE%E8%AE%A1%E5%92%8C%E4%BD%BF%E7%94%A8/</guid><description>API响应会涉及到泛型类的设计……</description><pubDate>Wed, 20 Aug 2025 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
 &lt;p&gt;泛型的核心思想是参数化类型，即&lt;strong&gt;将类型作为参数传递&lt;/strong&gt;。这样可以创建能够处理多种数据类型的类、接口和方法，同时保持类型安全。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;h2&gt;1. 基本语法&lt;/h2&gt;
@@ -2281,7 +2169,7 @@ QueryBuilder&amp;lt;User&amp;gt; userQuery = new QueryBuilder&amp;lt;User&amp;gt
 String sql = userQuery.build();
 List&amp;lt;Object&amp;gt; params = userQuery.getParameters();
 &lt;/code&gt;&lt;/pre&gt;
-</content:encoded></item><item><title>Spring IOC</title><link>https://devmio.cc/posts/2025/spring-ioc/</link><guid isPermaLink="true">https://devmio.cc/posts/2025/spring-ioc/</guid><description>Spring IOC</description><pubDate>Wed, 20 Aug 2025 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
+</content:encoded></item><item><title>Spring IOC</title><link>https://17356085.github.io/posts/2025/spring-ioc/</link><guid isPermaLink="true">https://17356085.github.io/posts/2025/spring-ioc/</guid><description>Spring IOC</description><pubDate>Wed, 20 Aug 2025 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
 &lt;p&gt;Spring IOC（Inversion of Control，&lt;strong&gt;控制反转&lt;/strong&gt;），也被称为依赖注入（Dependency Injection，DI）。
 &lt;strong&gt;核心概念&lt;/strong&gt;：&lt;strong&gt;控制反转&lt;/strong&gt;将对象的创建、依赖关系的管理等（例如对象的创建、维护权）控制权从应用程序代码转移给外部容器（Spring容器）的设计模式。&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -3074,7 +2962,7 @@ private class AutowiredFieldElement extends InjectionMetadata.InjectedElement {
 &lt;li&gt;ApplicationEventMulticaster事件多播器&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Spring IoC容器的底层实现充分体现了面向对象设计原则，通过精巧的架构设计和多种设计模式的综合运用，实现了高度灵活和可扩展的依赖注入容器。&lt;/p&gt;
-</content:encoded></item><item><title>Java中的注解</title><link>https://devmio.cc/posts/2025/java%E4%B8%AD%E7%9A%84%E6%B3%A8%E8%A7%A3/</link><guid isPermaLink="true">https://devmio.cc/posts/2025/java%E4%B8%AD%E7%9A%84%E6%B3%A8%E8%A7%A3/</guid><description>了解Spring AOP的铺垫知识</description><pubDate>Tue, 19 Aug 2025 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
+</content:encoded></item><item><title>Java中的注解</title><link>https://17356085.github.io/posts/2025/java%E4%B8%AD%E7%9A%84%E6%B3%A8%E8%A7%A3/</link><guid isPermaLink="true">https://17356085.github.io/posts/2025/java%E4%B8%AD%E7%9A%84%E6%B3%A8%E8%A7%A3/</guid><description>了解Spring AOP的铺垫知识</description><pubDate>Tue, 19 Aug 2025 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
 &lt;p&gt;Java中的注解的作用，主要有以下几个方面：&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;生成文档，通过代码里标识的元数据生成javadoc文档。&lt;/li&gt;
@@ -3573,7 +3461,7 @@ public class OrderService {
     }
 }
 &lt;/code&gt;&lt;/pre&gt;
-</content:encoded></item><item><title>Spring AOP</title><link>https://devmio.cc/posts/2025/spring-aop/</link><guid isPermaLink="true">https://devmio.cc/posts/2025/spring-aop/</guid><description>敲项目的时候，偶遇切面代码，拼尽全力无法战胜，遂回来恶补基础</description><pubDate>Mon, 18 Aug 2025 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
+</content:encoded></item><item><title>Spring AOP</title><link>https://17356085.github.io/posts/2025/spring-aop/</link><guid isPermaLink="true">https://17356085.github.io/posts/2025/spring-aop/</guid><description>敲项目的时候，偶遇切面代码，拼尽全力无法战胜，遂回来恶补基础</description><pubDate>Mon, 18 Aug 2025 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;AOP&lt;/strong&gt;：AOP（Aspect Oriented Programming）：面向切面编程，面向方面编程。（AOP是一种编程技术） AOP是对OOP的补充延伸。（&lt;em&gt;AOP底层是通过动态代理来实现的&lt;/em&gt;）&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Spring的AOP的动态代理&lt;/strong&gt;：JDK动态代理+CGLIB动态代理技术。Spring在这两种动态代理中灵活切换，如果是代理接口，会默认使用JDK动态代理，如果要代理某个类，这个类没有实现接口，就会切换使用CGLIB。当然，你也可以强制通过一些配置让Spring只使用CGLIB。&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -3930,7 +3818,7 @@ public void testAOPWithAllAnnotation(){
     &amp;lt;/aop:config&amp;gt;
 &amp;lt;/beans&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;
-</content:encoded></item><item><title>Java反射机制与动态代理</title><link>https://devmio.cc/posts/2025/java%E5%8F%8D%E5%B0%84%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/</link><guid isPermaLink="true">https://devmio.cc/posts/2025/java%E5%8F%8D%E5%B0%84%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/</guid><description>对Spring框架底层实现不理解，回来恶补基础（😭</description><pubDate>Mon, 18 Aug 2025 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
+</content:encoded></item><item><title>Java反射机制与动态代理</title><link>https://17356085.github.io/posts/2025/java%E5%8F%8D%E5%B0%84%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/</link><guid isPermaLink="true">https://17356085.github.io/posts/2025/java%E5%8F%8D%E5%B0%84%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/</guid><description>对Spring框架底层实现不理解，回来恶补基础（😭</description><pubDate>Mon, 18 Aug 2025 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
 &lt;ul&gt;
 &lt;li&gt;如何获取class字节码文件的对象&lt;/li&gt;
 &lt;li&gt;利用反射如何获取构造方法（创建对象）&lt;/li&gt;
@@ -5219,7 +5107,7 @@ public class SimpleAOPDemo {
     }
 }
 &lt;/code&gt;&lt;/pre&gt;
-</content:encoded></item><item><title>CI/CD的基本概念</title><link>https://devmio.cc/posts/2025/cicd%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/</link><guid isPermaLink="true">https://devmio.cc/posts/2025/cicd%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/</guid><description>通过在GitHubActions自动编译，了解到了CI/CD的基本概念</description><pubDate>Sun, 17 Aug 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h2&gt;CI/CD的全称和基本概念&lt;/h2&gt;
+</content:encoded></item><item><title>CI/CD的基本概念</title><link>https://17356085.github.io/posts/2025/cicd%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/</link><guid isPermaLink="true">https://17356085.github.io/posts/2025/cicd%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/</guid><description>通过在GitHubActions自动编译，了解到了CI/CD的基本概念</description><pubDate>Sun, 17 Aug 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h2&gt;CI/CD的全称和基本概念&lt;/h2&gt;
 &lt;p&gt;&lt;strong&gt;CI&lt;/strong&gt; = Continuous Integration（持续集成） &lt;strong&gt;CD&lt;/strong&gt; = Continuous Delivery/Continuous Deployment（持续交付/持续部署）&lt;/p&gt;
 &lt;h2&gt;CI - 持续集成（Continuous Integration）&lt;/h2&gt;
 &lt;h3&gt;定义&lt;/h3&gt;
@@ -5365,7 +5253,7 @@ jobs:
 &lt;li&gt;审计日志记录&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;CI/CD已经成为现代软件开发的标准实践，它不仅仅是工具的使用，更是一种开发文化和思维方式的转变。通过合理实施CI/CD，可以显著提升开发团队的效率和产品质量。&lt;/p&gt;
-</content:encoded></item><item><title>Java异常处理</title><link>https://devmio.cc/posts/2025/java%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/</link><guid isPermaLink="true">https://devmio.cc/posts/2025/java%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/</guid><description>Java异常处理</description><pubDate>Sun, 17 Aug 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h2&gt;1. 异常体系结构&lt;/h2&gt;
+</content:encoded></item><item><title>Java异常处理</title><link>https://17356085.github.io/posts/2025/java%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/</link><guid isPermaLink="true">https://17356085.github.io/posts/2025/java%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/</guid><description>Java异常处理</description><pubDate>Sun, 17 Aug 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h2&gt;1. 异常体系结构&lt;/h2&gt;
 &lt;pre&gt;&lt;code&gt;Throwable
 ├── Error (错误)
 │   ├── OutOfMemoryError
@@ -5499,7 +5387,7 @@ try {
 &lt;li&gt;在finally或try-with-resources中释放资源&lt;/li&gt;
 &lt;li&gt;避免在finally块中抛出异常&lt;/li&gt;
 &lt;/ol&gt;
-</content:encoded></item><item><title>Git笔记</title><link>https://devmio.cc/posts/2025/git%E7%AC%94%E8%AE%B0/</link><guid isPermaLink="true">https://devmio.cc/posts/2025/git%E7%AC%94%E8%AE%B0/</guid><description>一些git常用的指令。</description><pubDate>Wed, 13 Aug 2025 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;以下是 Git 最常用的核心指令清单，分为 &lt;strong&gt;基础操作&lt;/strong&gt;、&lt;strong&gt;分支管理&lt;/strong&gt;、&lt;strong&gt;撤销操作&lt;/strong&gt; 和 &lt;strong&gt;远程协作&lt;/strong&gt; 四类，附带通俗解释：&lt;/p&gt;
+</content:encoded></item><item><title>Git笔记</title><link>https://17356085.github.io/posts/2025/git%E7%AC%94%E8%AE%B0/</link><guid isPermaLink="true">https://17356085.github.io/posts/2025/git%E7%AC%94%E8%AE%B0/</guid><description>一些git常用的指令。</description><pubDate>Wed, 13 Aug 2025 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;以下是 Git 最常用的核心指令清单，分为 &lt;strong&gt;基础操作&lt;/strong&gt;、&lt;strong&gt;分支管理&lt;/strong&gt;、&lt;strong&gt;撤销操作&lt;/strong&gt; 和 &lt;strong&gt;远程协作&lt;/strong&gt; 四类，附带通俗解释：&lt;/p&gt;
 &lt;hr /&gt;
 &lt;h3&gt;一、基础操作（每天必用）&lt;/h3&gt;
 &lt;table&gt;
@@ -5693,7 +5581,7 @@ try {
   df = diff
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/blockquote&gt;
-</content:encoded></item><item><title>我的技术学习笔记</title><link>https://devmio.cc/posts/guide/</link><guid isPermaLink="true">https://devmio.cc/posts/guide/</guid><description>记录我在编程学习路上的点滴心得与遇到的问题</description><pubDate>Tue, 12 Aug 2025 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;大家好！这是我用 Fuwari 模板搭建的第一个博客，主要用来记录我的编程学习历程。&lt;/p&gt;
+</content:encoded></item><item><title>我的技术学习笔记</title><link>https://17356085.github.io/posts/guide/</link><guid isPermaLink="true">https://17356085.github.io/posts/guide/</guid><description>记录我在编程学习路上的点滴心得与遇到的问题</description><pubDate>Tue, 12 Aug 2025 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;大家好！这是我用 Fuwari 模板搭建的第一个博客，主要用来记录我的编程学习历程。&lt;/p&gt;
 &lt;h2&gt;今日学习内容&lt;/h2&gt;
 &lt;p&gt;今天主要学习了 Markdown 的基本语法和 Fuwari 模板的使用方法，总结几点收获：&lt;/p&gt;
 &lt;ol&gt;
@@ -5706,7 +5594,7 @@ try {
 console.log(&quot;Hello, Fuwari!&quot;);&lt;/code&gt;&lt;/pre&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
-</content:encoded></item><item><title>搭建博客教程（一）</title><link>https://devmio.cc/posts/2025/%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2%E6%95%99%E7%A8%8B%E4%B8%80/</link><guid isPermaLink="true">https://devmio.cc/posts/2025/%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2%E6%95%99%E7%A8%8B%E4%B8%80/</guid><description>这是我 Astro 博客的第一篇文章。</description><pubDate>Sun, 10 Aug 2025 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
+</content:encoded></item><item><title>搭建博客教程（一）</title><link>https://17356085.github.io/posts/2025/%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2%E6%95%99%E7%A8%8B%E4%B8%80/</link><guid isPermaLink="true">https://17356085.github.io/posts/2025/%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2%E6%95%99%E7%A8%8B%E4%B8%80/</guid><description>这是我 Astro 博客的第一篇文章。</description><pubDate>Sun, 10 Aug 2025 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;准备工作：&lt;/strong&gt;&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;strong&gt;Node.js：&lt;/strong&gt;&lt;code&gt;v18.20.8&lt;/code&gt; 或 &lt;code&gt;v20.3.0&lt;/code&gt;、&lt;code&gt;v22.0.0&lt;/code&gt; 或更高版本。&lt;/li&gt;
@@ -5859,7 +5747,7 @@ language: &apos;&apos; &amp;lt;!-- 可有可无，按需设置 --&amp;gt;
 
 ---
 &lt;/code&gt;&lt;/pre&gt;
-</content:encoded></item><item><title>SpringBoot</title><link>https://devmio.cc/posts/2025/springboot%E9%A1%B9%E7%9B%AE/</link><guid isPermaLink="true">https://devmio.cc/posts/2025/springboot%E9%A1%B9%E7%9B%AE/</guid><pubDate>Fri, 08 Aug 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;sky-take-out&lt;/h1&gt;
+</content:encoded></item><item><title>SpringBoot</title><link>https://17356085.github.io/posts/2025/springboot%E9%A1%B9%E7%9B%AE/</link><guid isPermaLink="true">https://17356085.github.io/posts/2025/springboot%E9%A1%B9%E7%9B%AE/</guid><pubDate>Fri, 08 Aug 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;sky-take-out&lt;/h1&gt;
 &lt;blockquote&gt;
 &lt;p&gt;&lt;em&gt;&lt;strong&gt;在项目学习过程中发现需要学习（复习的知识）&lt;/strong&gt;&lt;/em&gt;&lt;/p&gt;
 &lt;ul&gt;

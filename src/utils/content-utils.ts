@@ -112,3 +112,36 @@ export async function getCategoryList(): Promise<Category[]> {
 	}
 	return ret;
 }
+
+export type NoteEntry = CollectionEntry<"notes">;
+
+export type NoteCategory = {
+	name: string;
+	count: number;
+};
+
+export async function getSortedNotes(): Promise<NoteEntry[]> {
+	const notes = await getCollection<"notes">("notes", ({ data }) => {
+		return import.meta.env.PROD ? data.draft !== true : true;
+	});
+
+	return notes.sort((a, b) => {
+		const dateA = new Date(a.data.updated).getTime();
+		const dateB = new Date(b.data.updated).getTime();
+		return dateB - dateA;
+	});
+}
+
+export async function getNoteCategoryList(): Promise<NoteCategory[]> {
+	const notes = await getSortedNotes();
+	const countMap = new Map<string, number>();
+
+	for (const note of notes) {
+		const category = note.data.category.trim() || "未分类";
+		countMap.set(category, (countMap.get(category) ?? 0) + 1);
+	}
+
+	return [...countMap.entries()]
+		.sort(([a], [b]) => a.localeCompare(b, "zh-CN"))
+		.map(([name, count]) => ({ name, count }));
+}
