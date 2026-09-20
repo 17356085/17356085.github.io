@@ -1,10 +1,5 @@
 import { createHash, createHmac } from "node:crypto";
-import {
-	existsSync,
-	readdirSync,
-	readFileSync,
-	writeFileSync,
-} from "node:fs";
+import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, extname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -21,6 +16,17 @@ export const IMAGE_EXTENSIONS = new Set([
 	".png",
 	".svg",
 	".webp",
+]);
+
+export const AUDIO_EXTENSIONS = new Set([
+	".aac",
+	".flac",
+	".m4a",
+	".mp3",
+	".ogg",
+	".opus",
+	".wav",
+	".webm",
 ]);
 
 export const TEXT_EXTENSIONS = new Set([
@@ -112,6 +118,10 @@ export function isImagePath(relativeValue) {
 	return IMAGE_EXTENSIONS.has(extname(relativeValue).toLowerCase());
 }
 
+export function isAudioPath(relativeValue) {
+	return AUDIO_EXTENSIONS.has(extname(relativeValue).toLowerCase());
+}
+
 export function isTextPath(relativeValue) {
 	return TEXT_EXTENSIONS.has(extname(relativeValue).toLowerCase());
 }
@@ -129,12 +139,20 @@ export function mimeType(relativeValue) {
 	return (
 		{
 			".avif": "image/avif",
+			".aac": "audio/aac",
+			".flac": "audio/flac",
 			".gif": "image/gif",
 			".jpeg": "image/jpeg",
 			".jpg": "image/jpeg",
+			".m4a": "audio/mp4",
+			".mp3": "audio/mpeg",
+			".ogg": "audio/ogg",
+			".opus": "audio/opus",
 			".png": "image/png",
 			".svg": "image/svg+xml",
+			".wav": "audio/wav",
 			".webp": "image/webp",
+			".webm": "audio/webm",
 		}[extension] ?? "application/octet-stream"
 	);
 }
@@ -202,18 +220,24 @@ export function loadMediaConfig({ requireCredentials = false } = {}) {
 		source.secretAccessKey ??
 		"";
 	const bucket =
-		process.env.R2_BUCKET ?? process.env.MEDIA_R2_BUCKET ?? source.bucketName ?? "";
+		process.env.R2_BUCKET ??
+		process.env.MEDIA_R2_BUCKET ??
+		source.bucketName ??
+		"";
 	const endpoint = trimUrl(
-		process.env.R2_ENDPOINT ?? process.env.MEDIA_R2_ENDPOINT ?? source.endpoint ?? "",
+		process.env.R2_ENDPOINT ??
+			process.env.MEDIA_R2_ENDPOINT ??
+			source.endpoint ??
+			"",
 	).replace(/\/(?:[^/]+)$/, (suffix) => {
 		// PicGo may store an endpoint with the bucket suffix; the signer adds it later.
 		return suffix === `/${bucket}` ? "" : suffix;
 	});
 	const publicBaseUrl = trimUrl(
 		process.env.MEDIA_PUBLIC_BASE_URL ??
-		process.env.R2_PUBLIC_BASE_URL ??
-		source.urlPrefix ??
-		publicBaseFromPattern(source.outputURLPattern),
+			process.env.R2_PUBLIC_BASE_URL ??
+			source.urlPrefix ??
+			publicBaseFromPattern(source.outputURLPattern),
 	);
 
 	const result = {
@@ -221,7 +245,11 @@ export function loadMediaConfig({ requireCredentials = false } = {}) {
 		secretAccessKey,
 		bucket,
 		endpoint,
-		region: process.env.R2_REGION ?? process.env.MEDIA_R2_REGION ?? source.region ?? "auto",
+		region:
+			process.env.R2_REGION ??
+			process.env.MEDIA_R2_REGION ??
+			source.region ??
+			"auto",
 		publicBaseUrl,
 		picgoPath: picgo?.path ?? null,
 	};
@@ -293,10 +321,15 @@ export function signR2Request({ method, url, body, contentType, config }) {
 		sha256(canonicalRequest),
 	].join("\n");
 	const signingKey = hmac(
-		hmac(hmac(hmac(`AWS4${config.secretAccessKey}`, shortDate), config.region), "s3"),
+		hmac(
+			hmac(hmac(`AWS4${config.secretAccessKey}`, shortDate), config.region),
+			"s3",
+		),
 		"aws4_request",
 	);
-	const signature = createHmac("sha256", signingKey).update(stringToSign).digest("hex");
+	const signature = createHmac("sha256", signingKey)
+		.update(stringToSign)
+		.digest("hex");
 	const authorization =
 		`AWS4-HMAC-SHA256 Credential=${config.accessKeyId}/${scope}, ` +
 		`SignedHeaders=${signedHeaders}, Signature=${signature}`;
@@ -321,7 +354,8 @@ export function formatBytes(bytes) {
 	let value = bytes;
 	for (const unit of units) {
 		value /= 1024;
-		if (value < 1024 || unit === units.at(-1)) return `${value.toFixed(2)} ${unit}`;
+		if (value < 1024 || unit === units.at(-1))
+			return `${value.toFixed(2)} ${unit}`;
 	}
 	return `${bytes} B`;
 }

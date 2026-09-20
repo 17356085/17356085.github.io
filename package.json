@@ -14,6 +14,7 @@
 		"media:audit": "node scripts/media/media-audit.mjs",
 		"media:migrate": "node scripts/media/media-migrate.mjs",
 		"media:check": "node scripts/media/media-check.mjs",
+		"media:policy": "node scripts/media/media-policy-check.mjs",
 		"media:upload": "node scripts/media/media-upload.mjs",
 		"anime:sync": "node scripts/sync-bangumi.mjs",
 		"build": "astro build && node scripts/build-pagefind.mjs",

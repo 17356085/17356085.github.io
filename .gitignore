@@ -45,6 +45,15 @@ src/assets/fonts/.subset/
 src/generated/local-icon-collections.ts
 *.iml
 
+# R2-managed music sources: keep local working copies out of Git.
+public/music/*
+!public/music/.gitkeep
+src/assets/music/*
+!src/assets/music/.gitkeep
+public/img/networking/*
+public/img/魔法使之夜OST.webp
+src/assets/images/魔法使之夜OST.webp
+
 # anime snapshot data & downloaded covers
 shirones/config/data/anime-snapshots/*.json
 !shirones/config/data/anime-snapshots/bangumi.json

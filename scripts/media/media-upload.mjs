@@ -3,8 +3,9 @@ import { existsSync, readFileSync, statSync } from "node:fs";
 import { basename, extname, resolve } from "node:path";
 
 import {
-	IMAGE_EXTENSIONS,
+	AUDIO_EXTENSIONS,
 	formatBytes,
+	IMAGE_EXTENSIONS,
 	loadMediaConfig,
 	mimeType,
 	r2ObjectUrl,
@@ -13,7 +14,7 @@ import {
 } from "./media-common.mjs";
 
 const DEFAULT_CATEGORY = "posts";
-const MEDIA_CATEGORIES = new Set(["posts", "notes", "anime", "site"]);
+const MEDIA_CATEGORIES = new Set(["posts", "notes", "anime", "site", "music"]);
 
 function parseArgs() {
 	const args = process.argv.slice(2);
@@ -47,14 +48,14 @@ function parseArgs() {
 	}
 
 	if (files.length === 0) {
-		throw new Error("Please provide at least one local image path.");
+		throw new Error("Please provide at least one local image or audio path.");
 	}
 	if (key && files.length > 1) {
-		throw new Error("--key can only be used with one image.");
+		throw new Error("--key can only be used with one media file.");
 	}
 	if (!MEDIA_CATEGORIES.has(category)) {
 		throw new Error(
-			`Invalid category: ${category}. Use posts, notes, anime, or site.`,
+			`Invalid category: ${category}. Use posts, notes, anime, site, or music.`,
 		);
 	}
 
@@ -62,15 +63,15 @@ function parseArgs() {
 }
 
 function printHelp() {
-	console.log(`Usage: pnpm media:upload -- <image> [options]
+	console.log(`Usage: pnpm media:upload -- <image-or-audio> [options]
 
-Uploads a local image directly to Cloudflare R2 and prints its public URL.
+Uploads a local image or audio file directly to Cloudflare R2 and prints its public URL.
 Credentials are read from R2_*/MEDIA_* environment variables or the local PicGo S3 profile.
 
 Options:
   --alt <text>       Markdown alt text (defaults to the file name)
-  --category <name>  One of posts, notes, anime, site (default: posts)
-  --key <path>       Exact key under images/<category>/ (only for one image)
+  --category <name>  One of posts, notes, anime, site, music (default: posts)
+  --key <path>       Exact key under images/<category>/ (only for one media file)
   --json             Print machine-readable JSON
   --dry-run          Validate and show the planned key without uploading
   --help             Show this help
@@ -87,10 +88,30 @@ function fetchWithTimeout(url, options = {}, timeoutMs = 30_000) {
 
 function resolveInputPath(value) {
 	const path = resolve(process.cwd(), value);
-	if (!existsSync(path)) throw new Error(`Image does not exist: ${value}`);
-	if (!statSync(path).isFile()) throw new Error(`Image path is not a file: ${value}`);
-	if (!IMAGE_EXTENSIONS.has(extname(path).toLowerCase())) {
-		throw new Error(`Unsupported image extension: ${value}`);
+	if (!existsSync(path)) throw new Error(`Media file does not exist: ${value}`);
+	if (!statSync(path).isFile())
+		throw new Error(`Media path is not a file: ${value}`);
+	const extension = extname(path).toLowerCase();
+	if (!IMAGE_EXTENSIONS.has(extension) && !AUDIO_EXTENSIONS.has(extension)) {
+		throw new Error(
+			`Unsupported media extension: ${value}. Supported image/audio extensions are ${[
+				...IMAGE_EXTENSIONS,
+				...AUDIO_EXTENSIONS,
+			].join(", ")}.`,
+		);
+	}
+	return path;
+}
+
+function resolveInputPathForCategory(value, category) {
+	const path = resolveInputPath(value);
+	if (
+		category !== "music" &&
+		AUDIO_EXTENSIONS.has(extname(path).toLowerCase())
+	) {
+		throw new Error(
+			`Audio uploads require --category music: ${value}. Use --category music for images/music/.`,
+		);
 	}
 	return path;
 }
@@ -99,8 +120,8 @@ function cleanSegment(value, fallback) {
 	const cleaned = value
 		.replaceAll("\\", "/")
 		.split("/")
-		.filter(segment => segment && segment !== "." && segment !== "..")
-		.map(segment => segment.replace(/[?#]/gu, "-"))
+		.filter((segment) => segment && segment !== "." && segment !== "..")
+		.map((segment) => segment.replace(/[?#]/gu, "-"))
 		.join("/");
 	return cleaned || fallback;
 }
@@ -108,7 +129,7 @@ function cleanSegment(value, fallback) {
 function categoryPrefix(category) {
 	if (!MEDIA_CATEGORIES.has(category)) {
 		throw new Error(
-			`Invalid category: ${category}. Use posts, notes, anime, or site.`,
+			`Invalid category: ${category}. Use posts, notes, anime, site, or music.`,
 		);
 	}
 	return `images/${category}`;
@@ -138,7 +159,8 @@ function defaultAlt(file, providedAlt) {
 
 async function verifyPublicUrl(url) {
 	let response = await fetchWithTimeout(url, { method: "HEAD" });
-	if (response.ok || (response.status >= 300 && response.status < 400)) return response.status;
+	if (response.ok || (response.status >= 300 && response.status < 400))
+		return response.status;
 	if (response.status === 405 || response.status === 403) {
 		response = await fetchWithTimeout(url, {
 			method: "GET",
@@ -146,7 +168,9 @@ async function verifyPublicUrl(url) {
 		});
 	}
 	if (!response.ok && !(response.status >= 300 && response.status < 400)) {
-		throw new Error(`Public URL verification failed with HTTP ${response.status}`);
+		throw new Error(
+			`Public URL verification failed with HTTP ${response.status}`,
+		);
 	}
 	return response.status;
 }
@@ -165,7 +189,8 @@ async function upload(config, file, body, key) {
 		headers,
 		body,
 	});
-	if (!response.ok) throw new Error(`R2 upload failed with HTTP ${response.status}`);
+	if (!response.ok)
+		throw new Error(`R2 upload failed with HTTP ${response.status}`);
 
 	const url = r2ObjectUrl(config.publicBaseUrl, key);
 	const publicStatus = await verifyPublicUrl(url);
@@ -178,14 +203,9 @@ async function main() {
 	const results = [];
 
 	for (const input of options.files) {
-		const file = resolveInputPath(input);
+		const file = resolveInputPathForCategory(input, options.category);
 		const body = readFileSync(file);
-		const key = makeObjectKey(
-			file,
-			body,
-			options.category,
-			options.key,
-		);
+		const key = makeObjectKey(file, body, options.category, options.key);
 		const result = {
 			source: input,
 			key,
@@ -218,6 +238,8 @@ async function main() {
 try {
 	await main();
 } catch (error) {
-	console.error(`[media:upload] ${error instanceof Error ? error.message : "upload failed"}`);
+	console.error(
+		`[media:upload] ${error instanceof Error ? error.message : "upload failed"}`,
+	);
 	process.exitCode = 1;
 }
