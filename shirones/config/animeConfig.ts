@@ -29,42 +29,42 @@ import { withUserConfig } from "@/utils/config-overlay.ts";
  * 场景 B：使用 Bangumi 追番快照
  *   1. 填入你的 Bangumi 用户 ID，将 `providers.bangumi.enable` 置为 `true`；
  *   2. 将 `source` 设置为 `{ kind: "snapshot", provider: "bangumi" }`；
- *   3. 终端执行 `pnpm.cmd anime:sync --provider bangumi` 生成快照。
+ *   3. 终端执行 `pnpm anime:sync` 生成快照。
  *
  * 场景 C：使用 Bilibili 追番快照
  *   1. 填入你的 B 站 UID (`vmid`)，将 `providers.bilibili.enable` 置为 `true`；
  *   2. 若追番列表设为私密，在 `.env` 中配置 `BILI_SESSDATA="your_sessdata"`；
  *   3. 将 `source` 设置为 `{ kind: "snapshot", provider: "bilibili" }`；
- *   4. 终端执行 `pnpm.cmd anime:sync --provider bilibili` 生成快照。
+ *   4. 终端执行对应的同步命令生成快照。
  * ─────────────────────────────────────────────────────────────────────────────
  */
 export const animeConfig: AnimeConfig = withUserConfig("anime", {
-	/** 保留空数据的番剧页结构；没有 Bangumi ID 时不猜测或填入条目。 */
+	/** 生产页只读取已提交的 Bangumi 快照，不在 Astro 构建阶段访问外部 API。 */
 	enable: true,
 	title: "$t:anime",
 	description: "$t:animeBanner",
 
 	/** 主数据源选择 */
 	source: {
-		kind: "local",
-		// provider: "bangumi",
-		// file: "bangumi.json",
-		// fetchOnDev: true,
+		kind: "snapshot",
+		provider: "bangumi",
+		file: "bangumi.json",
+		fetchOnDev: false,
 	},
 
-	/** 无快照时保持空页，避免回退到任何演示数据。 */
+	/** 同步失败时由脚本保留旧快照；构建侧不回退到任何演示数据。 */
 	fallback: {
-		kind: "empty",
+		kind: "local",
 	},
 
 	/** 外部提供方配置 */
 	providers: {
 		bangumi: {
-			enable: false,
-			userId: "", // 填入你的 Bangumi 数字 UID 或公开用户名（测试可填 "sai"）
+			enable: true,
+			userId: "657838",
 			request: {
 				pageSize: 50,
-				maxItems: 300,
+				maxItems: 2000,
 				minDelayMs: 200,
 			},
 		},

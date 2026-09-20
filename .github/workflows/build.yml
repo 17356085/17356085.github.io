@@ -71,6 +71,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Sync Anime snapshot
+        run: pnpm anime:sync
+
       - name: Build
         run: pnpm build
 

@@ -45,9 +45,9 @@ export interface AnimeItem {
 }
 
 /**
- * 用户番剧数据暂为空。
+ * 本地回退数据保持为空；生产页使用
+ * shirones/config/data/anime-snapshots/bangumi.json 的 Bangumi 快照。
  *
- * 没有用户提供的 Bangumi ID 或可靠条目来源时保持空列表，不猜测、不填入
- * Shirone 的示例条目；将来只需在这里追加经过确认的用户条目即可。
+ * 快照同步失败时只保留上一份有效快照，不猜测、不填入 Shirone 的示例条目。
  */
 export const animeData: AnimeItem[] = [];

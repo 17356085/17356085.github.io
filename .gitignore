@@ -47,6 +47,7 @@ src/generated/local-icon-collections.ts
 
 # anime snapshot data & downloaded covers
 shirones/config/data/anime-snapshots/*.json
+!shirones/config/data/anime-snapshots/bangumi.json
 public/assets/anime/covers/*
 !public/assets/anime/covers/.gitkeep
 

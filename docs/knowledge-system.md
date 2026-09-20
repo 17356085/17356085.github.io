@@ -110,10 +110,15 @@ pnpm sync
 
 ```bash
 pnpm sync   # 安全同步 GitHub main
+pnpm anime:sync  # 分页同步 Bangumi 657838；失败时保留有效快照
 pnpm dev    # 本地预览
 pnpm build  # Astro 构建并生成 Pagefind 索引
 pnpm check:output  # 验证路由、内容计数、图片、Giscus 与 Pagefind 语义检索
 ```
+
+Anime 页的生产数据来自 `shirones/config/data/anime-snapshots/bangumi.json`，不是主题示例数据。
+同步器只把已校验的非空结果通过同目录临时文件原子替换到快照；Bangumi API 失败、超时、返回无效 JSON
+或空收藏时保留上一份有效基线。快照包含用户标识 `657838`、Bangumi subject 外链、五态状态、评分和观看进度。
 
 公开站点是 `https://17356085.github.io/`。GitHub Actions 负责构建和 GitHub Pages 发布；本地构建成功不等于线上发布已经完成，发布后仍需检查站点、RSS、Sitemap、Notes 路由和搜索。
 

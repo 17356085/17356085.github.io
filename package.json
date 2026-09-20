@@ -11,6 +11,7 @@
 		"type-check": "tsc --noEmit --isolatedDeclarations",
 		"check:manifest": "node scripts/check-manifest.mjs",
 		"check:output": "node scripts/check-migration-output.mjs",
+		"anime:sync": "node scripts/sync-bangumi.mjs",
 		"build": "astro build && node scripts/build-pagefind.mjs",
 		"preview": "astro preview",
 		"astro": "astro",

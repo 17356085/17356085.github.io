@@ -50,6 +50,8 @@ const requiredPaths = [
 	"docs/knowledge-system.md",
 	"templates/知识笔记模板.md",
 	"scripts/sync-blog.mjs",
+	"scripts/sync-bangumi.mjs",
+	"shirones/config/data/anime-snapshots/bangumi.json",
 	"public/robots.txt",
 	"shirones/config/siteConfig.ts",
 	"shirones/config/commentConfig.ts",

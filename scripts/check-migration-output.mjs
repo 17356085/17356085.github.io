@@ -5,6 +5,14 @@ import { pathToFileURL } from "node:url";
 
 const root = resolve(import.meta.dirname, "..");
 const dist = join(root, "dist");
+const animeSnapshotPath = join(
+	root,
+	"shirones",
+	"config",
+	"data",
+	"anime-snapshots",
+	"bangumi.json",
+);
 const issues = [];
 
 function fail(message) {
@@ -268,6 +276,81 @@ function assertSiteIdentity() {
 	console.log("[output] canonical, robots, and Giscus markers checked");
 }
 
+function assertAnimeSnapshot() {
+	if (!existsSync(animeSnapshotPath)) {
+		fail(
+			"missing Bangumi anime snapshot: shirones/config/data/anime-snapshots/bangumi.json",
+		);
+		return;
+	}
+
+	let snapshot;
+	try {
+		snapshot = JSON.parse(readFileSync(animeSnapshotPath, "utf8"));
+	} catch (error) {
+		fail(
+			`Bangumi anime snapshot is not valid JSON: ${error instanceof Error ? error.message : String(error)}`,
+		);
+		return;
+	}
+
+	if (
+		snapshot?.schemaVersion !== 1 ||
+		snapshot?.provider !== "bangumi" ||
+		snapshot?.accountRef !== "657838" ||
+		!Array.isArray(snapshot?.items) ||
+		snapshot.items.length === 0
+	) {
+		fail(
+			"Bangumi anime snapshot must be schemaVersion=1, provider=bangumi, accountRef=657838, with non-empty items",
+		);
+		return;
+	}
+
+	const expectedLinks = new Set();
+	for (const [index, item] of snapshot.items.entries()) {
+		const itemLabel = `Bangumi snapshot item ${index}`;
+		if (
+			!item ||
+			typeof item.title !== "string" ||
+			!item.title.trim() ||
+			!/^https:\/\/bgm\.tv\/subject\/\d+$/.test(item.link ?? "") ||
+			item.identity?.provider !== "bangumi" ||
+			item.identity?.subjectId !== item.identity?.sourceId
+		) {
+			fail(`${itemLabel} is missing a valid Bangumi title, link, or identity`);
+			continue;
+		}
+		expectedLinks.add(item.link);
+	}
+
+	const animeOutput = outputFileForRoute("/anime/");
+	if (!existsSync(animeOutput)) {
+		fail("missing generated Anime output");
+	} else {
+		const html = readFileSync(animeOutput, "utf8");
+		const renderedLinks = new Set(
+			[...html.matchAll(/https:\/\/bgm\.tv\/subject\/\d+/g)].map(
+				(match) => match[0],
+			),
+		);
+		if (renderedLinks.size !== expectedLinks.size) {
+			fail(
+				`Anime output link count mismatch: expected ${expectedLinks.size}, found ${renderedLinks.size}`,
+			);
+		}
+		for (const link of expectedLinks) {
+			if (!renderedLinks.has(link)) {
+				fail(`Anime output is missing snapshot link: ${link}`);
+			}
+		}
+	}
+
+	console.log(
+		`[output] Anime snapshot: provider=bangumi accountRef=657838 items=${snapshot.items.length}`,
+	);
+}
+
 function assertNoDemoData() {
 	const productionText = walkFiles(dist)
 		.filter((file) => /\.(?:html|js|json|txt|xml|css)$/i.test(file))
@@ -398,6 +481,7 @@ async function main() {
 	assertContentCounts(posts, notes);
 	assertImages(posts, notes);
 	assertSiteIdentity();
+	assertAnimeSnapshot();
 	assertNoDemoData();
 	await pagefindSearchChecks();
 

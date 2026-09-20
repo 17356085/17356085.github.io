@@ -33,6 +33,18 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Sync Anime snapshot
+        run: pnpm anime:sync
+
+      - name: Run check
+        run: pnpm check
+
+      - name: Run type check
+        run: pnpm type-check
+
+      - name: Check manifest
+        run: pnpm check:manifest
+
       - name: Configure Pages
         uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5.0.0
 

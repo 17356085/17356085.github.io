@@ -17,7 +17,9 @@
 - 公开文章与公开笔记是站点内容；Obsidian 私人工作区不纳入内容集合。
 - `shirones/config/` 保存站点、个人资料、导航、评论、音乐和功能开关覆盖。
 - Shirone 默认演示功能已关闭：相册、指南针、设备、友链、游戏、动态、项目、系列、技能与时间线均不生成站内入口。
-- Anime 页面保留 `/anime/` 结构与导航入口，但本地数据为空、外部提供方关闭且降级策略为 `empty`；没有用户提供的 Bangumi ID 时不猜测条目，也不带入主题示例数据。
+- Anime 页面使用 Shirone `0.1.4` 的 snapshot 模式，固定同步 Bangumi 用户 `657838`；`/anime/` 只展示提交到仓库的真实快照，不带入主题示例数据。
+- `pnpm anime:sync` 通过 Bangumi v0 API 分页抓取动画收藏，将状态映射为 `planned`、`completed`、`watching`、`onHold`、`dropped`，并在写入前校验非空数据、用户标识、Bangumi 外链和进度字段。同步异常、超时、无效 JSON 或空结果会保留上一份有效 `bangumi.json`；没有有效基线时才失败。
+- `shirones/config/data/anime-snapshots/bangumi.json` 是受 `.gitignore` 保护规则中特别放行的生产基线；构建阶段不直接请求外部 API，CI 先尝试同步，失败时沿用已提交基线。
 - 导航保留主页、归档、笔记、Anime、关于和个人 GitHub；原 Giscus 仓库、分类与主题参数保持不变。
 
 ## 本地验证
@@ -27,6 +29,7 @@ pnpm install --frozen-lockfile
 pnpm check
 pnpm type-check
 pnpm check:manifest
+pnpm anime:sync
 pnpm build
 pnpm check:output
 pnpm preview
