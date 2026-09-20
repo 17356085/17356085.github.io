@@ -14,7 +14,14 @@ import {
 } from "./media-common.mjs";
 
 const DEFAULT_CATEGORY = "posts";
-const MEDIA_CATEGORIES = new Set(["posts", "notes", "anime", "site", "music"]);
+const CATEGORY_PREFIXES = Object.freeze({
+	posts: "images/posts",
+	notes: "images/notes",
+	anime: "images/anime",
+	site: "images/site",
+	music: "video/music",
+});
+const MEDIA_CATEGORIES = new Set(Object.keys(CATEGORY_PREFIXES));
 
 function parseArgs() {
 	const args = process.argv.slice(2);
@@ -58,6 +65,11 @@ function parseArgs() {
 			`Invalid category: ${category}. Use posts, notes, anime, site, or music.`,
 		);
 	}
+	if (category === "music" && !key) {
+		throw new Error(
+			"Music uploads require --key under video/music/<work>/, for example video/music/mahoyo/tracks/main-theme.mp3.",
+		);
+	}
 
 	return { alt, category, key, json, dryRun, files };
 }
@@ -71,7 +83,7 @@ Credentials are read from R2_*/MEDIA_* environment variables or the local PicGo 
 Options:
   --alt <text>       Markdown alt text (defaults to the file name)
   --category <name>  One of posts, notes, anime, site, music (default: posts)
-  --key <path>       Exact key under images/<category>/ (only for one media file)
+  --key <path>       Exact key under the category prefix (only for one media file)
   --json             Print machine-readable JSON
   --dry-run          Validate and show the planned key without uploading
   --help             Show this help
@@ -105,12 +117,21 @@ function resolveInputPath(value) {
 
 function resolveInputPathForCategory(value, category) {
 	const path = resolveInputPath(value);
+	const normalized = value.replaceAll("\\", "/");
+	const isMusicPath =
+		normalized.startsWith("public/music/") ||
+		normalized.startsWith("src/assets/music/");
+	if (isMusicPath && category !== "music") {
+		throw new Error(
+			`Music files under ${normalized} require --category music. Use video/music/ for music assets.`,
+		);
+	}
 	if (
 		category !== "music" &&
 		AUDIO_EXTENSIONS.has(extname(path).toLowerCase())
 	) {
 		throw new Error(
-			`Audio uploads require --category music: ${value}. Use --category music for images/music/.`,
+			`Audio uploads require --category music: ${value}. Use --category music for video/music/.`,
 		);
 	}
 	return path;
@@ -132,7 +153,7 @@ function categoryPrefix(category) {
 			`Invalid category: ${category}. Use posts, notes, anime, site, or music.`,
 		);
 	}
-	return `images/${category}`;
+	return CATEGORY_PREFIXES[category];
 }
 
 function makeObjectKey(file, body, category, explicitKey) {

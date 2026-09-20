@@ -123,7 +123,7 @@ site    网站背景、头像、图标
 music   音乐文件和音乐封面
 ```
 
-上传脚本会校验公共 URL，并输出可以直接粘贴到 Markdown 的结果。它优先读取本机 PicGo 的 S3 配置，也可以使用以下环境变量：
+上传脚本会校验公共 URL，并输出可以直接粘贴到 Markdown 的结果。音乐上传必须显式指定 `video/music/<作品>/` 下的 `--key`，避免音乐资源落到没有作品层级的哈希路径。它优先读取本机 PicGo 的 S3 配置，也可以使用以下环境变量：
 
 ```text
 R2_ACCESS_KEY_ID
@@ -144,17 +144,17 @@ images/posts/    # 文章正文、文章封面
 images/notes/    # 知识笔记
 images/anime/    # 动漫图片
 images/site/     # 网站背景、头像、图标
-images/music/    # 音乐文件和音乐封面
+video/music/     # 音乐文件和音乐封面
 blog/            # 旧资源目录，等待引用迁移完成后再处理
 ```
 
-对象名使用内容哈希，例如 `images/posts/<md5>.<ext>`。音乐资源建议使用同一曲目目录，例如 `images/music/mahoyo/main-theme.mp3` 与 `images/music/mahoyo/cover.webp`。新的上传流程禁止生成 `images/YYYY/MM/`，也不要在仓库中重新堆积正文图片、封面或音乐文件。
+对象名使用内容哈希，例如 `images/posts/<md5>.<ext>`。音乐资源按作品组织，例如 `video/music/mahoyo/tracks/main-theme.mp3` 与 `video/music/mahoyo/cover.webp`。新的上传流程禁止生成 `images/YYYY/MM/`，也不要在仓库中重新堆积正文图片、封面或音乐文件。
 
 ### 媒体硬约束
 
 - 本地写作只能走 `Obsidian Image auto upload → PicGo → Cloudflare R2`；不能把本地图片、音频或封面路径直接提交到文章或站点配置。
 - GPT/Agent 写作只能走 `pnpm media:upload` 直传 Cloudflare R2，再把返回的公共 URL 写入 Markdown 或配置。
-- 音乐文件和音乐封面都必须放在 R2 的 `images/music/<曲目>/` 下；音乐配置只能引用 R2 URL。现有头像等历史站点资源按迁移计划逐步处理。
+- 音乐文件和音乐封面都必须放在 R2 的 `video/music/<曲目>/` 下；音乐配置只能引用 R2 URL。现有头像等历史站点资源按迁移计划逐步处理。
 - `pnpm media:policy -- --staged` 已接入提交钩子，GitHub Actions 也会执行全量检查；发现本地媒体引用或不合规音乐路径时会阻止提交/构建。
 - 旧文章中的外部示例图片、教程代码中的示例路径和 Bangumi 缓存属于兼容边界；新增或修改的正文、封面和音乐资源不适用这些例外。
 

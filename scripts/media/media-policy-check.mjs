@@ -276,15 +276,15 @@ async function main() {
 	for (const reference of musicValues()) {
 		if (!isR2PublicUrl(reference.value, base)) {
 			issues.push(
-				`${reference.file}:${reference.line} 的音乐资源不是项目 R2 URL：${reference.value}；音乐文件和封面必须放在 images/music/<曲目>/ 下。`,
+				`${reference.file}:${reference.line} 的音乐资源不是项目 R2 URL：${reference.value}；音乐文件和封面必须放在 video/music/<曲目>/ 下。`,
 			);
 			continue;
 		}
 		try {
 			const pathname = new URL(reference.value).pathname;
-			if (!pathname.includes("/images/music/")) {
+			if (!pathname.includes("/video/music/")) {
 				issues.push(
-					`${reference.file}:${reference.line} 的音乐资源不在 images/music/ 目录：${reference.value}`,
+					`${reference.file}:${reference.line} 的音乐资源不在 video/music/ 目录：${reference.value}`,
 				);
 			}
 		} catch {

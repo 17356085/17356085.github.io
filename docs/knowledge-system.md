@@ -106,16 +106,16 @@ pnpm sync
 
 ## 图片与附件
 
-公开文章、Notes 和音乐资源统一使用 Cloudflare R2 图床，不再把正文图片、文章封面、音乐文件和音乐封面持续堆积到 Git 仓库。R2 对象键按稳定的内容域组织，例如 `images/posts/...`、`images/notes/...`、`images/music/...` 和 `images/site/...`；Markdown、frontmatter 和站点配置直接保存 R2 公共 URL。
+公开文章、Notes 和音乐资源统一使用 Cloudflare R2 图床，不再把正文图片、文章封面、音乐文件和音乐封面持续堆积到 Git 仓库。R2 对象键按稳定的内容域组织，例如 `images/posts/...`、`images/notes/...`、`video/music/...` 和 `images/site/...`；Markdown、frontmatter 和站点配置直接保存 R2 公共 URL。
 
 日常工作流分成两条，但最终都只把 R2 公共 URL 写入文章：
 
 1. **Obsidian 本地写作**：复制图片后直接粘贴到 Obsidian。仓库内的 `Image auto upload` 插件会拦截图片粘贴，调用本机 PicGo Server（默认 `http://127.0.0.1:36677/upload`），PicGo 上传到 R2，再把返回的公共 URL 自动写回 Markdown。粘贴时不需要手动打开 PicGo；PicGo 需要保持运行。
-2. **ChatGPT/Agent 带笔写作**：直接使用 `pnpm media:upload -- <媒体路径> --category posts --json` 上传到同一个 R2 bucket，命令会校验公共 URL 并输出 Markdown。音乐文件和封面使用 `--category music`，建议分别指定 `images/music/<曲目>/` 下的 `--key`。上传脚本优先读取本机 PicGo 的 S3 配置，也可以使用 `R2_ACCESS_KEY_ID`、`R2_SECRET_ACCESS_KEY`、`R2_BUCKET`、`R2_ENDPOINT` 和 `R2_PUBLIC_BASE_URL` 环境变量。密钥只存在本机配置或环境变量中，不进入仓库。
+2. **ChatGPT/Agent 带笔写作**：直接使用 `pnpm media:upload -- <媒体路径> --category posts --json` 上传到同一个 R2 bucket，命令会校验公共 URL 并输出 Markdown。音乐文件和封面使用 `--category music`，并且必须指定 `video/music/<曲目>/` 下的 `--key`，避免生成没有作品层级的哈希路径。上传脚本优先读取本机 PicGo 的 S3 配置，也可以使用 `R2_ACCESS_KEY_ID`、`R2_SECRET_ACCESS_KEY`、`R2_BUCKET`、`R2_ENDPOINT` 和 `R2_PUBLIC_BASE_URL` 环境变量。密钥只存在本机配置或环境变量中，不进入仓库。
 
-目录规则固定为 `images/posts/`、`images/notes/`、`images/anime/`、`images/site/` 和 `images/music/`；对象名使用内容哈希，例如 `images/posts/<md5>.<ext>`，不再生成根级 `images/YYYY/MM/`。文章正文和封面使用 `posts`，知识笔记使用 `notes`，动漫图片使用 `anime`，网站背景/头像/图标使用 `site`，音乐文件和封面使用 `music`。自动上传失败时，Obsidian 插件不会删除本地源文件；先修复 PicGo/R2 服务，再重新上传即可。
+目录规则固定为 `images/posts/`、`images/notes/`、`images/anime/`、`images/site/` 和 `video/music/`；对象名使用内容哈希，例如 `images/posts/<md5>.<ext>`，不再生成根级 `images/YYYY/MM/`。文章正文和封面使用 `posts`，知识笔记使用 `notes`，动漫图片使用 `anime`，网站背景/头像/图标使用 `site`，音乐文件和封面使用 `video/music/<曲目>/`。自动上传失败时，Obsidian 插件不会删除本地源文件；先修复 PicGo/R2 服务，再重新上传即可。
 
-这是一条提交级硬约束：文章正文和封面不得引用本地媒体路径，音乐配置中的曲目文件与封面必须是 `images/music/<曲目>/` 下的 R2 公共 URL。现有头像等历史站点资源按迁移计划逐步处理。提交钩子执行 `pnpm media:policy -- --staged`，CI 执行带公共 URL 校验的全量策略检查；外部教程示例和历史兼容资源只有在未作为新增正文媒体提交时才保留。
+这是一条提交级硬约束：文章正文和封面不得引用本地媒体路径，音乐配置中的曲目文件与封面必须是 `video/music/<曲目>/` 下的 R2 公共 URL。现有头像等历史站点资源按迁移计划逐步处理。提交钩子执行 `pnpm media:policy -- --staged`，CI 执行带公共 URL 校验的全量策略检查；外部教程示例和历史兼容资源只有在未作为新增正文媒体提交时才保留。
 
 `pnpm media:audit` 用于盘点本地图片、重复文件、远程图片和未解析引用；`pnpm media:migrate` 负责上传、公共 URL 校验、生成 `scripts/media/media-migration.json` 并精确改写活动引用；`pnpm media:check` 用于检查清单、旧引用、文件哈希和公共 URL；`pnpm media:policy` 用于检查提交级 R2 硬约束。迁移默认保留本地源文件，只有构建和校验通过后才使用 `pnpm media:migrate -- --prune` 删除已上传且已完成改写的精确源文件。Favicon、Bangumi 快照/缓存、未引用历史素材以及教程代码中的示例路径按审计结论保留，不因批量迁移被误改；新增正文、封面和音乐资源不适用这些例外。
 
