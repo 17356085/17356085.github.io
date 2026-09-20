@@ -34,9 +34,21 @@
               "icon": "lucide-file",
               "title": "快速了解CDN"
             }
+          },
+          {
+            "id": "c69759a91c103fac",
+            "type": "leaf",
+            "state": {
+              "type": "release-notes",
+              "state": {
+                "currentVersion": "1.12.7"
+              },
+              "icon": "lucide-book-up",
+              "title": "版本说明 1.12.7"
+            }
           }
         ],
-        "currentTab": 1
+        "currentTab": 2
       }
     ],
     "direction": "vertical"
@@ -186,7 +198,7 @@
   },
   "left-ribbon": {
     "hiddenItems": {
-      "bases:创建新数据库": false,
+      "bases:新建数据库": false,
       "switcher:打开快速切换": false,
       "graph:查看关系图谱": false,
       "canvas:新建白板": false,
@@ -198,7 +210,7 @@
       "templater-obsidian:Templater": false
     }
   },
-  "active": "1ded67b16df75e53",
+  "active": "c69759a91c103fac",
   "lastOpenFiles": [
     "src/content/posts/2025/Java反射机制与动态代理.md",
     "src/content/posts/2025/Java泛型的设计和使用.md",
