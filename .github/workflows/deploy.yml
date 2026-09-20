@@ -42,6 +42,9 @@ jobs:
       - name: Run type check
         run: pnpm type-check
 
+      - name: Check R2 media policy
+        run: pnpm media:policy -- --remote
+
       - name: Check manifest
         run: pnpm check:manifest
 
