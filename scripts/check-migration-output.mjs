@@ -154,6 +154,7 @@ function assertRequiredRoutes() {
 		"/notes/",
 		"/notes/engineering/knowledge-base/",
 		"/anime/",
+		"/friends/",
 		"/robots.txt",
 		"/rss.xml",
 		"/sitemap-index.xml",
@@ -162,6 +163,23 @@ function assertRequiredRoutes() {
 		if (!routeExists(route)) fail(`missing generated route: ${route}`);
 	}
 	console.log(`[output] required routes: ${routes.length} checked`);
+}
+
+function assertFriendsOutput() {
+	const friendsOutput = outputFileForRoute("/friends/");
+	if (!existsSync(friendsOutput)) {
+		fail("missing generated Friends output");
+		return;
+	}
+
+	const html = readFileSync(friendsOutput, "utf8");
+	for (const link of [
+		"https://www.jeeger.top",
+		"http://kon-forever.cloud",
+	]) {
+		if (!html.includes(link)) fail(`Friends output is missing link: ${link}`);
+	}
+	console.log("[output] Friends route: Jeeger's Blog and kon-forever links checked");
 }
 
 function assertContentCounts(posts, notes) {
@@ -482,6 +500,7 @@ async function main() {
 	assertImages(posts, notes);
 	assertSiteIdentity();
 	assertAnimeSnapshot();
+	assertFriendsOutput();
 	assertNoDemoData();
 	await pagefindSearchChecks();
 

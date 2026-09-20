@@ -12,7 +12,6 @@ export default defineConfig({
 				"/albums",
 				"/compass",
 				"/devices",
-				"/friends",
 				"/games",
 				"/moments",
 				"/projects",

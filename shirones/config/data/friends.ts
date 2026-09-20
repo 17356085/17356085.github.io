@@ -40,6 +40,22 @@ export const friendsData: FriendItem[] = [
 		siteurl: "https://m3.material.io",
 		tags: ["Design"],
 	},
+	{
+		id: 4,
+		title: "Jeeger's Blog",
+		imgurl: "",
+		desc: "记录技术、生活与思考的个人博客",
+		siteurl: "https://www.jeeger.top",
+		tags: ["Blog"],
+	},
+	{
+		id: 5,
+		title: "kon-forever",
+		imgurl: "",
+		desc: "一个独立的个人站点",
+		siteurl: "http://kon-forever.cloud",
+		tags: ["Blog"],
+	},
 ];
 
 // 获取所有友情链接数据（稳定顺序，测试可复现）
