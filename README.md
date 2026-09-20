@@ -194,6 +194,14 @@ pnpm sync
 
 `pnpm sync` 只负责安全同步 GitHub `origin/main`：它会检查仓库、远程、分支和工作区状态；本地落后时只执行 fast-forward 更新，不会自动 stash、merge、rebase、reset、checkout、创建提交或 push。
 
+首次在本机启用仓库自带的提交钩子：
+
+```bash
+pnpm hooks:install
+```
+
+启用后，当一次提交包含 `src/content/posts/` 或 `src/content/notes/` 文件时，`pre-commit` 会自动先 `fetch origin`。如果远程领先且路径不冲突，它会临时保存本地 staged/unstaged/untracked 改动，fast-forward 到最新 `origin/main`，再恢复本地改动并继续提交。如果远程改动与本地路径重叠、发生分叉、fetch 失败或恢复失败，提交会被阻止；它不会自动解决冲突、reset、覆盖或 push。
+
 推荐流程：
 
 ```text

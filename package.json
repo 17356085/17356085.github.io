@@ -21,6 +21,8 @@
 		"astro": "astro",
 		"new-post": "node scripts/new-post.js",
 		"sync": "node scripts/sync-blog.mjs",
+		"sync:content-commit": "node scripts/sync-before-content-commit.mjs",
+		"hooks:install": "node scripts/install-git-hooks.mjs",
 		"format": "biome format --write ./src ./shirones ./scripts",
 		"lint": "biome check ./src ./shirones ./scripts"
 	},
