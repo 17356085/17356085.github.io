@@ -12,14 +12,15 @@ import {
 	signR2Request,
 } from "./media-common.mjs";
 
-const DEFAULT_PREFIX = "images";
+const DEFAULT_CATEGORY = "posts";
+const MEDIA_CATEGORIES = new Set(["posts", "notes", "anime", "site"]);
 
 function parseArgs() {
 	const args = process.argv.slice(2);
 	const files = [];
 	let alt = "";
+	let category = DEFAULT_CATEGORY;
 	let key = "";
-	let prefix = DEFAULT_PREFIX;
 	let json = false;
 	let dryRun = false;
 
@@ -27,10 +28,10 @@ function parseArgs() {
 		const arg = args[index];
 		if (arg === "--alt") {
 			alt = args[++index] ?? "";
+		} else if (arg === "--category") {
+			category = args[++index] ?? DEFAULT_CATEGORY;
 		} else if (arg === "--key") {
 			key = args[++index] ?? "";
-		} else if (arg === "--prefix") {
-			prefix = args[++index] ?? DEFAULT_PREFIX;
 		} else if (arg === "--json") {
 			json = true;
 		} else if (arg === "--dry-run") {
@@ -51,8 +52,13 @@ function parseArgs() {
 	if (key && files.length > 1) {
 		throw new Error("--key can only be used with one image.");
 	}
+	if (!MEDIA_CATEGORIES.has(category)) {
+		throw new Error(
+			`Invalid category: ${category}. Use posts, notes, anime, or site.`,
+		);
+	}
 
-	return { alt, key, prefix, json, dryRun, files };
+	return { alt, category, key, json, dryRun, files };
 }
 
 function printHelp() {
@@ -63,8 +69,8 @@ Credentials are read from R2_*/MEDIA_* environment variables or the local PicGo 
 
 Options:
   --alt <text>       Markdown alt text (defaults to the file name)
-  --key <path>       Exact R2 object key (only for one image)
-  --prefix <path>    Default key prefix (default: images)
+  --category <name>  One of posts, notes, anime, site (default: posts)
+  --key <path>       Exact key under images/<category>/ (only for one image)
   --json             Print machine-readable JSON
   --dry-run          Validate and show the planned key without uploading
   --help             Show this help
@@ -99,14 +105,30 @@ function cleanSegment(value, fallback) {
 	return cleaned || fallback;
 }
 
-function makeObjectKey(file, body, prefix, explicitKey) {
-	if (explicitKey) return cleanSegment(explicitKey, "asset");
+function categoryPrefix(category) {
+	if (!MEDIA_CATEGORIES.has(category)) {
+		throw new Error(
+			`Invalid category: ${category}. Use posts, notes, anime, or site.`,
+		);
+	}
+	return `images/${category}`;
+}
+
+function makeObjectKey(file, body, category, explicitKey) {
+	const prefix = categoryPrefix(category);
+	if (explicitKey) {
+		if (explicitKey.includes("..")) {
+			throw new Error(`R2 key cannot contain '..': ${explicitKey}`);
+		}
+		const normalized = cleanSegment(explicitKey, "");
+		if (!normalized.startsWith(`${prefix}/`)) {
+			throw new Error(`R2 key must stay under ${prefix}/: ${explicitKey}`);
+		}
+		return normalized;
+	}
 	const digest = createHash("md5").update(body).digest("hex");
-	const now = new Date();
-	const year = String(now.getFullYear());
-	const month = String(now.getMonth() + 1).padStart(2, "0");
 	const extension = extname(file).toLowerCase() || ".bin";
-	return `${cleanSegment(prefix, DEFAULT_PREFIX)}/${year}/${month}/${digest}${extension}`;
+	return `${prefix}/${digest}${extension}`;
 }
 
 function defaultAlt(file, providedAlt) {
@@ -161,7 +183,7 @@ async function main() {
 		const key = makeObjectKey(
 			file,
 			body,
-			options.prefix,
+			options.category,
 			options.key,
 		);
 		const result = {
