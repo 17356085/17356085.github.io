@@ -106,7 +106,12 @@ pnpm sync
 
 公开文章和 Notes 的图片统一使用 Cloudflare R2 图床，不再把正文图片和文章封面持续堆积到 Git 仓库。R2 对象键按稳定的内容域组织，例如 `blog/covers/...`、`blog/posts/...`、`blog/notes/...` 和 `blog/site/...`；Markdown、frontmatter 和站点配置直接保存 R2 公共 URL。
 
-日常工作流保持简单：在 Obsidian 中整理文章后，用 PicGo 上传到 R2，再把 PicGo 返回的公共 URL 粘贴到 Markdown 或 frontmatter。需要由 ChatGPT/Agent 上传时，使用同一个 PicGo/R2 配置完成上传和公共 URL 校验。仓库中不保存 R2 access key、secret、令牌或 PicGo 配置文件；密钥只存在本机配置或环境变量中。
+日常工作流分成两条，但最终都只把 R2 公共 URL 写入文章：
+
+1. **Obsidian 本地写作**：复制图片后直接粘贴到 Obsidian。仓库内的 `Image auto upload` 插件会拦截图片粘贴，调用本机 PicGo Server（默认 `http://127.0.0.1:36677/upload`），PicGo 再上传到 R2，并把返回的公共 URL 自动写回 Markdown。粘贴时不需要手动打开 PicGo；PicGo 需要保持运行。
+2. **ChatGPT/Agent 带笔写作**：不经过 PicGo，直接使用 `pnpm media:upload -- <图片路径> --json` 上传到同一个 R2 bucket，命令会校验公共 URL 并输出 Markdown。它优先读取本机 PicGo 的 S3 配置；也可以使用 `R2_ACCESS_KEY_ID`、`R2_SECRET_ACCESS_KEY`、`R2_BUCKET`、`R2_ENDPOINT` 和 `R2_PUBLIC_BASE_URL` 环境变量。密钥只存在本机配置或环境变量中，不进入仓库。
+
+两条链路默认使用 `images/YYYY/MM/<md5>.<ext>` 对象键，便于按时间浏览并用内容哈希去重。自动上传失败时，Obsidian 插件不会删除本地源文件；先修复 PicGo/R2 服务，再重新上传即可。
 
 `pnpm media:audit` 用于盘点本地图片、重复文件、远程图片和未解析引用；`pnpm media:migrate` 负责上传、公共 URL 校验、生成 `scripts/media/media-migration.json` 并精确改写活动引用；`pnpm media:check` 用于检查清单、旧引用、文件哈希和公共 URL。迁移默认保留本地源文件，只有构建和校验通过后才使用 `pnpm media:migrate -- --prune` 删除已上传且已完成改写的精确源文件。Favicon、头像、音乐、Bangumi 快照/缓存、未引用素材以及教程代码中的示例路径按审计结论保留，不因批量迁移被误改。
 
