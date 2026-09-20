@@ -200,7 +200,7 @@ pnpm sync
 pnpm hooks:install
 ```
 
-启用后，当一次提交包含 `src/content/posts/` 或 `src/content/notes/` 文件时，`pre-commit` 会自动先 `fetch origin`。如果远程领先且路径不冲突，它会临时保存本地 staged/unstaged/untracked 改动，fast-forward 到最新 `origin/main`，再恢复本地改动并继续提交。如果远程改动与本地路径重叠、发生分叉、fetch 失败或恢复失败，提交会被阻止；它不会自动解决冲突、reset、覆盖或 push。
+启用后，当一次提交包含 `src/content/posts/`、`src/content/notes/` 或 `src/content/spec/` 文件时，`pre-commit` 会自动先 `fetch origin`。如果远程领先且路径不冲突，它会临时保存本地 staged/unstaged/untracked 改动，fast-forward 到最新 `origin/main`，再恢复本地改动并继续提交。如果远程改动与本地路径重叠、发生分叉、fetch 失败或恢复失败，提交会被阻止；它不会自动解决冲突、reset、覆盖或 push。
 
 推荐流程：
 

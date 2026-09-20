@@ -89,7 +89,7 @@ pnpm sync
 
 同步器只允许在正确的公开博客仓库、`main` 分支和 clean working tree 上运行。它会 fetch `origin`，相同则结束，仅 behind 则直接更新本地分支 ref 到 `origin/main`；ahead 或 diverged 会停止并要求人工处理。它不会 stash、merge、rebase、reset、checkout、force push、自动解决冲突、创建 commit 或 push。
 
-仓库另有一个需要本机启用的 `pre-commit` 钩子：运行 `pnpm hooks:install` 后，提交 `src/content/posts/` 或 `src/content/notes/` 时会自动先 fetch 远程；远程仅领先且路径不重叠时，钩子会临时保存本地改动、fast-forward 并恢复改动，再继续提交。路径冲突、分叉、fetch 失败或恢复失败都会阻止提交，不会自动覆盖或解决冲突。这个钩子不改变 `pnpm sync` 的 clean working tree 安全边界。
+仓库另有一个需要本机启用的 `pre-commit` 钩子：运行 `pnpm hooks:install` 后，提交 `src/content/posts/`、`src/content/notes/` 或 `src/content/spec/` 时会自动先 fetch 远程；远程仅领先且路径不重叠时，钩子会临时保存本地改动、fast-forward 并恢复改动，再继续提交。路径冲突、分叉、fetch 失败或恢复失败都会阻止提交，不会自动覆盖或解决冲突。这个钩子不改变 `pnpm sync` 的 clean working tree 安全边界。
 
 本地编辑建议：
 

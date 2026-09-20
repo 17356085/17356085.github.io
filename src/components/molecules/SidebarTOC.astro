@@ -1,0 +1,345 @@
+---
+import type { MarkdownHeading } from "astro";
+import TocList from "@components/atoms/blog/TocList.astro";
+import WidgetLayout from "@components/molecules/WidgetLayout.astro";
+import I18nKey from "@i18n/i18nKey";
+import { i18n } from "@i18n/translation";
+import { siteConfig } from "@/config/siteConfig";
+
+interface Props {
+	headings?: MarkdownHeading[];
+	class?: string;
+	style?: string;
+	widget?: unknown;
+}
+
+const { headings = [], class: className, style } = Astro.props;
+
+const removeTailingHash = (text: string) => {
+	const lastIndexOfHash = text.lastIndexOf("#");
+	if (lastIndexOfHash !== text.length - 1) {
+		return text;
+	}
+	return text.substring(0, lastIndexOfHash);
+};
+
+const maxLevel = siteConfig.toc.depth;
+
+const tocHeadings = headings.map((heading) => ({
+	depth: heading.depth,
+	text: removeTailingHash(heading.text),
+	slug: heading.slug,
+}));
+---
+
+<WidgetLayout
+	id="toc-inner-wrapper"
+	name={i18n(I18nKey.tableOfContents)}
+	class:list={["sidebar-toc", className]}
+	{style}
+>
+	<div id="toc" class="sidebar-toc__content">
+		<table-of-contents>
+			<TocList headings={tocHeadings} maxDepth={maxLevel} />
+		</table-of-contents>
+	</div>
+</WidgetLayout>
+
+<style lang="stylus">
+.sidebar-toc__content
+	/* Let the page provide the only vertical scroll context. */
+	max-height: none
+	overflow: visible
+	padding-block: 0.25rem
+	padding-right: 0.125rem
+	scroll-padding-block: 0.25rem
+</style>
+
+<script>
+class TableOfContents extends HTMLElement {
+	tocEl: HTMLElement | null = null;
+	visibleClass = "visible";
+	observer: IntersectionObserver;
+	anchorNavTarget: HTMLElement | null = null;
+	headingIdxMap = new Map<string, number>();
+	headings: HTMLElement[] = [];
+	sections: HTMLElement[] = [];
+	tocEntries: HTMLAnchorElement[] = [];
+	active: boolean[] = [];
+	lastActiveIdx = -1;
+	anchorNavIdx: number | null = null;
+	anchorNavScrollTop = 0;
+	updateScheduled = false;
+
+	constructor() {
+		super();
+		this.observer = new IntersectionObserver(this.markVisibleSection, {
+			threshold: 0,
+		});
+	}
+
+	markVisibleSection = (entries: IntersectionObserverEntry[]) => {
+		entries.forEach((entry) => {
+			const id = entry.target.children[0]?.getAttribute("id");
+			const idx = id ? this.headingIdxMap.get(id) : undefined;
+			if (idx != undefined) this.active[idx] = entry.isIntersecting;
+		});
+
+		if (!this.active.includes(true)) this.fallback();
+		this.update();
+	};
+
+	toggleActiveHeading = () => {
+		let i = this.active.length - 1;
+		let min = this.active.length - 1;
+		let max = -1;
+		while (i >= 0 && !this.active[i]) {
+			this.tocEntries[i]?.classList.remove(this.visibleClass);
+			i--;
+		}
+		while (i >= 0 && this.active[i]) {
+			this.tocEntries[i]?.classList.add(this.visibleClass);
+			min = Math.min(min, i);
+			max = Math.max(max, i);
+			i--;
+		}
+		while (i >= 0) {
+			this.tocEntries[i]?.classList.remove(this.visibleClass);
+			i--;
+		}
+	};
+
+	updateActiveHighlight = () => {
+		const threshold = window.innerHeight * 0.35;
+		const atPageBottom =
+			window.scrollY + window.innerHeight >=
+			document.documentElement.scrollHeight - 1;
+		let best = this.anchorNavIdx ?? 0;
+
+		if (this.anchorNavIdx === null) {
+			if (atPageBottom) {
+				best = this.headings.length - 1;
+			} else {
+				for (let j = 0; j < this.headings.length; j++) {
+					if (this.headings[j]?.getBoundingClientRect().top <= threshold) {
+						best = j;
+					}
+				}
+			}
+		}
+
+		if (best === this.lastActiveIdx) {
+			if (this.anchorNavIdx !== null) {
+				this.tocEntries.forEach((entry) =>
+					entry.classList.toggle(
+						"m3-blog-toc__item--active",
+						this.tocEntries.indexOf(entry) === best,
+					),
+				);
+				this.scrollToActiveHeading(this.tocEntries[best], true);
+			}
+			return;
+		}
+		this.lastActiveIdx = best;
+		this.tocEntries.forEach((entry) =>
+			entry.classList.remove("m3-blog-toc__item--active"),
+		);
+		this.tocEntries[best]?.classList.add("m3-blog-toc__item--active");
+		this.scrollToActiveHeading(this.tocEntries[best], this.anchorNavIdx !== null);
+	};
+
+	scrollToActiveHeading = (activeHeading?: HTMLAnchorElement, force = false) => {
+		if ((!force && this.anchorNavTarget) || !this.tocEl || !activeHeading)
+			return;
+
+		const containerRect = this.tocEl.getBoundingClientRect();
+		const itemRect = activeHeading.getBoundingClientRect();
+		const edgePadding = 4;
+		const visibleTop = containerRect.top + edgePadding;
+		const visibleBottom = containerRect.bottom - edgePadding;
+
+		if (itemRect.top >= visibleTop && itemRect.bottom <= visibleBottom) return;
+
+		const delta =
+			itemRect.top < visibleTop
+				? itemRect.top - visibleTop
+				: itemRect.bottom - visibleBottom;
+		const maxScrollTop = Math.max(
+			0,
+			this.tocEl.scrollHeight - this.tocEl.clientHeight,
+		);
+		const top = Math.max(
+			0,
+			Math.min(this.tocEl.scrollTop + delta, maxScrollTop),
+		);
+
+		this.tocEl.scrollTo({
+			top,
+			left: 0,
+			behavior: "smooth",
+		});
+	};
+
+	update = () => {
+		if (this.updateScheduled) return;
+		this.updateScheduled = true;
+		requestAnimationFrame(() => {
+			this.updateScheduled = false;
+			this.toggleActiveHeading();
+			this.updateActiveHighlight();
+		});
+	};
+
+	fallback = () => {
+		if (!this.sections.length) return;
+
+		for (let i = 0; i < this.sections.length; i++) {
+			const section = this.sections[i];
+			if (!section) continue;
+			const offsetTop = section.getBoundingClientRect().top;
+			const offsetBottom = section.getBoundingClientRect().bottom;
+
+			if (
+				this.isInRange(offsetTop, 0, window.innerHeight) ||
+				this.isInRange(offsetBottom, 0, window.innerHeight) ||
+				(offsetTop < 0 && offsetBottom > window.innerHeight)
+			) {
+				this.markActiveHeading(i);
+			} else if (offsetTop > window.innerHeight) break;
+		}
+	};
+
+	markActiveHeading = (idx: number) => {
+		this.active[idx] = true;
+	};
+
+	releaseAnchorNavigation = () => {
+		if (this.anchorNavIdx === null) return;
+		this.anchorNavTarget = null;
+		this.anchorNavIdx = null;
+		this.update();
+	};
+
+	handleAnchorClick = (event: Event) => {
+		const anchor = event
+			.composedPath()
+			.find((element) => element instanceof HTMLAnchorElement);
+
+		if (anchor) {
+			const id = decodeURIComponent(anchor.hash?.substring(1));
+			const idx = this.headingIdxMap.get(id);
+			if (idx !== undefined) {
+				event.preventDefault();
+				event.stopPropagation();
+				this.anchorNavTarget = this.headings[idx] ?? null;
+				this.anchorNavIdx = idx;
+				this.anchorNavScrollTop = Math.max(
+					0,
+					(this.headings[idx]?.getBoundingClientRect().top ?? 0) +
+						window.scrollY -
+						80,
+				);
+				this.updateActiveHighlight();
+
+				history.pushState(history.state, "", anchor.hash);
+				window.scrollTo({ top: this.anchorNavScrollTop, behavior: "smooth" });
+			} else {
+				this.anchorNavTarget = null;
+				this.anchorNavIdx = null;
+			}
+		}
+	};
+
+	isInRange(value: number, min: number, max: number) {
+		return min < value && value < max;
+	}
+
+	connectedCallback() {
+		const element = document.querySelector(".prose");
+		let initialized = false;
+		const runInit = () => {
+			if (initialized) return;
+			initialized = true;
+			this.init();
+		};
+
+		if (element && getComputedStyle(element).animationName !== "none") {
+			element.addEventListener("animationend", runInit, { once: true });
+			setTimeout(runInit, 300);
+		} else {
+			runInit();
+		}
+	}
+
+	init() {
+		this.tocEl =
+			document.getElementById("toc") ??
+			document.getElementById("toc-inner-wrapper");
+
+		if (!this.tocEl) return;
+
+		this.tocEl.addEventListener("click", this.handleAnchorClick, {
+			capture: true,
+		});
+
+		this.tocEntries = Array.from(
+			document.querySelectorAll<HTMLAnchorElement>("#toc a[href^='#']"),
+		);
+
+		if (this.tocEntries.length === 0) return;
+
+		this.sections = new Array(this.tocEntries.length);
+		this.headings = new Array(this.tocEntries.length);
+		this.headingIdxMap.clear();
+
+		for (let i = 0; i < this.tocEntries.length; i++) {
+			const hash = this.tocEntries[i]?.hash;
+			const id = hash ? decodeURIComponent(hash.substring(1)) : "";
+			const heading = id ? document.getElementById(id) : null;
+			const section = heading?.parentElement;
+			if (heading instanceof HTMLElement && section instanceof HTMLElement) {
+				this.headings[i] = heading;
+				this.sections[i] = section;
+				this.headingIdxMap.set(id, i);
+			}
+		}
+		this.active = new Array(this.tocEntries.length).fill(false);
+
+		this.sections.forEach((section) => {
+			if (section) this.observer.observe(section);
+		});
+
+		window.addEventListener("scroll", this.update, { passive: true });
+		window.addEventListener("wheel", this.releaseAnchorNavigation, {
+			passive: true,
+		});
+		window.addEventListener("touchstart", this.releaseAnchorNavigation, {
+			passive: true,
+		});
+		window.addEventListener("pointerdown", this.releaseAnchorNavigation, {
+			passive: true,
+		});
+		window.addEventListener("keydown", this.releaseAnchorNavigation);
+
+		this.fallback();
+		this.update();
+	}
+
+	disconnectedCallback() {
+		this.sections.forEach((section) => {
+			if (section) this.observer.unobserve(section);
+		});
+		this.observer.disconnect();
+		window.removeEventListener("scroll", this.update);
+		this.tocEl?.removeEventListener("click", this.handleAnchorClick);
+		window.removeEventListener("wheel", this.releaseAnchorNavigation);
+		window.removeEventListener("touchstart", this.releaseAnchorNavigation);
+		window.removeEventListener("pointerdown", this.releaseAnchorNavigation);
+		window.removeEventListener("keydown", this.releaseAnchorNavigation);
+	}
+}
+
+if (!customElements.get("table-of-contents")) {
+	customElements.define("table-of-contents", TableOfContents);
+}
+</script>

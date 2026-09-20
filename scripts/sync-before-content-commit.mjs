@@ -7,7 +7,11 @@ const EXPECTED_ORIGIN_URLS = new Set([
 	"git@github.com:17356085/17356085.github.io",
 	"ssh://git@github.com/17356085/17356085.github.io",
 ]);
-const CONTENT_PREFIXES = ["src/content/posts/", "src/content/notes/"];
+const CONTENT_PREFIXES = [
+	"src/content/posts/",
+	"src/content/notes/",
+	"src/content/spec/",
+];
 
 function runGit(args) {
 	const result = spawnSync("git", args, {
@@ -302,7 +306,9 @@ function main() {
 	}
 
 	if (!stagedPaths.some(isContentPath)) {
-		console.log("提交前同步：本次提交不包含 posts/notes，跳过远程同步。");
+		console.log(
+			"提交前同步：本次提交不包含 posts/notes/spec，跳过远程同步。",
+		);
 		return 0;
 	}
 
