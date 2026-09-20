@@ -104,7 +104,11 @@ pnpm sync
 
 ## 图片与附件
 
-现有文章的图片路径保持不动。新 Notes 的公开图片暂统一放在 `public/img/notes/` 下，并使用站点绝对路径 `/img/notes/...`；文件名保持稳定、可读，不包含密码或临时导出信息。需要在 Obsidian 和 GitHub 预览中都保持更强可移植性时，再单独评估共置附件方案，不在首轮批量迁移旧图片。
+公开文章和 Notes 的图片统一使用 Cloudflare R2 图床，不再把正文图片和文章封面持续堆积到 Git 仓库。R2 对象键按稳定的内容域组织，例如 `blog/covers/...`、`blog/posts/...`、`blog/notes/...` 和 `blog/site/...`；Markdown、frontmatter 和站点配置直接保存 R2 公共 URL。
+
+日常工作流保持简单：在 Obsidian 中整理文章后，用 PicGo 上传到 R2，再把 PicGo 返回的公共 URL 粘贴到 Markdown 或 frontmatter。需要由 ChatGPT/Agent 上传时，使用同一个 PicGo/R2 配置完成上传和公共 URL 校验。仓库中不保存 R2 access key、secret、令牌或 PicGo 配置文件；密钥只存在本机配置或环境变量中。
+
+`pnpm media:audit` 用于盘点本地图片、重复文件、远程图片和未解析引用；`pnpm media:migrate` 负责上传、公共 URL 校验、生成 `scripts/media/media-migration.json` 并精确改写活动引用；`pnpm media:check` 用于检查清单、旧引用、文件哈希和公共 URL。迁移默认保留本地源文件，只有构建和校验通过后才使用 `pnpm media:migrate -- --prune` 删除已上传且已完成改写的精确源文件。Favicon、头像、音乐、Bangumi 快照/缓存、未引用素材以及教程代码中的示例路径按审计结论保留，不因批量迁移被误改。
 
 ## 常用命令
 

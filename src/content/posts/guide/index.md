@@ -2,7 +2,7 @@
 title: 我的技术学习笔记
 published: 2025-08-12
 description: "记录我在编程学习路上的点滴心得与遇到的问题"
-image: /img/魔法使之夜.jpg
+image: https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/covers/mahoyo.jpg
 tags: ["编程学习", "前端开发", "个人笔记"]
 category: 学习记录
 draft: true

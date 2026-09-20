@@ -1,0 +1,452 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-20T07:03:52.641Z",
+  "publicBaseUrl": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev",
+  "bucket": "mio-blog-assets",
+  "referencesRewritten": true,
+  "entries": [
+    {
+      "source": "public/img/bg01.jpg",
+      "r2Key": "blog/site/banner/bg01.jpg",
+      "url": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/site/banner/bg01.jpg",
+      "sha256": "d997a3e667030929fab334aa525003ebb5a8b5cd5b27c928fec3cb7596f4904e",
+      "size": 7730154,
+      "mime": "image/jpeg",
+      "category": "site-background",
+      "decision": "migrate",
+      "localState": "removed",
+      "publicStatus": 200,
+      "referencesRewritten": true,
+      "prunedAt": "2026-09-20T07:09:23.584Z"
+    },
+    {
+      "source": "public/img/Java动态代理.png",
+      "r2Key": "blog/posts/java-reflection/dynamic-proxy.png",
+      "url": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/java-reflection/dynamic-proxy.png",
+      "sha256": "b9f3d167a15bdfbcd0035373a610f4a91720f38190364268cfb2ba17324a42b4",
+      "size": 18753,
+      "mime": "image/png",
+      "category": "post-body",
+      "decision": "migrate",
+      "localState": "removed",
+      "publicStatus": 200,
+      "referencesRewritten": true,
+      "prunedAt": "2026-09-20T07:09:23.585Z"
+    },
+    {
+      "source": "public/img/SpringAOP01.png",
+      "r2Key": "blog/posts/spring-aop/aop-01.png",
+      "url": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/spring-aop/aop-01.png",
+      "sha256": "d8879f92e49260f733769a70aa3c883dcab16b5a2661fb7416fbddbf11e090ff",
+      "size": 23630,
+      "mime": "image/png",
+      "category": "post-body",
+      "decision": "migrate",
+      "localState": "removed",
+      "publicStatus": 200,
+      "referencesRewritten": true,
+      "prunedAt": "2026-09-20T07:09:23.585Z"
+    },
+    {
+      "source": "public/img/SpringAOP02.png",
+      "r2Key": "blog/posts/spring-aop/aop-02.png",
+      "url": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/spring-aop/aop-02.png",
+      "sha256": "ae42ad57f669a6ab6beee3f236ec8f0cf5b61b6a1f73209e7134f5be47234a65",
+      "size": 41603,
+      "mime": "image/png",
+      "category": "post-body",
+      "decision": "migrate",
+      "localState": "removed",
+      "publicStatus": 200,
+      "referencesRewritten": true,
+      "prunedAt": "2026-09-20T07:09:23.585Z"
+    },
+    {
+      "source": "public/img/SpringIOC01.png",
+      "r2Key": "blog/posts/spring-ioc/ioc-01.png",
+      "url": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/spring-ioc/ioc-01.png",
+      "sha256": "d43a3231dcc892701eaf126da87cead5ddcd4d0be2ada9f3e2220ca46037c96b",
+      "size": 11129,
+      "mime": "image/png",
+      "category": "post-body",
+      "decision": "migrate",
+      "localState": "removed",
+      "publicStatus": 200,
+      "referencesRewritten": true,
+      "prunedAt": "2026-09-20T07:09:23.585Z"
+    },
+    {
+      "source": "public/img/SpringIOC02.png",
+      "r2Key": "blog/posts/spring-ioc/ioc-02.png",
+      "url": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/spring-ioc/ioc-02.png",
+      "sha256": "ff12418b8bb1f2b8bec37865b8b397403e48bb2d073c693052439988c1991063",
+      "size": 42470,
+      "mime": "image/png",
+      "category": "post-body",
+      "decision": "migrate",
+      "localState": "removed",
+      "publicStatus": 200,
+      "referencesRewritten": true,
+      "prunedAt": "2026-09-20T07:09:23.585Z"
+    },
+    {
+      "source": "public/img/SpringIOC03.png",
+      "r2Key": "blog/posts/spring-ioc/ioc-03.png",
+      "url": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/spring-ioc/ioc-03.png",
+      "sha256": "7ff6813d7f9fc076b94b296fe5a63c9a1ef1ab2707d96475191f0dd53a3888f4",
+      "size": 4376,
+      "mime": "image/png",
+      "category": "post-body",
+      "decision": "migrate",
+      "localState": "removed",
+      "publicStatus": 200,
+      "referencesRewritten": true,
+      "prunedAt": "2026-09-20T07:09:23.585Z"
+    },
+    {
+      "source": "public/img/SpringIOC04.png",
+      "r2Key": "blog/posts/spring-ioc/ioc-04.png",
+      "url": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/spring-ioc/ioc-04.png",
+      "sha256": "d7e06505bd9178e4c43867818b6e58b1b237560d56157ccf0972be864df594d7",
+      "size": 98860,
+      "mime": "image/png",
+      "category": "post-body",
+      "decision": "migrate",
+      "localState": "removed",
+      "publicStatus": 200,
+      "referencesRewritten": true,
+      "prunedAt": "2026-09-20T07:09:23.586Z"
+    },
+    {
+      "source": "public/img/SpringIOC05.png",
+      "r2Key": "blog/posts/spring-ioc/ioc-05.png",
+      "url": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/spring-ioc/ioc-05.png",
+      "sha256": "d24f5432ba314350596c2df4c344a13b277243104697e3f91c3d2db5ea1d1be9",
+      "size": 74936,
+      "mime": "image/png",
+      "category": "post-body",
+      "decision": "migrate",
+      "localState": "removed",
+      "publicStatus": 200,
+      "referencesRewritten": true,
+      "prunedAt": "2026-09-20T07:09:23.586Z"
+    },
+    {
+      "source": "public/img/SpringIOC06.png",
+      "r2Key": "blog/posts/spring-ioc/ioc-06.png",
+      "url": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/spring-ioc/ioc-06.png",
+      "sha256": "3e84ee22fc4b77603bfa2c9e1c143d842f039da4567b9e2143fe38f841812111",
+      "size": 166762,
+      "mime": "image/png",
+      "category": "post-body",
+      "decision": "migrate",
+      "localState": "removed",
+      "publicStatus": 200,
+      "referencesRewritten": true,
+      "prunedAt": "2026-09-20T07:09:23.586Z"
+    },
+    {
+      "source": "public/img/SpringMVC01.png",
+      "r2Key": "blog/posts/spring-mvc/mvc-architecture.png",
+      "url": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/spring-mvc/mvc-architecture.png",
+      "sha256": "cf6a7aae14cbc871b0071c859c95378ea3277933b877ef49f89bc755c53947b3",
+      "size": 59855,
+      "mime": "image/png",
+      "category": "post-body",
+      "decision": "migrate",
+      "localState": "removed",
+      "publicStatus": 200,
+      "referencesRewritten": true,
+      "prunedAt": "2026-09-20T07:09:23.586Z"
+    },
+    {
+      "source": "public/img/SpringMVC02.png",
+      "r2Key": "blog/posts/spring-mvc/mvc-request-flow.png",
+      "url": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/spring-mvc/mvc-request-flow.png",
+      "sha256": "0984ffc04f6d9d79f18ccaa556d94be42d4ee2311abcfe4d4fa6af644f63d140",
+      "size": 10649,
+      "mime": "image/png",
+      "category": "post-body",
+      "decision": "migrate",
+      "localState": "removed",
+      "publicStatus": 200,
+      "referencesRewritten": true,
+      "prunedAt": "2026-09-20T07:09:23.586Z"
+    },
+    {
+      "source": "public/img/SpringMVC03.png",
+      "r2Key": "blog/posts/spring-mvc/mvc-and-three-tier.png",
+      "url": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/spring-mvc/mvc-and-three-tier.png",
+      "sha256": "2fb7cd328ff9f1a5646753f61135f6de30857d2fa00a209a13835061b9b6623b",
+      "size": 17781,
+      "mime": "image/png",
+      "category": "post-body",
+      "decision": "migrate",
+      "localState": "removed",
+      "publicStatus": 200,
+      "referencesRewritten": true,
+      "prunedAt": "2026-09-20T07:09:23.586Z"
+    },
+    {
+      "source": "public/img/中野梓.jpg",
+      "r2Key": "blog/covers/nakano-azusa.jpg",
+      "url": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/covers/nakano-azusa.jpg",
+      "sha256": "085b0cb67cb39b495a3b78ec2f131f6e24fee433c91e81c9cae9e0f4dc9041a2",
+      "size": 139599,
+      "mime": "image/jpeg",
+      "category": "post-cover",
+      "decision": "migrate",
+      "localState": "removed",
+      "publicStatus": 200,
+      "referencesRewritten": true,
+      "prunedAt": "2026-09-20T07:09:23.587Z"
+    },
+    {
+      "source": "public/img/祥子.png",
+      "r2Key": "blog/covers/sakiko.png",
+      "url": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/covers/sakiko.png",
+      "sha256": "673fbc18250162f4b177475ad05685f8b50cf076920721a0e136c50379f5a8e9",
+      "size": 30320059,
+      "mime": "image/png",
+      "category": "post-cover",
+      "decision": "migrate",
+      "localState": "removed",
+      "publicStatus": 200,
+      "referencesRewritten": true,
+      "prunedAt": "2026-09-20T07:09:23.589Z"
+    },
+    {
+      "source": "public/img/轻音少女1.webp",
+      "r2Key": "blog/covers/k-on-1.webp",
+      "url": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/covers/k-on-1.webp",
+      "sha256": "80f98c650d31073d9e00d2377735489f58c089fcf9f1dc690b9ef4ff87e38f47",
+      "size": 561312,
+      "mime": "image/webp",
+      "category": "post-cover",
+      "decision": "migrate",
+      "localState": "removed",
+      "publicStatus": 200,
+      "referencesRewritten": true,
+      "prunedAt": "2026-09-20T07:09:23.589Z"
+    },
+    {
+      "source": "public/img/魔法使之夜.jpg",
+      "r2Key": "blog/covers/mahoyo.jpg",
+      "url": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/covers/mahoyo.jpg",
+      "sha256": "3e2fa73f710e3a44c3ca7aa9e7178d2cf48f1aacf255a0e6e40528789519edc2",
+      "size": 1562228,
+      "mime": "image/jpeg",
+      "category": "post-cover",
+      "decision": "migrate",
+      "localState": "removed",
+      "publicStatus": 200,
+      "referencesRewritten": true,
+      "prunedAt": "2026-09-20T07:09:23.590Z"
+    },
+    {
+      "source": "public/img/魔法使之夜1.jpg",
+      "r2Key": "blog/covers/mahoyo-1.jpg",
+      "url": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/covers/mahoyo-1.jpg",
+      "sha256": "f48042efa7b5f73bad78de89feb38fee75897dda4139ec821930bebe479832d4",
+      "size": 1299313,
+      "mime": "image/jpeg",
+      "category": "post-cover",
+      "decision": "migrate",
+      "localState": "removed",
+      "publicStatus": 200,
+      "referencesRewritten": true,
+      "prunedAt": "2026-09-20T07:09:23.590Z"
+    },
+    {
+      "source": "src/assets/images/祥子.png",
+      "r2Key": "blog/covers/sakiko.png",
+      "url": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/covers/sakiko.png",
+      "sha256": "673fbc18250162f4b177475ad05685f8b50cf076920721a0e136c50379f5a8e9",
+      "size": 30320059,
+      "mime": "image/png",
+      "category": "post-cover",
+      "decision": "migrate",
+      "localState": "removed",
+      "publicStatus": 200,
+      "referencesRewritten": true,
+      "prunedAt": "2026-09-20T07:09:23.592Z"
+    }
+  ],
+  "skipped": [
+    {
+      "source": "public/favicon/favicon-dark-128.png",
+      "size": 1745,
+      "sha256": "78c59162b90582c9e298176dc035225983a645a731065deb1a6a08c0d9afead1",
+      "category": "favicon",
+      "decision": "retain"
+    },
+    {
+      "source": "public/favicon/favicon-dark-180.png",
+      "size": 2382,
+      "sha256": "63e402c37ad054188440594e9ef945567251306fb22f7e2c01b2b30ace667c20",
+      "category": "favicon",
+      "decision": "retain"
+    },
+    {
+      "source": "public/favicon/favicon-dark-192.png",
+      "size": 2513,
+      "sha256": "971ef1b2c01a89005a91fd99a77bf490035f2271c3b59c23fefd3854e9f24aba",
+      "category": "favicon",
+      "decision": "retain"
+    },
+    {
+      "source": "public/favicon/favicon-dark-32.png",
+      "size": 426,
+      "sha256": "7004a6b456be971408cf6ac7dea97f39e5a41eb00c4d0be093e5df0b03872b76",
+      "category": "favicon",
+      "decision": "retain"
+    },
+    {
+      "source": "public/favicon/favicon-light-128.png",
+      "size": 2054,
+      "sha256": "e8a28741c11eecd4f33de70de94b6d87302e1d6324c834ae0f15b05e45fe4100",
+      "category": "favicon",
+      "decision": "retain"
+    },
+    {
+      "source": "public/favicon/favicon-light-180.png",
+      "size": 2786,
+      "sha256": "d2a174bbaff45514f66ccd5e5ca63da38ce43327bfa9a646329316427c4bc7ea",
+      "category": "favicon",
+      "decision": "retain"
+    },
+    {
+      "source": "public/favicon/favicon-light-192.png",
+      "size": 2942,
+      "sha256": "ab08515fa79cef05d169d17bb9bb053df49f05a461fe3cb06310f44231d2a237",
+      "category": "favicon",
+      "decision": "retain"
+    },
+    {
+      "source": "public/favicon/favicon-light-32.png",
+      "size": 554,
+      "sha256": "4f90ecdc392bd7e39c2fc6c9dfd465e6412cdd83d3693578672f772164e87464",
+      "category": "favicon",
+      "decision": "retain"
+    },
+    {
+      "source": "public/favicon/favicon.jpg",
+      "size": 1118638,
+      "sha256": "ee9b326006dd8d83335da58581aada499be0a5baa29b729d21e4577fb9335585",
+      "category": "favicon",
+      "decision": "retain"
+    },
+    {
+      "source": "public/img/Alice.jpg",
+      "size": 13052,
+      "sha256": "7ee210265ec56fd3f5a630a9b3afab762ddf4e4c37fd23ac685a61f02baf6abc",
+      "category": "unreferenced",
+      "decision": "retain"
+    },
+    {
+      "source": "public/img/anosoyo.jpg",
+      "size": 180032,
+      "sha256": "55df2eb94901c8f48479f62f90f3db479a9af114022165a708426dd3de526e18",
+      "category": "unreferenced",
+      "decision": "retain"
+    },
+    {
+      "source": "public/img/older.jpg",
+      "size": 52111,
+      "sha256": "e0cb92bf639c70a20a5aefa563f3829e03c76dc17b8df81619151b90b55d605c",
+      "category": "avatar",
+      "decision": "retain"
+    },
+    {
+      "source": "public/img/picture1.webp",
+      "size": 624894,
+      "sha256": "ae68834ed9ee2bb6f82f0e0b72a631744505008da01e7ef1ee25ed89b113ee93",
+      "category": "unreferenced",
+      "decision": "retain"
+    },
+    {
+      "source": "public/img/久远寺有珠.jpg",
+      "size": 167040,
+      "sha256": "99fe03b3f2ca5a5f0c5d90a22ad640cf8505e8dae2d43b0862edca21f5069f94",
+      "category": "unreferenced",
+      "decision": "retain"
+    },
+    {
+      "source": "public/img/二刺螈.jpg",
+      "size": 158935,
+      "sha256": "5b33b426532be6b0c16c9dae097139cd114f56f79bf263c4bdf64822290d4ab1",
+      "category": "unreferenced",
+      "decision": "retain"
+    },
+    {
+      "source": "public/img/苍崎青子.jpg",
+      "size": 1118638,
+      "sha256": "ee9b326006dd8d83335da58581aada499be0a5baa29b729d21e4577fb9335585",
+      "category": "unreferenced",
+      "decision": "retain"
+    },
+    {
+      "source": "public/img/魔法使之夜2.jpg",
+      "size": 247936,
+      "sha256": "d0b9236c573ed3d66b94fb3d1812cd0d1d67631161e0719fc2cd035280d52f3e",
+      "category": "unreferenced",
+      "decision": "retain"
+    },
+    {
+      "source": "public/img/魔法使之夜OST.webp",
+      "size": 7842,
+      "sha256": "3760a60d4a6185d8e25d32e7c1fa2017f2e7db2b4f1f6465ea0890ce062e7c4b",
+      "category": "unreferenced",
+      "decision": "retain"
+    },
+    {
+      "source": "public/music/魔法使之夜OST.webp",
+      "size": 7842,
+      "sha256": "3760a60d4a6185d8e25d32e7c1fa2017f2e7db2b4f1f6465ea0890ce062e7c4b",
+      "category": "theme-resource",
+      "decision": "retain"
+    },
+    {
+      "source": "src/assets/images/苍崎青子.jpg",
+      "size": 1118638,
+      "sha256": "ee9b326006dd8d83335da58581aada499be0a5baa29b729d21e4577fb9335585",
+      "category": "unreferenced",
+      "decision": "retain"
+    },
+    {
+      "source": "src/assets/images/魔法使之夜.jpg",
+      "size": 1562228,
+      "sha256": "3e2fa73f710e3a44c3ca7aa9e7178d2cf48f1aacf255a0e6e40528789519edc2",
+      "category": "teaching-example",
+      "decision": "retain"
+    },
+    {
+      "source": "src/assets/images/魔法使之夜OST.webp",
+      "size": 7842,
+      "sha256": "3760a60d4a6185d8e25d32e7c1fa2017f2e7db2b4f1f6465ea0890ce062e7c4b",
+      "category": "unreferenced",
+      "decision": "retain"
+    },
+    {
+      "source": "src/content/posts/guide/cover.jpeg",
+      "size": 223295,
+      "sha256": "668a01659f6bc67fa18fbdc856685784fae44e67a3ab41374155a854b593545c",
+      "category": "unreferenced",
+      "decision": "retain"
+    }
+  ],
+  "summary": {
+    "sourceCount": 19,
+    "uniqueObjectCount": 18,
+    "uploadedBytes": 42183469,
+    "migratableBytes": 72503528
+  },
+  "rewrite": {
+    "fileCount": 12,
+    "referenceCount": 21,
+    "completedAt": "2026-09-20T07:06:26.766Z",
+    "resumedAfterUpload": true,
+    "refreshedAt": "2026-09-20T07:17:12.413Z"
+  },
+  "prunedAt": "2026-09-20T07:09:23.592Z"
+}

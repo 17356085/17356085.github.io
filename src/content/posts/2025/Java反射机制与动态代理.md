@@ -539,7 +539,7 @@ public class MyReflectDemo {
 > - 方法调用前后增强
 
 ### 6.1 理解代理模式
-![img](public/img/Java动态代理.png)
+![Java 动态代理示意图](https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/java-reflection/dynamic-proxy.png)
 
 ```java
 // 抽象主题接口

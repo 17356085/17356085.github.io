@@ -1,0 +1,646 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-20T07:09:42.062Z",
+  "publicBaseUrl": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev",
+  "assets": [
+    {
+      "source": "public/favicon/favicon-dark-128.png",
+      "size": 1745,
+      "mime": "image/png",
+      "sha256": "78c59162b90582c9e298176dc035225983a645a731065deb1a6a08c0d9afead1",
+      "category": "favicon",
+      "decision": "retain",
+      "references": []
+    },
+    {
+      "source": "public/favicon/favicon-dark-180.png",
+      "size": 2382,
+      "mime": "image/png",
+      "sha256": "63e402c37ad054188440594e9ef945567251306fb22f7e2c01b2b30ace667c20",
+      "category": "favicon",
+      "decision": "retain",
+      "references": []
+    },
+    {
+      "source": "public/favicon/favicon-dark-192.png",
+      "size": 2513,
+      "mime": "image/png",
+      "sha256": "971ef1b2c01a89005a91fd99a77bf490035f2271c3b59c23fefd3854e9f24aba",
+      "category": "favicon",
+      "decision": "retain",
+      "references": []
+    },
+    {
+      "source": "public/favicon/favicon-dark-32.png",
+      "size": 426,
+      "mime": "image/png",
+      "sha256": "7004a6b456be971408cf6ac7dea97f39e5a41eb00c4d0be093e5df0b03872b76",
+      "category": "favicon",
+      "decision": "retain",
+      "references": []
+    },
+    {
+      "source": "public/favicon/favicon-light-128.png",
+      "size": 2054,
+      "mime": "image/png",
+      "sha256": "e8a28741c11eecd4f33de70de94b6d87302e1d6324c834ae0f15b05e45fe4100",
+      "category": "favicon",
+      "decision": "retain",
+      "references": []
+    },
+    {
+      "source": "public/favicon/favicon-light-180.png",
+      "size": 2786,
+      "mime": "image/png",
+      "sha256": "d2a174bbaff45514f66ccd5e5ca63da38ce43327bfa9a646329316427c4bc7ea",
+      "category": "favicon",
+      "decision": "retain",
+      "references": []
+    },
+    {
+      "source": "public/favicon/favicon-light-192.png",
+      "size": 2942,
+      "mime": "image/png",
+      "sha256": "ab08515fa79cef05d169d17bb9bb053df49f05a461fe3cb06310f44231d2a237",
+      "category": "favicon",
+      "decision": "retain",
+      "references": []
+    },
+    {
+      "source": "public/favicon/favicon-light-32.png",
+      "size": 554,
+      "mime": "image/png",
+      "sha256": "4f90ecdc392bd7e39c2fc6c9dfd465e6412cdd83d3693578672f772164e87464",
+      "category": "favicon",
+      "decision": "retain",
+      "references": []
+    },
+    {
+      "source": "public/favicon/favicon.jpg",
+      "size": 1118638,
+      "mime": "image/jpeg",
+      "sha256": "ee9b326006dd8d83335da58581aada499be0a5baa29b729d21e4577fb9335585",
+      "category": "favicon",
+      "decision": "retain",
+      "references": []
+    },
+    {
+      "source": "public/img/Alice.jpg",
+      "size": 13052,
+      "mime": "image/jpeg",
+      "sha256": "7ee210265ec56fd3f5a630a9b3afab762ddf4e4c37fd23ac685a61f02baf6abc",
+      "category": "unreferenced",
+      "decision": "retain",
+      "references": []
+    },
+    {
+      "source": "public/img/anosoyo.jpg",
+      "size": 180032,
+      "mime": "image/jpeg",
+      "sha256": "55df2eb94901c8f48479f62f90f3db479a9af114022165a708426dd3de526e18",
+      "category": "unreferenced",
+      "decision": "retain",
+      "references": []
+    },
+    {
+      "source": "public/img/older.jpg",
+      "size": 52111,
+      "mime": "image/jpeg",
+      "sha256": "e0cb92bf639c70a20a5aefa563f3829e03c76dc17b8df81619151b90b55d605c",
+      "category": "avatar",
+      "decision": "retain",
+      "references": [
+        {
+          "file": "shirones/config/profileConfig.ts",
+          "line": 9,
+          "kind": "config-string",
+          "reference": "/img/older.jpg",
+          "active": true,
+          "resolvedSource": "public/img/older.jpg",
+          "resolvedExists": true,
+          "remote": null,
+          "start": 289,
+          "end": 303
+        }
+      ]
+    },
+    {
+      "source": "public/img/picture1.webp",
+      "size": 624894,
+      "mime": "image/webp",
+      "sha256": "ae68834ed9ee2bb6f82f0e0b72a631744505008da01e7ef1ee25ed89b113ee93",
+      "category": "unreferenced",
+      "decision": "retain",
+      "references": []
+    },
+    {
+      "source": "public/img/久远寺有珠.jpg",
+      "size": 167040,
+      "mime": "image/jpeg",
+      "sha256": "99fe03b3f2ca5a5f0c5d90a22ad640cf8505e8dae2d43b0862edca21f5069f94",
+      "category": "unreferenced",
+      "decision": "retain",
+      "references": []
+    },
+    {
+      "source": "public/img/二刺螈.jpg",
+      "size": 158935,
+      "mime": "image/jpeg",
+      "sha256": "5b33b426532be6b0c16c9dae097139cd114f56f79bf263c4bdf64822290d4ab1",
+      "category": "unreferenced",
+      "decision": "retain",
+      "references": []
+    },
+    {
+      "source": "public/img/苍崎青子.jpg",
+      "size": 1118638,
+      "mime": "image/jpeg",
+      "sha256": "ee9b326006dd8d83335da58581aada499be0a5baa29b729d21e4577fb9335585",
+      "category": "unreferenced",
+      "decision": "retain",
+      "references": []
+    },
+    {
+      "source": "public/img/魔法使之夜2.jpg",
+      "size": 247936,
+      "mime": "image/jpeg",
+      "sha256": "d0b9236c573ed3d66b94fb3d1812cd0d1d67631161e0719fc2cd035280d52f3e",
+      "category": "unreferenced",
+      "decision": "retain",
+      "references": []
+    },
+    {
+      "source": "public/img/魔法使之夜OST.webp",
+      "size": 7842,
+      "mime": "image/webp",
+      "sha256": "3760a60d4a6185d8e25d32e7c1fa2017f2e7db2b4f1f6465ea0890ce062e7c4b",
+      "category": "unreferenced",
+      "decision": "retain",
+      "references": []
+    },
+    {
+      "source": "public/music/魔法使之夜OST.webp",
+      "size": 7842,
+      "mime": "image/webp",
+      "sha256": "3760a60d4a6185d8e25d32e7c1fa2017f2e7db2b4f1f6465ea0890ce062e7c4b",
+      "category": "theme-resource",
+      "decision": "retain",
+      "references": []
+    },
+    {
+      "source": "src/assets/images/苍崎青子.jpg",
+      "size": 1118638,
+      "mime": "image/jpeg",
+      "sha256": "ee9b326006dd8d83335da58581aada499be0a5baa29b729d21e4577fb9335585",
+      "category": "unreferenced",
+      "decision": "retain",
+      "references": []
+    },
+    {
+      "source": "src/assets/images/魔法使之夜.jpg",
+      "size": 1562228,
+      "mime": "image/jpeg",
+      "sha256": "3e2fa73f710e3a44c3ca7aa9e7178d2cf48f1aacf255a0e6e40528789519edc2",
+      "category": "teaching-example",
+      "decision": "retain",
+      "references": [
+        {
+          "file": "src/content/posts/2025/搭建博客教程（一）.md",
+          "line": 49,
+          "kind": "code-example",
+          "reference": "assets/images/魔法使之夜.jpg",
+          "active": false,
+          "resolvedSource": "src/assets/images/魔法使之夜.jpg",
+          "resolvedExists": true,
+          "remote": null,
+          "start": 1141,
+          "end": 1164
+        }
+      ]
+    },
+    {
+      "source": "src/assets/images/魔法使之夜OST.webp",
+      "size": 7842,
+      "mime": "image/webp",
+      "sha256": "3760a60d4a6185d8e25d32e7c1fa2017f2e7db2b4f1f6465ea0890ce062e7c4b",
+      "category": "unreferenced",
+      "decision": "retain",
+      "references": []
+    },
+    {
+      "source": "src/content/posts/guide/cover.jpeg",
+      "size": 223295,
+      "mime": "image/jpeg",
+      "sha256": "668a01659f6bc67fa18fbdc856685784fae44e67a3ab41374155a854b593545c",
+      "category": "unreferenced",
+      "decision": "retain",
+      "references": []
+    }
+  ],
+  "duplicates": [
+    {
+      "sha256": "ee9b326006dd8d83335da58581aada499be0a5baa29b729d21e4577fb9335585",
+      "sources": [
+        "public/favicon/favicon.jpg",
+        "public/img/苍崎青子.jpg",
+        "src/assets/images/苍崎青子.jpg"
+      ]
+    },
+    {
+      "sha256": "3760a60d4a6185d8e25d32e7c1fa2017f2e7db2b4f1f6465ea0890ce062e7c4b",
+      "sources": [
+        "public/img/魔法使之夜OST.webp",
+        "public/music/魔法使之夜OST.webp",
+        "src/assets/images/魔法使之夜OST.webp"
+      ]
+    }
+  ],
+  "remoteImages": [
+    {
+      "file": "src/content/posts/2025/Java反射机制与动态代理.md",
+      "line": 542,
+      "kind": "markdown-remote-image",
+      "url": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/java-reflection/dynamic-proxy.png",
+      "active": true
+    },
+    {
+      "file": "src/content/posts/2025/Spring AOP.md",
+      "line": 25,
+      "kind": "markdown-remote-image",
+      "url": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/spring-aop/aop-01.png",
+      "active": true
+    },
+    {
+      "file": "src/content/posts/2025/Spring AOP.md",
+      "line": 37,
+      "kind": "markdown-remote-image",
+      "url": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/spring-aop/aop-02.png",
+      "active": true
+    },
+    {
+      "file": "src/content/posts/2025/Spring IOC.md",
+      "line": 176,
+      "kind": "markdown-remote-image",
+      "url": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/spring-ioc/ioc-01.png",
+      "active": true
+    },
+    {
+      "file": "src/content/posts/2025/Spring IOC.md",
+      "line": 228,
+      "kind": "markdown-remote-image",
+      "url": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/spring-ioc/ioc-02.png",
+      "active": true
+    },
+    {
+      "file": "src/content/posts/2025/Spring IOC.md",
+      "line": 323,
+      "kind": "markdown-remote-image",
+      "url": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/spring-ioc/ioc-03.png",
+      "active": true
+    },
+    {
+      "file": "src/content/posts/2025/Spring IOC.md",
+      "line": 362,
+      "kind": "markdown-remote-image",
+      "url": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/spring-ioc/ioc-04.png",
+      "active": true
+    },
+    {
+      "file": "src/content/posts/2025/Spring IOC.md",
+      "line": 372,
+      "kind": "markdown-remote-image",
+      "url": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/spring-ioc/ioc-05.png",
+      "active": true
+    },
+    {
+      "file": "src/content/posts/2025/Spring IOC.md",
+      "line": 374,
+      "kind": "markdown-remote-image",
+      "url": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/spring-ioc/ioc-06.png",
+      "active": true
+    },
+    {
+      "file": "src/content/posts/2025/SpringMVC.md",
+      "line": 19,
+      "kind": "markdown-remote-image",
+      "url": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/spring-mvc/mvc-architecture.png",
+      "active": true
+    },
+    {
+      "file": "src/content/posts/2025/SpringMVC.md",
+      "line": 25,
+      "kind": "markdown-remote-image",
+      "url": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/spring-mvc/mvc-request-flow.png",
+      "active": true
+    },
+    {
+      "file": "src/content/posts/2025/SpringMVC.md",
+      "line": 27,
+      "kind": "markdown-remote-image",
+      "url": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/spring-mvc/mvc-and-three-tier.png",
+      "active": true
+    },
+    {
+      "file": "src/content/posts/2026/快速了解CDN.md",
+      "line": 17,
+      "kind": "markdown-remote-image",
+      "url": "https://oss.javaguide.cn/github/javaguide/high-performance/cdn/cdn-101.png",
+      "active": true
+    },
+    {
+      "file": "src/content/posts/2026/快速了解CDN.md",
+      "line": 58,
+      "kind": "markdown-remote-image",
+      "url": "https://oss.javaguide.cn/github/javaguide/high-performance/cdn/cdn-full-life-cycle-of-cdn-cache.png",
+      "active": true
+    }
+  ],
+  "references": [
+    {
+      "file": "src/content/posts/2025/Java反射机制与动态代理.md",
+      "line": 542,
+      "kind": "markdown-remote-image",
+      "reference": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/java-reflection/dynamic-proxy.png",
+      "active": true,
+      "resolvedSource": null,
+      "resolvedExists": false,
+      "remote": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/java-reflection/dynamic-proxy.png",
+      "start": 15795,
+      "end": 15891,
+      "alt": "Java 动态代理示意图",
+      "altStart": 15781,
+      "altEnd": 15793
+    },
+    {
+      "file": "src/content/posts/2025/Spring AOP.md",
+      "line": 25,
+      "kind": "markdown-remote-image",
+      "reference": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/spring-aop/aop-01.png",
+      "active": true,
+      "resolvedSource": null,
+      "resolvedExists": false,
+      "remote": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/spring-aop/aop-01.png",
+      "start": 756,
+      "end": 840,
+      "alt": "Spring AOP 核心概念示意图",
+      "altStart": 736,
+      "altEnd": 754
+    },
+    {
+      "file": "src/content/posts/2025/Spring AOP.md",
+      "line": 37,
+      "kind": "markdown-remote-image",
+      "reference": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/spring-aop/aop-02.png",
+      "active": true,
+      "resolvedSource": null,
+      "resolvedExists": false,
+      "remote": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/spring-aop/aop-02.png",
+      "start": 1014,
+      "end": 1098,
+      "alt": "Spring AOP 切面执行流程",
+      "altStart": 995,
+      "altEnd": 1012
+    },
+    {
+      "file": "src/content/posts/2025/Spring IOC.md",
+      "line": 176,
+      "kind": "markdown-remote-image",
+      "reference": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/spring-ioc/ioc-01.png",
+      "active": true,
+      "resolvedSource": null,
+      "resolvedExists": false,
+      "remote": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/spring-ioc/ioc-01.png",
+      "start": 4142,
+      "end": 4226,
+      "alt": "Spring IOC 容器示意图",
+      "altStart": 4124,
+      "altEnd": 4140
+    },
+    {
+      "file": "src/content/posts/2025/Spring IOC.md",
+      "line": 228,
+      "kind": "markdown-remote-image",
+      "reference": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/spring-ioc/ioc-02.png",
+      "active": true,
+      "resolvedSource": null,
+      "resolvedExists": false,
+      "remote": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/spring-ioc/ioc-02.png",
+      "start": 5751,
+      "end": 5835,
+      "alt": "Spring Bean 生命周期",
+      "altStart": 5733,
+      "altEnd": 5749
+    },
+    {
+      "file": "src/content/posts/2025/Spring IOC.md",
+      "line": 323,
+      "kind": "markdown-remote-image",
+      "reference": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/spring-ioc/ioc-03.png",
+      "active": true,
+      "resolvedSource": null,
+      "resolvedExists": false,
+      "remote": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/spring-ioc/ioc-03.png",
+      "start": 8223,
+      "end": 8307,
+      "alt": "Spring 依赖注入流程",
+      "altStart": 8208,
+      "altEnd": 8221
+    },
+    {
+      "file": "src/content/posts/2025/Spring IOC.md",
+      "line": 362,
+      "kind": "markdown-remote-image",
+      "reference": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/spring-ioc/ioc-04.png",
+      "active": true,
+      "resolvedSource": null,
+      "resolvedExists": false,
+      "remote": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/spring-ioc/ioc-04.png",
+      "start": 9674,
+      "end": 9758,
+      "alt": "Spring BeanFactory 结构",
+      "altStart": 9651,
+      "altEnd": 9672
+    },
+    {
+      "file": "src/content/posts/2025/Spring IOC.md",
+      "line": 372,
+      "kind": "markdown-remote-image",
+      "reference": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/spring-ioc/ioc-05.png",
+      "active": true,
+      "resolvedSource": null,
+      "resolvedExists": false,
+      "remote": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/spring-ioc/ioc-05.png",
+      "start": 10285,
+      "end": 10369,
+      "alt": "Spring ApplicationContext 结构",
+      "altStart": 10255,
+      "altEnd": 10283
+    },
+    {
+      "file": "src/content/posts/2025/Spring IOC.md",
+      "line": 374,
+      "kind": "markdown-remote-image",
+      "reference": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/spring-ioc/ioc-06.png",
+      "active": true,
+      "resolvedSource": null,
+      "resolvedExists": false,
+      "remote": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/spring-ioc/ioc-06.png",
+      "start": 10399,
+      "end": 10483,
+      "alt": "Spring IOC 组件关系",
+      "altStart": 10382,
+      "altEnd": 10397
+    },
+    {
+      "file": "src/content/posts/2025/SpringMVC.md",
+      "line": 19,
+      "kind": "markdown-remote-image",
+      "reference": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/spring-mvc/mvc-architecture.png",
+      "active": true,
+      "resolvedSource": null,
+      "resolvedExists": false,
+      "remote": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/spring-mvc/mvc-architecture.png",
+      "start": 288,
+      "end": 382,
+      "alt": "Spring MVC 架构图",
+      "altStart": 272,
+      "altEnd": 286
+    },
+    {
+      "file": "src/content/posts/2025/SpringMVC.md",
+      "line": 25,
+      "kind": "markdown-remote-image",
+      "reference": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/spring-mvc/mvc-request-flow.png",
+      "active": true,
+      "resolvedSource": null,
+      "resolvedExists": false,
+      "remote": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/spring-mvc/mvc-request-flow.png",
+      "start": 654,
+      "end": 748,
+      "alt": "Spring MVC 请求处理流程",
+      "altStart": 635,
+      "altEnd": 652
+    },
+    {
+      "file": "src/content/posts/2025/SpringMVC.md",
+      "line": 27,
+      "kind": "markdown-remote-image",
+      "reference": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/spring-mvc/mvc-and-three-tier.png",
+      "active": true,
+      "resolvedSource": null,
+      "resolvedExists": false,
+      "remote": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/spring-mvc/mvc-and-three-tier.png",
+      "start": 781,
+      "end": 877,
+      "alt": "Spring MVC 与三层架构",
+      "altStart": 763,
+      "altEnd": 779
+    },
+    {
+      "file": "src/content/posts/2025/快速上手TailwindCSS.md",
+      "line": 177,
+      "kind": "code-example",
+      "reference": "/img/hero.png",
+      "active": false,
+      "resolvedSource": null,
+      "resolvedExists": false,
+      "remote": null,
+      "start": 3694,
+      "end": 3707
+    },
+    {
+      "file": "src/content/posts/2025/搭建博客教程（一）.md",
+      "line": 49,
+      "kind": "code-example",
+      "reference": "assets/images/魔法使之夜.jpg",
+      "active": false,
+      "resolvedSource": "src/assets/images/魔法使之夜.jpg",
+      "resolvedExists": true,
+      "remote": null,
+      "start": 1141,
+      "end": 1164
+    },
+    {
+      "file": "src/content/posts/2025/搭建博客教程（一）.md",
+      "line": 104,
+      "kind": "code-example",
+      "reference": "assets/images/avatar.png",
+      "active": false,
+      "resolvedSource": null,
+      "resolvedExists": false,
+      "remote": null,
+      "start": 2717,
+      "end": 2741
+    },
+    {
+      "file": "src/content/posts/2026/快速了解CDN.md",
+      "line": 17,
+      "kind": "markdown-remote-image",
+      "reference": "https://oss.javaguide.cn/github/javaguide/high-performance/cdn/cdn-101.png",
+      "active": true,
+      "resolvedSource": null,
+      "resolvedExists": false,
+      "remote": "https://oss.javaguide.cn/github/javaguide/high-performance/cdn/cdn-101.png",
+      "start": 357,
+      "end": 431,
+      "alt": "",
+      "altStart": 355,
+      "altEnd": 355
+    },
+    {
+      "file": "src/content/posts/2026/快速了解CDN.md",
+      "line": 58,
+      "kind": "markdown-remote-image",
+      "reference": "https://oss.javaguide.cn/github/javaguide/high-performance/cdn/cdn-full-life-cycle-of-cdn-cache.png",
+      "active": true,
+      "resolvedSource": null,
+      "resolvedExists": false,
+      "remote": "https://oss.javaguide.cn/github/javaguide/high-performance/cdn/cdn-full-life-cycle-of-cdn-cache.png",
+      "start": 992,
+      "end": 1091,
+      "alt": "",
+      "altStart": 990,
+      "altEnd": 990
+    },
+    {
+      "file": "shirones/config/profileConfig.ts",
+      "line": 9,
+      "kind": "config-string",
+      "reference": "/img/older.jpg",
+      "active": true,
+      "resolvedSource": "public/img/older.jpg",
+      "resolvedExists": true,
+      "remote": null,
+      "start": 289,
+      "end": 303
+    },
+    {
+      "file": "docs/shirone-migration.md",
+      "line": 62,
+      "kind": "code-example",
+      "reference": "/img/hero.png",
+      "active": false,
+      "resolvedSource": null,
+      "resolvedExists": false,
+      "remote": null,
+      "start": 2254,
+      "end": 2267
+    }
+  ],
+  "summary": {
+    "imageCount": 23,
+    "totalBytes": 6624365,
+    "migratableCount": 0,
+    "migratableBytes": 0,
+    "remoteReferenceCount": 14,
+    "unresolvedLocalReferenceCount": 0,
+    "duplicateGroupCount": 2,
+    "categories": {
+      "favicon": 9,
+      "unreferenced": 11,
+      "avatar": 1,
+      "theme-resource": 1,
+      "teaching-example": 1
+    }
+  }
+}

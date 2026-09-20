@@ -22,7 +22,7 @@ draft: false
 - 第二：程序员无法专注核心业务代码的编写，在编写核心业务代码的同时还需要处理这些交叉业务。
 
 使用AOP可以很轻松的解决以上问题。
-![img](public/img/SpringAOP01.png)
+![Spring AOP 核心概念示意图](https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/spring-aop/aop-01.png)
 1️⃣ **使用AOP的好处**：
 1. 代码复用性增强
 2. 代码易维护
@@ -34,7 +34,7 @@ draft: false
 ## 2. AOP相关概念
 
 ### 2.1 术语
-![img](public/img/SpringAOP02.png)
+![Spring AOP 切面执行流程](https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/spring-aop/aop-02.png)
 
 - **连接点 Joinpoint**：在程序的整个执行流程中，**可以织入**切面的位置。方法的执行前后，异常抛出之后等位置。
         

@@ -7,7 +7,7 @@ author: mio
 tags:
   - 后端开发
 category: 后端
-image: /img/魔法使之夜1.jpg
+image: https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/covers/mahoyo-1.jpg
 ---
 > RESTFul是WEB服务器接口的一种设计风格。
 > RESTFul对URL的约束和规范的核心：通过采用**不同的请求方法**+**URL**来确定WEB服务中的资源

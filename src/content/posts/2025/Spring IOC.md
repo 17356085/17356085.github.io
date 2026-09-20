@@ -173,7 +173,7 @@ public class AppConfig {
 > 
 > **注意**：如果你还想在初始化前和初始化后添加代码，可以加入“Bean后处理器”。 编写一个类实现BeanPostProcessor类，并且重写before和after方法：
 
-![img](public/img/SpringIOC01.png)
+![Spring IOC 容器示意图](https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/spring-ioc/ioc-01.png)
 #### 2.3.1 代码示例
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -225,7 +225,7 @@ public class LogBeanPostProcessor implements BeanPostProcessor {
 ```
 
 #### 2.3.2 Bean生命周期的“十步”
-![img](public/img/SpringIOC02.png)Aware相关的接口包括：BeanNameAware、BeanClassLoaderAware、BeanFactoryAware
+![Spring Bean 生命周期](https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/spring-ioc/ioc-02.png)Aware相关的接口包括：BeanNameAware、BeanClassLoaderAware、BeanFactoryAware
 
 - 当Bean实现了BeanNameAware，Spring会将Bean的名字传递给Bean。    
 - 当Bean实现了BeanClassLoaderAware，Spring会将加载该Bean的类加载器传递给Bean。
@@ -320,7 +320,7 @@ public class LogBeanPostProcessor implements BeanPostProcessor {
 #### 2.4.1 什么是循环依赖？
 
 在实例化 A 时需要先创建 B，而在创建 B 时又需要 A，于是无限递归，无法完成。
-![img](public/img/SpringIOC03.png)
+![Spring 依赖注入流程](https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/spring-ioc/ioc-03.png)
 #### 2.4.2 为什么会出现循环依赖问题？
 
 1. **设计不合理的对象关系**  
@@ -359,7 +359,7 @@ public class LogBeanPostProcessor implements BeanPostProcessor {
 两个步骤是完全可以分离开去完成的，并且这两步不要求在同一个时间点上完成。 也就是说，Bean都是单例的，我们可以先把所有的单例Bean实例化出来，放到一个集合当中（我们可以称之为缓存），所有的单例Bean全部实例化完成之后，以后我们再慢慢的调用setter方法给属性赋值。这样就解决了循环依赖的问题。
 
 **Spring框架底层实现：**
-![img](public/img/SpringIOC04.png)
+![Spring BeanFactory 结构](https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/spring-ioc/ioc-04.png)
 在以上类中包含三个重要的属性： _
 
 1. **Cache of singleton objects: bean name to bean instance.**_ **单例对象的缓存：key存储bean名称，value存储Bean对象【一级缓存】**
@@ -369,9 +369,9 @@ public class LogBeanPostProcessor implements BeanPostProcessor {
 这三个缓存本质上是三个Map集合。
 我们再来看，在该类中有这样一个方法addSingletonFactory()，这个方法的作用是：将创建Bean对象的ObjectFactory对象提前曝光。
 
-![img](public/img/SpringIOC05.png)
+![Spring ApplicationContext 结构](https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/spring-ioc/ioc-05.png)
 再分析下面的源码
-![img](public/img/SpringIOC06.png)
+![Spring IOC 组件关系](https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/posts/spring-ioc/ioc-06.png)
 从源码中可以看到，spring会先从一级缓存中获取Bean，如果获取不到，则从二级缓存中获取Bean，如果二级缓存还是获取不到，则从三级缓存中获取之前曝光的ObjectFactory对象，通过ObjectFactory对象获取Bean实例，这样就解决了循环依赖的问题。 
 
 **总结：** 

@@ -9,7 +9,7 @@ tags:
   - 网络请求
 category: 前端
 draft: true
-image: /img/中野梓.jpg
+image: https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/covers/nakano-azusa.jpg
 ---
 > 什么是Axios？
 > Axios 是一个基于 Promise 的 HTTP 客户端库，用于浏览器和 Node.js 环境。它提供了简洁的 API 来处理 HTTP 请求和响应。
