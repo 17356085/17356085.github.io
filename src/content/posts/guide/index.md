@@ -5,7 +5,7 @@ description: "记录我在编程学习路上的点滴心得与遇到的问题"
 image: /img/魔法使之夜.jpg
 tags: ["编程学习", "前端开发", "个人笔记"]
 category: 学习记录
-draft: false
+draft: true
 ---
 
 大家好！这是我用 Fuwari 模板搭建的第一个博客，主要用来记录我的编程学习历程。

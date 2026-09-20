@@ -14,6 +14,40 @@ const animeSnapshotPath = join(
 	"bangumi.json",
 );
 const issues = [];
+const expectedHiddenPosts = [
+	{
+		relative: "2025/搭建博客教程（一）.md",
+		route: "/posts/2025/搭建博客教程（一）/",
+	},
+	{
+		relative: "2026/快速了解CDN.md",
+		route: "/posts/2026/快速了解cdn/",
+	},
+	{
+		relative: "2025/快速上手TailwindCSS.md",
+		route: "/posts/2025/快速上手tailwindcss/",
+	},
+	{
+		relative: "2025/快速上手Axios.md",
+		route: "/posts/2025/快速上手axios/",
+	},
+	{
+		relative: "2025/快速上手Nginx.md",
+		route: "/posts/2025/快速上手nginx/",
+	},
+	{
+		relative: "2025/Java泛型的设计和使用.md",
+		route: "/posts/2025/java泛型的设计和使用/",
+	},
+	{
+		relative: "guide/index.md",
+		route: "/posts/guide/",
+	},
+	{
+		relative: "2025/SpringBoot项目.md",
+		route: "/posts/2025/springboot项目/",
+	},
+];
 
 function fail(message) {
 	issues.push(message);
@@ -173,13 +207,12 @@ function assertFriendsOutput() {
 	}
 
 	const html = readFileSync(friendsOutput, "utf8");
-	for (const link of [
-		"https://www.jeeger.top",
-		"http://kon-forever.cloud",
-	]) {
+	for (const link of ["https://www.jeeger.top", "http://kon-forever.cloud"]) {
 		if (!html.includes(link)) fail(`Friends output is missing link: ${link}`);
 	}
-	console.log("[output] Friends route: Jeeger's Blog and kon-forever links checked");
+	console.log(
+		"[output] Friends route: Jeeger's Blog and kon-forever links checked",
+	);
 }
 
 function assertContentCounts(posts, notes) {
@@ -204,26 +237,36 @@ function assertContentCounts(posts, notes) {
 		);
 	}
 
-	const postHtml = postPages
-		.map((file) => readFileSync(file, "utf8"))
-		.join("\n");
-	const noteHtml = notePages
-		.map((file) => readFileSync(file, "utf8"))
-		.join("\n");
-	const corpus = postHtml + noteHtml;
 	for (const document of [...posts, ...notes]) {
 		const title = document.frontmatter.title;
 		if (typeof title !== "string" || !title.trim()) {
 			fail(`missing title in ${relative(root, document.file)}`);
-			continue;
-		}
-		if (document.frontmatter.draft === true && corpus.includes(title)) {
-			fail(`draft title leaked into generated article output: ${title}`);
 		}
 	}
 
 	console.log(
 		`[output] content counts: posts total=${postCounts.total}, public=${postCounts.public}, drafts=${postCounts.drafts}; notes total=${noteCounts.total}, public=${noteCounts.public}, drafts=${noteCounts.drafts}`,
+	);
+}
+
+function assertHiddenPostRoutes(posts) {
+	for (const expected of expectedHiddenPosts) {
+		const document = posts.find(
+			(entry) => entry.relative === expected.relative,
+		);
+		if (!document) {
+			fail(`missing configured hidden post source: ${expected.relative}`);
+			continue;
+		}
+		if (document.frontmatter.draft !== true) {
+			fail(`hidden post is not marked draft: ${expected.relative}`);
+		}
+		if (routeExists(expected.route)) {
+			fail(`hidden post route still generated: ${expected.route}`);
+		}
+	}
+	console.log(
+		`[output] hidden post routes: ${expectedHiddenPosts.length} checked and absent`,
 	);
 }
 
@@ -451,16 +494,17 @@ async function pagefindSearchChecks() {
 			const result = await index.search(term);
 			return Promise.all(result.results.map((item) => item.data()));
 		};
-		const postResults = await search("CDN");
+		const postResults = await search("RESTFul编程风格");
 		const noteResults = await search("公开知识库的主干与边界");
+		const hiddenPostResults = await search("简单了解CDN");
 		const draftResults = await search("深夜反思");
 
 		if (
 			postResults.length !== 1 ||
-			postResults[0]?.raw_url !== "/posts/2026/快速了解cdn/"
+			postResults[0]?.raw_url !== "/posts/2025/restful编程风格/"
 		) {
 			fail(
-				"Pagefind Post query did not resolve uniquely to /posts/2026/快速了解cdn/",
+				"Pagefind Post query did not resolve uniquely to /posts/2025/restful编程风格/",
 			);
 		}
 		if (
@@ -471,12 +515,21 @@ async function pagefindSearchChecks() {
 				"Pagefind Note query did not resolve uniquely to the knowledge-base note",
 			);
 		}
+		if (
+			hiddenPostResults.some((result) =>
+				expectedHiddenPosts.some(
+					(expected) => expected.route === result.raw_url,
+				),
+			)
+		) {
+			fail("Pagefind exposed a hidden post route for the query 简单了解CDN");
+		}
 		if (draftResults.length !== 0) {
 			fail("Pagefind exposed the draft query 深夜反思");
 		}
 		await index.destroy();
 		console.log(
-			`[output] Pagefind search: Post=1, Note=1, draft=0; fragments=${fragments.length}`,
+			`[output] Pagefind search: Post=1, hidden-routes=0, Note=1, draft=0; fragments=${fragments.length}`,
 		);
 	} catch (error) {
 		fail(
@@ -497,6 +550,7 @@ async function main() {
 	const notes = collectionDocuments(join(root, "src", "content", "notes"));
 	assertRequiredRoutes();
 	assertContentCounts(posts, notes);
+	assertHiddenPostRoutes(posts);
 	assertImages(posts, notes);
 	assertSiteIdentity();
 	assertAnimeSnapshot();

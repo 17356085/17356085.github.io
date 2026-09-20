@@ -8,7 +8,7 @@ tags:
   - 后端开发
   - 项目学习
 category: 后端
-draft: false
+draft: true
 ---
 > Nginx是一个高性能的HTTP和方向=代理服务器，同时也是一个IMAP/POP3/SMTP代理服务器。它以高性能、稳定性、丰富的功能集、简单的配置文件和低系统资源消耗而闻名。
 
