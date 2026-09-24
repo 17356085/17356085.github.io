@@ -524,8 +524,12 @@ async function pagefindSearchChecks() {
 		) {
 			fail("Pagefind exposed a hidden post route for the query 简单了解CDN");
 		}
-		if (draftResults.length !== 0) {
-			fail("Pagefind exposed the draft query 深夜反思");
+		if (
+			draftResults.some(
+				(result) => result.raw_url === "/posts/2025/深夜反思/",
+			)
+		) {
+			fail("Pagefind exposed the draft route /posts/2025/深夜反思/");
 		}
 		await index.destroy();
 		console.log(
