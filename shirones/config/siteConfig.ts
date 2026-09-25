@@ -12,7 +12,7 @@ import { withUserConfig } from "@/utils/config-overlay.ts";
 export const siteConfig: SiteConfig = withUserConfig("site", {
 	site: "https://17356085.github.io",
 	base: "/",
-	title: "mio的小窝",
+	title: "mioの小窝",
 	subtitle: "四季正与你们擦肩而过",
 	// 电脑端顶栏标题与导航内容区域："left" 左对齐，"center" 居中。
 	topAppBar: {
@@ -70,8 +70,8 @@ export const siteConfig: SiteConfig = withUserConfig("site", {
 		homeText: {
 			// 仅在首页 Banner 中显示，标题与副标题会上下居中排列。
 			enable: true,
-			title: "mio的小窝",
-			subtitle: ["记录学习、阅读与生活中的小事", "愿每一次整理都让知识更清晰"],
+			title: "mioの小窝",
+			subtitle: ["四季正与你擦肩而过", "记录编程学习、阅读随笔与日常思考。"],
 			typewriter: {
 				// 副标题逐字显示；关闭后直接显示完整副标题。
 				enable: true,

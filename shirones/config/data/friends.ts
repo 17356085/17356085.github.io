@@ -43,7 +43,7 @@ export const friendsData: FriendItem[] = [
 	{
 		id: 4,
 		title: "Jeeger's Blog",
-		imgurl: "",
+		imgurl: "https://avatars.githubusercontent.com/u/109465661?u=42725c0488a30a1b1a809060f0f4aa8f4f5e89eb&v=4",
 		desc: "记录技术、生活与思考的个人博客",
 		siteurl: "https://www.jeeger.top",
 		tags: ["Blog"],
@@ -51,7 +51,7 @@ export const friendsData: FriendItem[] = [
 	{
 		id: 5,
 		title: "kon-forever",
-		imgurl: "",
+		imgurl: "http://kon-forever.cloud/img/avatar.jpg",
 		desc: "一个独立的个人站点",
 		siteurl: "http://kon-forever.cloud",
 		tags: ["Blog"],
