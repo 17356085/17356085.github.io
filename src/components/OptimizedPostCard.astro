@@ -1,6 +1,5 @@
 ---
 import { getImage } from "astro:assets";
-import responsiveCovers from "../data/responsive-covers.json";
 /**
  * 文章卡片（消费 blog/PostCard 原子）。
  * 只负责取数转 props：封面解析、日期格式化、分类/标签 URL、字数/时长文案。
@@ -13,8 +12,9 @@ import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 import { formatDateToYYYYMMDD } from "@utils/date-utils";
 import { isEncryptedPost } from "@utils/post-encryption";
-import { getCategoryUrl, getDir, getTagUrl } from "@utils/url-utils";
 import { getProjectImageLoader } from "@utils/project-images";
+import { getCategoryUrl, getDir, getTagUrl } from "@utils/url-utils";
+import responsiveCovers from "../data/responsive-covers.json";
 
 interface Props {
 	class?: string;
@@ -107,13 +107,18 @@ if (image) {
 }
 
 // Based on Shirones 0.1.4's data adapter; keep the visual atom in the theme.
-const remoteCover = (responsiveCovers as Record<string, {src: string; srcset: string; width: number; height: number}>)[image];
+const remoteCover = (
+	responsiveCovers as Record<
+		string,
+		{ src: string; srcset: string; width: number; height: number }
+	>
+)[image];
 if (remoteCover) {
-  coverUrl = remoteCover.src;
-  coverSrcset = remoteCover.srcset;
-  coverAvifSrcset = undefined;
-  coverWidth = remoteCover.width;
-  coverHeight = remoteCover.height;
+	coverUrl = remoteCover.src;
+	coverSrcset = remoteCover.srcset;
+	coverAvifSrcset = undefined;
+	coverWidth = remoteCover.width;
+	coverHeight = remoteCover.height;
 }
 const categoryLink = category
 	? { name: category, href: getCategoryUrl(category) }

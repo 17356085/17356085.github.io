@@ -1,20 +1,20 @@
 {
-  "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/covers/mahoyo-1.jpg": {
-    "src": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/images/site/responsive/mahoyo-cover-599e5d11f5c8-640.webp",
-    "srcset": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/images/site/responsive/mahoyo-cover-9d98c865a8a5-320.webp 320w, https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/images/site/responsive/mahoyo-cover-01fd42426dc3-480.webp 480w, https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/images/site/responsive/mahoyo-cover-599e5d11f5c8-640.webp 640w",
-    "width": 1920,
-    "height": 1081
-  },
-  "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/images/posts/orange-road/frame-04.jpg": {
-    "src": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/images/site/responsive/orange-road-cover-4266b6f8d062-640.webp",
-    "srcset": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/images/site/responsive/orange-road-cover-97caebb2fd1d-320.webp 320w, https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/images/site/responsive/orange-road-cover-1dc44e10be67-480.webp 480w, https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/images/site/responsive/orange-road-cover-4266b6f8d062-640.webp 640w",
-    "width": 640,
-    "height": 360
-  },
-  "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/covers/sakiko.png": {
-    "src": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/images/site/responsive/sakiko-cover-66a9288c1714-640.webp",
-    "srcset": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/images/site/responsive/sakiko-cover-41c544a6ad1b-320.webp 320w, https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/images/site/responsive/sakiko-cover-49a66aceb9b7-480.webp 480w, https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/images/site/responsive/sakiko-cover-66a9288c1714-640.webp 640w",
-    "width": 7414,
-    "height": 4449
-  }
+	"https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/covers/mahoyo-1.jpg": {
+		"src": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/images/site/responsive/mahoyo-cover-599e5d11f5c8-640.webp",
+		"srcset": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/images/site/responsive/mahoyo-cover-9d98c865a8a5-320.webp 320w, https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/images/site/responsive/mahoyo-cover-01fd42426dc3-480.webp 480w, https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/images/site/responsive/mahoyo-cover-599e5d11f5c8-640.webp 640w",
+		"width": 1920,
+		"height": 1081
+	},
+	"https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/images/posts/orange-road/frame-04.jpg": {
+		"src": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/images/site/responsive/orange-road-cover-4266b6f8d062-640.webp",
+		"srcset": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/images/site/responsive/orange-road-cover-97caebb2fd1d-320.webp 320w, https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/images/site/responsive/orange-road-cover-1dc44e10be67-480.webp 480w, https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/images/site/responsive/orange-road-cover-4266b6f8d062-640.webp 640w",
+		"width": 640,
+		"height": 360
+	},
+	"https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/covers/sakiko.png": {
+		"src": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/images/site/responsive/sakiko-cover-66a9288c1714-640.webp",
+		"srcset": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/images/site/responsive/sakiko-cover-41c544a6ad1b-320.webp 320w, https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/images/site/responsive/sakiko-cover-49a66aceb9b7-480.webp 480w, https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/images/site/responsive/sakiko-cover-66a9288c1714-640.webp 640w",
+		"width": 7414,
+		"height": 4449
+	}
 }

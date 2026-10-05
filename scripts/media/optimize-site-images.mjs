@@ -130,7 +130,7 @@ if (publish) {
 	await mkdir(join(root, "src/data"), { recursive: true });
 	await writeFile(
 		join(root, "src/data/responsive-covers.json"),
-		`${JSON.stringify(covers, null, 2)}\n`,
+		`${JSON.stringify(covers, null, "\t")}\n`,
 	);
 }
 await writeFile(
