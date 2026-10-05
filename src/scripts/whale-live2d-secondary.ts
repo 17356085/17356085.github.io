@@ -141,10 +141,17 @@ const BODY_FOOT_RIGID_FRACTION = 0.15;
 const BODY_FOOT_BLEND_END_FRACTION = 0.30;
 const NECK_BLEND_START_FRACTION = 0.015;
 const NECK_BLEND_END_FRACTION = 0.065;
-const MOUTH_OPEN_X_SCALE = 0.58;
-const MOUTH_OPEN_Y_SCALE_MIN = 0.12;
-const MOUTH_OPEN_Y_SCALE_PER_OPENING = 0.36;
-const MOUTH_OPEN_Y_SCALE_MAX = 0.48;
+const MOUTH_RESPONSE_RATE = 16;
+const MOUTH_CLOSED_X_SCALE_BASE = 1.5;
+const MOUTH_CLOSED_X_SCALE_PER_FORM = 0.25;
+const MOUTH_OPEN_X_SCALE_BASE = 0.42;
+const MOUTH_OPEN_X_SCALE_PER_FORM = 0.14;
+const MOUTH_OPEN_X_SCALE_PER_OPENING = 0.08;
+const MOUTH_OPEN_X_SCALE_MAX = 0.64;
+const MOUTH_OPEN_Y_SCALE_MIN = 0.09;
+const MOUTH_OPEN_Y_SCALE_PER_OPENING = 1;
+const MOUTH_OPEN_Y_SCALE_MAX = 0.72;
+const MOUTH_OPEN_VISIBLE_TOP_FRACTION = 0.32;
 const MOUTH_CLOSED_CURVATURE_FRACTION = 0.14;
 const DEGREES_TO_RADIANS = Math.PI / 180;
 
@@ -636,8 +643,8 @@ export function createWhaleSecondaryRig(
 		const targetHeadY = clamp(safePoseValue(pose.headY, 0), -30, 30);
 		const targetHeadZ = clamp(safePoseValue(pose.headZ, 0), -30, 30);
 		const targetBodyZ = clamp(safePoseValue(pose.bodyZ, 0), -10, 10);
-		mouthOpening = clamp(safePoseValue(pose.mouthOpen, 0), 0, 1);
-		mouthShape = clamp(safePoseValue(pose.mouthForm, 0), -1, 1);
+		const targetMouthOpening = clamp(safePoseValue(pose.mouthOpen, 0), 0, 1);
+		const targetMouthShape = clamp(safePoseValue(pose.mouthForm, 0), -1, 1);
 		if (firstMotionUpdate) {
 			smoothedLookX = targetLookX;
 			smoothedHeadX = targetHeadX;
@@ -646,6 +653,8 @@ export function createWhaleSecondaryRig(
 			smoothedBodyZ = targetBodyZ;
 			earLagX = targetHeadX;
 			earLagZ = targetHeadZ;
+			mouthOpening = targetMouthOpening;
+			mouthShape = targetMouthShape;
 		} else if (deltaSeconds > 0) {
 			const blend = exponentialBlend(10, deltaSeconds);
 			smoothedLookX += (targetLookX - smoothedLookX) * blend;
@@ -653,6 +662,9 @@ export function createWhaleSecondaryRig(
 			smoothedHeadY += (targetHeadY - smoothedHeadY) * blend;
 			smoothedHeadZ += (targetHeadZ - smoothedHeadZ) * blend;
 			smoothedBodyZ += (targetBodyZ - smoothedBodyZ) * blend;
+			const mouthBlend = exponentialBlend(MOUTH_RESPONSE_RATE, deltaSeconds);
+			mouthOpening += (targetMouthOpening - mouthOpening) * mouthBlend;
+			mouthShape += (targetMouthShape - mouthShape) * mouthBlend;
 			const earBlend = exponentialBlend(7, deltaSeconds);
 			earLagX += (smoothedHeadX - earLagX) * earBlend;
 			earLagZ += (smoothedHeadZ - earLagZ) * earBlend;
@@ -770,6 +782,23 @@ export function createWhaleSecondaryRig(
 		const isBody = id === BODY_ID;
 		const isMouthOpen = id === MOUTH_OPEN_ID;
 		const isMouthClosed = id === MOUTH_CLOSED_ID;
+		const positiveMouthShape = Math.max(0, mouthShape);
+		const closedWidthScale = MOUTH_CLOSED_X_SCALE_BASE + MOUTH_CLOSED_X_SCALE_PER_FORM * positiveMouthShape;
+		const openWidthScale = clamp(
+			MOUTH_OPEN_X_SCALE_BASE +
+				MOUTH_OPEN_X_SCALE_PER_FORM * positiveMouthShape +
+				MOUTH_OPEN_X_SCALE_PER_OPENING * mouthOpening,
+			MOUTH_OPEN_X_SCALE_BASE,
+			MOUTH_OPEN_X_SCALE_MAX,
+		);
+		const openHeightScale = clamp(
+			MOUTH_OPEN_Y_SCALE_MIN + MOUTH_OPEN_Y_SCALE_PER_OPENING * mouthOpening,
+			MOUTH_OPEN_Y_SCALE_MIN,
+			MOUTH_OPEN_Y_SCALE_MAX,
+		);
+		const openVisibleTopY = mouthOpen
+			? mouthOpen.bounds.maxY - mouthOpen.bounds.height * MOUTH_OPEN_VISIBLE_TOP_FRACTION
+			: 0;
 
 		let localPivotX = 0;
 		let localPivotY = 0;
@@ -804,13 +833,8 @@ export function createWhaleSecondaryRig(
 			if (isMouthOpen && mouthOpen) {
 				const neutralX = mouthOpen.rest[vertex];
 				const neutralY = mouthOpen.rest[vertex + 1];
-				const heightScale = clamp(
-					MOUTH_OPEN_Y_SCALE_MIN + MOUTH_OPEN_Y_SCALE_PER_OPENING * mouthOpening,
-					MOUTH_OPEN_Y_SCALE_MIN,
-					MOUTH_OPEN_Y_SCALE_MAX,
-				);
-				x = mouthCenterX + (neutralX - mouthOpen.bounds.centerX) * MOUTH_OPEN_X_SCALE;
-				y = mouthCenterY + (neutralY - mouthOpen.bounds.centerY) * heightScale;
+				x = mouthCenterX + (neutralX - mouthOpen.bounds.centerX) * openWidthScale;
+				y = mouthCenterY + (neutralY - openVisibleTopY) * openHeightScale;
 			} else if (isMouthClosed && mouthClosed) {
 				const neutralX = mouthClosed.rest[vertex];
 				const neutralY = mouthClosed.rest[vertex + 1];
@@ -818,7 +842,7 @@ export function createWhaleSecondaryRig(
 				const normalizedX = halfWidth > 0
 					? clamp((neutralX - mouthClosed.bounds.centerX) / halfWidth, -1, 1)
 					: 0;
-				x = neutralX;
+				x = mouthCenterX + (neutralX - mouthClosed.bounds.centerX) * closedWidthScale;
 				y = neutralY + mouthShape * mouthClosed.bounds.height * MOUTH_CLOSED_CURVATURE_FRACTION *
 					(2 * normalizedX * normalizedX - 1);
 			}
