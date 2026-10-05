@@ -37,7 +37,7 @@ const live2dCoreUrl = url("/live2d/vendor/live2dcubismcore.min.js");
 </aside>
 
 <script>
-	import { mountWhaleLive2D, type WhaleLive2DHandle } from "../scripts/whale-live2d";
+	import type { WhaleLive2DHandle } from "../scripts/whale-live2d";
 
 	(() => {
 		const dockElement = document.querySelector<HTMLElement>("[data-whale-dock]");
@@ -78,6 +78,7 @@ const live2dCoreUrl = url("/live2d/vendor/live2dcubismcore.min.js");
 		let live2dHandle: WhaleLive2DHandle | null = null;
 		let live2dLoading = false;
 		let live2dRuntimeReady = false;
+		let live2dStartScheduled = false;
 		let rendererSettled = false;
 		let greetingReactionPending = false;
 		type ChatReaction = "wave" | "pet" | "greet";
@@ -181,6 +182,34 @@ const live2dCoreUrl = url("/live2d/vendor/live2dcubismcore.min.js");
 				}
 			} else pageGreeting();
 		}
+		function scheduleLive2DStart() {
+			if (document.hidden || live2dStartScheduled || resting || obscured || rendererSettled || live2dLoading || live2dRuntimeReady) return;
+			live2dStartScheduled = true;
+			const begin = () => {
+				live2dStartScheduled = false;
+				if (document.hidden || resting || obscured || rendererSettled || live2dLoading || live2dRuntimeReady) return;
+				startLive2D();
+			};
+			const afterFrames = () => {
+				window.requestAnimationFrame(() => {
+					window.requestAnimationFrame(() => {
+						const requestIdleCallback = (window as Window & {
+							requestIdleCallback?: (callback: () => void, options?: { timeout?: number }) => number;
+						}).requestIdleCallback;
+						if (typeof requestIdleCallback === "function") {
+							requestIdleCallback.call(window, begin, { timeout: 1500 });
+						} else {
+							window.setTimeout(begin, 50);
+						}
+					});
+				});
+			};
+			if (document.readyState === "loading") {
+				document.addEventListener("DOMContentLoaded", afterFrames, { once: true });
+			} else {
+				afterFrames();
+			}
+		}
 		function startLive2D() {
 			if (resting || obscured || rendererSettled || live2dLoading || live2dRuntimeReady) return;
 			dock.dataset.renderer = "loading";
@@ -195,50 +224,60 @@ const live2dCoreUrl = url("/live2d/vendor/live2dcubismcore.min.js");
 				settleRenderer("sprite");
 				return;
 			}
+			const canvas = live2dCanvas;
 			live2dLoading = true;
-			live2dCanvas.hidden = true;
-			let loadingPromise: Promise<WhaleLive2DHandle>;
-			try {
-				loadingPromise = mountWhaleLive2D(live2dCanvas, modelUrl, coreUrl, {
-					onReady: () => {
-						if (rendererSettled) return;
-						live2dRuntimeReady = true;
-					},
-					onError: () => {
-						if (rendererSettled) return;
-						live2dLoading = false;
-						live2dRuntimeReady = false;
-						live2dCanvas.hidden = true;
-						live2dHandle?.destroy();
-						live2dHandle = null;
-						settleRenderer("sprite");
-					},
-				});
-			} catch {
-				live2dLoading = false;
-				live2dRuntimeReady = false;
-				settleRenderer("sprite");
-				return;
-			}
-			void loadingPromise.then((handle) => {
-				live2dLoading = false;
-				if (rendererSettled) {
-					handle.destroy();
-					return;
-				}
-				if (!live2dRuntimeReady) {
-					handle.destroy();
+			canvas.hidden = true;
+			void import("../scripts/whale-live2d").then(({ mountWhaleLive2D }) => {
+				let loadingPromise: Promise<WhaleLive2DHandle>;
+				try {
+					loadingPromise = mountWhaleLive2D(canvas, modelUrl, coreUrl, {
+						onReady: () => {
+							if (rendererSettled) return;
+							live2dRuntimeReady = true;
+						},
+						onError: () => {
+							if (rendererSettled) return;
+							live2dLoading = false;
+							live2dRuntimeReady = false;
+							canvas.hidden = true;
+							live2dHandle?.destroy();
+							live2dHandle = null;
+							settleRenderer("sprite");
+						},
+					});
+				} catch {
+					live2dLoading = false;
+					live2dRuntimeReady = false;
 					settleRenderer("sprite");
 					return;
 				}
-				live2dHandle = handle;
-				handle.setLook(0, 0);
-				syncLive2DPlayback();
-				settleRenderer("live2d");
+				void loadingPromise.then((handle) => {
+					live2dLoading = false;
+					if (rendererSettled) {
+						handle.destroy();
+						return;
+					}
+					if (!live2dRuntimeReady) {
+						handle.destroy();
+						settleRenderer("sprite");
+						return;
+					}
+					live2dHandle = handle;
+					handle.setLook(0, 0);
+					syncLive2DPlayback();
+					settleRenderer("live2d");
+				}, () => {
+					live2dLoading = false;
+					live2dRuntimeReady = false;
+					canvas.hidden = true;
+					live2dHandle?.destroy();
+					live2dHandle = null;
+					settleRenderer("sprite");
+				});
 			}, () => {
 				live2dLoading = false;
 				live2dRuntimeReady = false;
-				live2dCanvas.hidden = true;
+				canvas.hidden = true;
 				live2dHandle?.destroy();
 				live2dHandle = null;
 				settleRenderer("sprite");
@@ -519,6 +558,7 @@ const live2dCoreUrl = url("/live2d/vendor/live2dcubismcore.min.js");
 			setIdle();
 			syncLive2DPlayback();
 			if (!document.hidden) {
+				scheduleLive2DStart();
 				flushGreetingReaction();
 				if (!dialogue.hidden) scheduleClose(4000, bubbleKeepFocused);
 			}
@@ -574,7 +614,7 @@ const live2dCoreUrl = url("/live2d/vendor/live2dcubismcore.min.js");
 			scene.hidden = true;
 			wake.hidden = !resting;
 			dock.dataset.resting = String(resting);
-		} else startLive2D();
+		} else scheduleLive2DStart();
 	})();
 </script>
 
@@ -609,9 +649,10 @@ const live2dCoreUrl = url("/live2d/vendor/live2dcubismcore.min.js");
 	.whale-lean { transform: translateY(var(--whale-nod, 0px)) rotate(var(--whale-lean, 0deg)); transform-origin: 50% 90%; transition: transform 160ms cubic-bezier(0.25, 1, 0.5, 1); }
 	.whale-breathe { transform-origin: 50% 95%; }
 	.whale-clip { overflow: hidden; }
-	.whale-frames { display: block; width: 700%; height: 100%; background: var(--whale-idle) no-repeat 0 0 / 100% 100%; }
-	.whale-dock[data-state="look"] .whale-frames { width: 100%; background-image: var(--whale-look); background-size: 800% 200%; background-position: var(--whale-look-x, 0%) var(--whale-look-y, 0%); }
-	.whale-dock[data-state="wave"] .whale-frames { width: 400%; background-image: var(--whale-action); background-size: 200% 400%; background-position: 0 66.666667%; }
+	.whale-frames { display: block; width: 700%; height: 100%; background: none; }
+	.whale-dock[data-renderer="sprite"] .whale-frames { background: var(--whale-idle) no-repeat 0 0 / 100% 100%; }
+	.whale-dock[data-renderer="sprite"][data-state="look"] .whale-frames { width: 100%; background-image: var(--whale-look); background-size: 800% 200%; background-position: var(--whale-look-x, 0%) var(--whale-look-y, 0%); }
+	.whale-dock[data-renderer="sprite"][data-state="wave"] .whale-frames { width: 400%; background-image: var(--whale-action); background-size: 200% 400%; background-position: 0 66.666667%; }
 	@media (prefers-reduced-motion: no-preference) {
 		.whale-dock[data-renderer="sprite"][data-ready="true"][data-motion="full"] .whale-breathe { animation: whale-breathe 4.4s ease-in-out infinite; }
 		.whale-dock[data-renderer="sprite"][data-ready="true"][data-motion="full"][data-state="idle"] .whale-frames { animation: whale-blink 4s steps(6, end) infinite; }

@@ -90,3 +90,6 @@ artifacts/shirone-ai-*
 # shirones integration cache
 .shirones/
 .shirones-backup/
+
+# Generated from the theme font before Astro loads its font configuration.
+/src/assets/fonts/yozai/

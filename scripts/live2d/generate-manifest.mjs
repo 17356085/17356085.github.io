@@ -9,7 +9,7 @@ const outputPath = resolve(repoRoot, "docs/live2d/release-manifest.json");
 const assetGroups = Object.freeze([
 	{
 		name: "whale-maid-model", root: "public/live2d/whale-maid",
-		files: ["whale-maid.model3.json", "whale-maid.moc3", "whale-maid.physics3.json", "whale-maid.cdi3.json", "whale-maid.2048/texture_00.png", "motions/greet.motion3.json", "motions/idle.motion3.json", "motions/pet.motion3.json", "motions/sleep.motion3.json", "motions/wake.motion3.json", "motions/wave.motion3.json"],
+    files: ["whale-maid.model3.json", "whale-maid.moc3", "whale-maid.physics3.json", "whale-maid.cdi3.json", "whale-maid.2048/texture_00.webp", "motions/greet.motion3.json", "motions/idle.motion3.json", "motions/pet.motion3.json", "motions/sleep.motion3.json", "motions/wake.motion3.json", "motions/wave.motion3.json"],
 	},
 	{ name: "whale-maid-fallback", root: "public/live2d/whale-maid/fallback", files: ["actions.webp", "idle.webp", "look.webp"] },
 	{ name: "cubism-core", root: "public/live2d/vendor", files: ["live2dcubismcore.min.js", "CoreLICENSE.md", "SDKLICENSE.md", "RedistributableFiles.txt"] },

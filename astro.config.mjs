@@ -1,5 +1,8 @@
 import { defineConfig } from "astro/config";
 import shirones from "shirones";
+import { prepareYozaiFontSubsets } from "./scripts/fonts/prepare-yozai.mjs";
+
+await prepareYozaiFontSubsets();
 
 // Site-level settings (site URL, base, title, theme colour, fonts, …) live in
 // `shirones/config/` so they stay typed and version-controlled with your
@@ -10,6 +13,7 @@ export default defineConfig({
 			pagefind: false,
 			components: {
 				"layouts/MainGridLayout": "./src/layouts/MainGridLayout.astro",
+				"organisms/PostCard": "./src/components/OptimizedPostCard.astro",
 			},
 			excludeRoutes: [
 				"/albums",

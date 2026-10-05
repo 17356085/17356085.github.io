@@ -37,9 +37,9 @@
           "sha256": "1ae9496026819b43e5e034ab2c83009cd565ffd2d504ac949dc5527e90308bdf"
         },
         {
-          "path": "public/live2d/whale-maid/whale-maid.2048/texture_00.png",
-          "bytes": 2605698,
-          "sha256": "a301e255d8d2b39c32dc2de13d4329407085e8044c51cac3854f5a8053061994"
+          "path": "public/live2d/whale-maid/whale-maid.2048/texture_00.webp",
+          "bytes": 1195546,
+          "sha256": "6081ec4c18b708bf9fd69fe3b6a94880d5d3f21b34f1add3289ecf7c7ab8fcfc"
         },
         {
           "path": "public/live2d/whale-maid/whale-maid.cdi3.json",
@@ -53,8 +53,8 @@
         },
         {
           "path": "public/live2d/whale-maid/whale-maid.model3.json",
-          "bytes": 641,
-          "sha256": "e671b85e44cc8f2eb56cb7119bd01ae1d506282f29289de34e067a6812f4c001"
+          "bytes": 645,
+          "sha256": "7c68c8aaf7904b1975fea380b2d8dfdc21208c0480f9c294d016674c8b35b96d"
         },
         {
           "path": "public/live2d/whale-maid/whale-maid.physics3.json",
@@ -62,7 +62,7 @@
           "sha256": "e7add3b9dc2ba99eafddbbc05a5668359d6331933a75e1b438bfe576b7c09b55"
         }
       ],
-      "total_bytes": 2825135
+      "total_bytes": 1414987
     },
     {
       "name": "whale-maid-fallback",
@@ -118,8 +118,8 @@
     "files": [
       {
         "path": "src/components/WhaleMascot.astro",
-        "bytes": 32630,
-        "sha256": "70a3a2648ce7dceec6b53afbcf8234cbffa275c5388d34febcd631d472c57b5e"
+        "bytes": 34189,
+        "sha256": "a74059207ebe44e13b8e6db34c74f3bd4adeae700eb37135250255ebe2db6a2f"
       },
       {
         "path": "src/layouts/MainGridLayout.astro",
@@ -147,10 +147,10 @@
         "sha256": "1664d677bbb7d37af3965a9ea4d7f83af7d5226f18b3f868d7f3a7e5f7151cad"
       }
     ],
-    "total_bytes": 201301
+    "total_bytes": 202860
   },
   "totals": {
-    "assets_bytes": 4968450,
-    "source_bytes": 201301
+    "assets_bytes": 3558302,
+    "source_bytes": 202860
   }
 }

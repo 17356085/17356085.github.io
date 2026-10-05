@@ -3,7 +3,7 @@
 	"FileReferences": {
 		"Moc": "whale-maid.moc3",
 		"Textures": [
-			"whale-maid.2048/texture_00.png"
+      "whale-maid.2048/texture_00.webp"
 		],
 		"Physics": "whale-maid.physics3.json",
 		"DisplayInfo": "whale-maid.cdi3.json",

@@ -1,0 +1,154 @@
+---
+import { getImage } from "astro:assets";
+import responsiveCovers from "../data/responsive-covers.json";
+/**
+ * 文章卡片（消费 blog/PostCard 原子）。
+ * 只负责取数转 props：封面解析、日期格式化、分类/标签 URL、字数/时长文案。
+ */
+import type { CollectionEntry } from "astro:content";
+import { render } from "astro:content";
+import path from "node:path";
+import PostCard from "@components/atoms/blog/PostCard.astro";
+import I18nKey from "@i18n/i18nKey";
+import { i18n } from "@i18n/translation";
+import { formatDateToYYYYMMDD } from "@utils/date-utils";
+import { isEncryptedPost } from "@utils/post-encryption";
+import { getCategoryUrl, getDir, getTagUrl } from "@utils/url-utils";
+import { getProjectImageLoader } from "@utils/project-images";
+
+interface Props {
+	class?: string;
+	entry: CollectionEntry<"posts">;
+	title: string;
+	url: string;
+	published: Date;
+	updated?: Date;
+	pinned: boolean;
+	tags: string[];
+	category: string | null;
+	image: string;
+	description: string;
+	draft: boolean;
+	style: string;
+}
+const {
+	entry,
+	title,
+	url,
+	published,
+	updated,
+	pinned,
+	tags,
+	category,
+	image,
+	description,
+	style,
+} = Astro.props;
+const className = Astro.props.class;
+
+const imageBasePath = entry.filePath
+	? path.relative(path.resolve("src"), path.dirname(entry.filePath))
+	: path.join("content/posts/", getDir(entry.id));
+
+const { remarkPluginFrontmatter } = await render(entry);
+
+// 解析封面：本地相对路径 → 构建产物 URL（与 ImageWrapper 同法）
+let coverUrl = image;
+let coverSrcset: string | undefined;
+let coverAvifSrcset: string | undefined;
+let coverWidth: number | undefined;
+let coverHeight: number | undefined;
+if (image) {
+	const isLocal = !(
+		image.startsWith("/") ||
+		image.startsWith("http") ||
+		image.startsWith("https") ||
+		image.startsWith("data:")
+	);
+	if (isLocal) {
+		const file = getProjectImageLoader(image, imageBasePath);
+		if (file) {
+			const mod = await file();
+			try {
+				const widths = [
+					...new Set([
+						...[320, 480, 640].filter((width) => width <= mod.width),
+						Math.min(mod.width, 640),
+					]),
+				].sort((a, b) => a - b);
+				const createCandidates = async (
+					format: "avif" | "webp",
+					quality: number,
+				) =>
+					Promise.all(
+						widths.map(async (width) => ({
+							width,
+							image: await getImage({ src: mod, format, width, quality }),
+						})),
+					);
+				const [avif, webp] = await Promise.all([
+					createCandidates("avif", 55),
+					createCandidates("webp", 68),
+				]);
+				coverUrl = webp.at(-1)?.image.src ?? mod.src;
+				coverSrcset = webp
+					.map(({ image, width }) => `${image.src} ${width}w`)
+					.join(", ");
+				coverAvifSrcset = avif
+					.map(({ image, width }) => `${image.src} ${width}w`)
+					.join(", ");
+				coverWidth = mod.width;
+				coverHeight = mod.height;
+			} catch {
+				coverUrl = (mod as unknown as { src: string }).src;
+			}
+		}
+	}
+}
+
+// Based on Shirones 0.1.4's data adapter; keep the visual atom in the theme.
+const remoteCover = (responsiveCovers as Record<string, {src: string; srcset: string; width: number; height: number}>)[image];
+if (remoteCover) {
+  coverUrl = remoteCover.src;
+  coverSrcset = remoteCover.srcset;
+  coverAvifSrcset = undefined;
+  coverWidth = remoteCover.width;
+  coverHeight = remoteCover.height;
+}
+const categoryLink = category
+	? { name: category, href: getCategoryUrl(category) }
+	: null;
+const tagLinks = tags.map((t) => ({ name: t.trim(), href: getTagUrl(t) }));
+
+const isEncrypted = isEncryptedPost(entry.data);
+const words = remarkPluginFrontmatter.words ?? 0;
+const wordCount =
+	isEncrypted && entry.data.hideHomeContent
+		? undefined
+		: `${words} ${i18n(words === 1 ? I18nKey.wordCount : I18nKey.wordsCount)}`;
+const excerpt =
+	isEncrypted && entry.data.hideHomeContent
+		? i18n(I18nKey.postEncryptedSummary)
+		: description || remarkPluginFrontmatter.excerpt;
+---
+
+<PostCard
+	class={className}
+	style={style}
+	href={url}
+	title={title}
+	description={excerpt}
+	image={coverUrl}
+	imageSrcset={coverSrcset}
+	imageAvifSrcset={coverAvifSrcset}
+	imageSizes="(max-width: 767px) calc(100vw - 4rem), (min-width: 1280px) 342px, 28vw"
+	imageWidth={coverWidth}
+	imageHeight={coverHeight}
+	published={formatDateToYYYYMMDD(published)}
+	updated={updated ? formatDateToYYYYMMDD(updated) : undefined}
+	pinned={pinned}
+	encrypted={isEncrypted}
+	category={categoryLink}
+	tags={tagLinks}
+	wordCount={wordCount}
+/>

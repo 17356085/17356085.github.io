@@ -57,8 +57,8 @@ export const siteConfig: SiteConfig = withUserConfig("site", {
 		// desktop 用于 >= 1024px；mobile 仅用于 < 1024px 的首页，手机非首页不显示壁纸。
 		// 数组顺序就是轮播顺序；只需要静态 Banner 时，每组保留一张图片即可。
 		src: {
-			desktop: ["https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/site/banner/bg01.jpg"],
-			mobile: ["https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/blog/site/banner/bg01.jpg"],
+			desktop: ["https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/images/site/responsive/banner-751c1a06edb5-1920.webp"],
+			mobile: ["https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/images/site/responsive/banner-4454a48a1fa9-960.webp"],
 		},
 		// 图片裁切焦点："top"、"center" 或 "bottom"。
 		position: "center",

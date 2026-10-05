@@ -1,6 +1,29 @@
-import type { FontConfig, ResolvedFontOptions } from "@/types/fontConfig.ts";
+import type {
+	FontConfig,
+	FontVariant,
+	ResolvedFontOptions,
+} from "@/types/fontConfig.ts";
 import { withUserConfig } from "@/utils/config-overlay.ts";
 import { resolveFontOptions as resolve } from "@/utils/font-options.ts";
+import yozaiVariants from "../../src/assets/fonts/yozai/variants.json";
+
+const yozaiFontVariants: FontVariant[] = yozaiVariants.map((variant) => ({
+	file: variant.file,
+	weight: variant.weight,
+	style: variant.style === "italic" ? "italic" : "normal",
+	...(variant.subset ? { subset: variant.subset } : {}),
+	// Astro 7's local provider expects an array. Shirones 0.1.4 still types
+	// this forwarded field as a string; use Astro's required runtime shape.
+	...(variant.unicodeRange
+		? {
+				unicodeRange: variant.unicodeRange
+					.split(",")
+					.map((range) =>
+						range.trim(),
+					) as unknown as FontVariant["unicodeRange"],
+			}
+		: {}),
+}));
 
 /**
  * ─────────────────────────────────────────────────────────────────────────────
@@ -87,13 +110,7 @@ export const fontConfig: FontConfig = withUserConfig("font", {
 			family: "Yozai Medium",
 			role: "cjk",
 			source: "local",
-			variants: [
-				{
-					file: "src/assets/fonts/Yozai-Medium.ttf",
-					weight: 500,
-					style: "normal",
-				},
-			],
+			variants: yozaiFontVariants,
 			fallback: ["system-ui", "sans-serif"],
 			display: "swap",
 			preload: false,
@@ -138,7 +155,7 @@ export const fontConfig: FontConfig = withUserConfig("font", {
 	 * - Build 生产构建：自动执行子集裁剪，将几十兆大字体压缩为几百 KB 的专属子集，秒开加载。
 	 */
 	subsetting: {
-		enable: true, // 启用自动化子集裁剪
+		enable: false, // Yozai 已由 scripts/fonts/prepare-yozai.mjs 预生成不重叠子集
 		includeContent: true, // 扫描 src/content/ 下所有文章
 		includeI18n: true, // 扫描全部 10 种语言词典
 		includeConfig: true, // 扫描站点配置与导航
