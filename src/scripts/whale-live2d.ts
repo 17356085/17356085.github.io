@@ -1126,7 +1126,11 @@ export async function mountWhaleLive2D(
     }
     coreModel.update();
     if (coreModel.drawables.ids && await supportsSecondaryRig(mocBuffer)) {
-      secondaryRig = createWhaleSecondaryRig(coreModel.drawables.ids, coreModel.drawables.vertexPositions);
+      secondaryRig = createWhaleSecondaryRig(
+        coreModel.drawables.ids,
+        coreModel.drawables.vertexPositions,
+        coreModel.drawables.indices,
+      );
     }
     canvas.dataset.live2dSecondaryParts = secondaryRig?.summary().join(',') ?? '';
     fitBounds = computeBounds(coreModel.drawables);

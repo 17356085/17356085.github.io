@@ -38,8 +38,8 @@
         },
         {
           "path": "public/live2d/whale-maid/whale-maid.2048/texture_00.png",
-          "bytes": 2599070,
-          "sha256": "b3092cbbce2da98c3bc290c1e2a0cbd4a8db2c6f01153e6a9a2a3ad1fd7db39a"
+          "bytes": 2605698,
+          "sha256": "a301e255d8d2b39c32dc2de13d4329407085e8044c51cac3854f5a8053061994"
         },
         {
           "path": "public/live2d/whale-maid/whale-maid.cdi3.json",
@@ -62,7 +62,7 @@
           "sha256": "e7add3b9dc2ba99eafddbbc05a5668359d6331933a75e1b438bfe576b7c09b55"
         }
       ],
-      "total_bytes": 2818507
+      "total_bytes": 2825135
     },
     {
       "name": "whale-maid-fallback",
@@ -138,19 +138,19 @@
       },
       {
         "path": "src/scripts/whale-live2d-secondary.ts",
-        "bytes": 35219,
-        "sha256": "ffeb707d4b41e3a2c069a52da44877d999828b45b1781269707a2d8088257c78"
+        "bytes": 41982,
+        "sha256": "050c63e0a94475073c15b0709a59c0facb71fe863904306078a905da95e8c921"
       },
       {
         "path": "src/scripts/whale-live2d.ts",
-        "bytes": 66745,
-        "sha256": "3adaba9b4fb485d823d46f2d6b24ebf730a36b725845fa5dac1edf5afba8bc46"
+        "bytes": 66807,
+        "sha256": "1664d677bbb7d37af3965a9ea4d7f83af7d5226f18b3f868d7f3a7e5f7151cad"
       }
     ],
-    "total_bytes": 194476
+    "total_bytes": 201301
   },
   "totals": {
-    "assets_bytes": 4961822,
-    "source_bytes": 194476
+    "assets_bytes": 4968450,
+    "source_bytes": 201301
   }
 }

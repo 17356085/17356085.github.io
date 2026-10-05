@@ -76,6 +76,17 @@ interface DrawableCache {
 	hairLagInitialized: boolean;
 }
 
+interface FaceSurfaceBinding {
+	readonly indices: readonly [number, number, number];
+	readonly weights: readonly [number, number, number];
+}
+
+interface FaceSurfaceBindings {
+	readonly center: FaceSurfaceBinding;
+	readonly left: FaceSurfaceBinding;
+	readonly right: FaceSurfaceBinding;
+}
+
 const BODY_ID = 'Body2';
 const ARM_ID = 'ArmR2';
 const FIN_R_ID = 'FinR';
@@ -154,6 +165,8 @@ const MOUTH_OPEN_Y_SCALE_MAX = 0.72;
 const MOUTH_OPEN_VISIBLE_TOP_FRACTION = 0.32;
 const MOUTH_CLOSED_CURVATURE_FRACTION = 0.14;
 const DEGREES_TO_RADIANS = Math.PI / 180;
+const FACE_TRIANGLE_AREA_EPSILON = 1e-8;
+const FACE_BARYCENTRIC_TOLERANCE = 1e-5;
 
 function isFiniteNumber(value: number): boolean {
 	return Number.isFinite(value);
@@ -274,6 +287,121 @@ function currentCoordinate(
 	return fallback;
 }
 
+function findFaceSurfaceBinding(
+	positions: Float32Array,
+	triangleIndices: Uint16Array | undefined,
+	targetX: number,
+	targetY: number,
+): FaceSurfaceBinding | null {
+	if (
+		!(positions instanceof Float32Array) ||
+		!triangleIndices ||
+		triangleIndices.length < 3 ||
+		!isFiniteNumber(targetX) ||
+		!isFiniteNumber(targetY)
+	) {
+		return null;
+	}
+
+	for (let triangle = 0; triangle + 2 < triangleIndices.length; triangle += 3) {
+		const indexA = triangleIndices[triangle];
+		const indexB = triangleIndices[triangle + 1];
+		const indexC = triangleIndices[triangle + 2];
+		const offsetA = indexA * 2;
+		const offsetB = indexB * 2;
+		const offsetC = indexC * 2;
+		if (
+			offsetA < 0 ||
+			offsetB < 0 ||
+			offsetC < 0 ||
+			offsetA + 1 >= positions.length ||
+			offsetB + 1 >= positions.length ||
+			offsetC + 1 >= positions.length
+		) {
+			continue;
+		}
+
+		const ax = positions[offsetA];
+		const ay = positions[offsetA + 1];
+		const bx = positions[offsetB];
+		const by = positions[offsetB + 1];
+		const cx = positions[offsetC];
+		const cy = positions[offsetC + 1];
+		if (
+			!isFiniteNumber(ax) ||
+			!isFiniteNumber(ay) ||
+			!isFiniteNumber(bx) ||
+			!isFiniteNumber(by) ||
+			!isFiniteNumber(cx) ||
+			!isFiniteNumber(cy)
+		) {
+			continue;
+		}
+
+		const edgeABX = bx - ax;
+		const edgeABY = by - ay;
+		const edgeACX = cx - ax;
+		const edgeACY = cy - ay;
+		const determinant = edgeABX * edgeACY - edgeACX * edgeABY;
+		if (!isFiniteNumber(determinant) || Math.abs(determinant) <= FACE_TRIANGLE_AREA_EPSILON) {
+			continue;
+		}
+
+		const targetOffsetX = targetX - ax;
+		const targetOffsetY = targetY - ay;
+		const weightB = (targetOffsetX * edgeACY - edgeACX * targetOffsetY) / determinant;
+		const weightC = (edgeABX * targetOffsetY - targetOffsetX * edgeABY) / determinant;
+		const weightA = 1 - weightB - weightC;
+		if (
+			!isFiniteNumber(weightA) ||
+			!isFiniteNumber(weightB) ||
+			!isFiniteNumber(weightC) ||
+			weightA < -FACE_BARYCENTRIC_TOLERANCE ||
+			weightB < -FACE_BARYCENTRIC_TOLERANCE ||
+			weightC < -FACE_BARYCENTRIC_TOLERANCE ||
+			weightA > 1 + FACE_BARYCENTRIC_TOLERANCE ||
+			weightB > 1 + FACE_BARYCENTRIC_TOLERANCE ||
+			weightC > 1 + FACE_BARYCENTRIC_TOLERANCE
+		) {
+			continue;
+		}
+
+		return {
+			indices: [indexA, indexB, indexC],
+			weights: [weightA, weightB, weightC],
+		};
+	}
+	return null;
+}
+
+function faceSurfaceCoordinate(
+	binding: FaceSurfaceBinding | null,
+	positions: Float32Array | undefined,
+	coordinate: 0 | 1,
+): number {
+	if (!binding || !(positions instanceof Float32Array)) {
+		return Number.NaN;
+	}
+	const indexA = binding.indices[0] * 2 + coordinate;
+	const indexB = binding.indices[1] * 2 + coordinate;
+	const indexC = binding.indices[2] * 2 + coordinate;
+	if (
+		indexA < 0 ||
+		indexB < 0 ||
+		indexC < 0 ||
+		indexA >= positions.length ||
+		indexB >= positions.length ||
+		indexC >= positions.length
+	) {
+		return Number.NaN;
+	}
+	const value =
+		positions[indexA] * binding.weights[0] +
+		positions[indexB] * binding.weights[1] +
+		positions[indexC] * binding.weights[2];
+	return isFiniteNumber(value) ? value : Number.NaN;
+}
+
 function maxDistanceFromPivot(positions: Float32Array, rootX: number, rootY: number): number {
 	let maximumDistance = 0;
 	for (let vertex = 0; vertex < positions.length; vertex += 2) {
@@ -371,6 +499,7 @@ function finiteOrFallback(value: number, fallback: number): number {
 export function createWhaleSecondaryRig(
 	ids: readonly string[],
 	restPositions: readonly Float32Array[],
+	triangleIndices?: readonly Uint16Array[],
 ): WhaleSecondaryRig | null {
 	if (!Array.isArray(ids) || !Array.isArray(restPositions) || ids.length !== restPositions.length) {
 		return null;
@@ -451,6 +580,25 @@ export function createWhaleSecondaryRig(
 	const mouthClosed = mouthClosedIndex === undefined ? null : drawables[mouthClosedIndex];
 	const mouthCenterX = mouthClosed?.bounds.centerX ?? mouthOpen?.bounds.centerX ?? 0;
 	const mouthCenterY = mouthClosed?.bounds.centerY ?? mouthOpen?.bounds.centerY ?? 0;
+	const faceBaseIndex = indexById.get('FaceBase');
+	const faceBase = faceBaseIndex === undefined ? null : drawables[faceBaseIndex];
+	const faceBaseTriangles = faceBaseIndex === undefined ? undefined : triangleIndices?.[faceBaseIndex];
+	const mouthHalfWidth = mouthClosed && isFiniteNumber(mouthClosed.bounds.width) && mouthClosed.bounds.width > 0
+		? mouthClosed.bounds.width / 2
+		: 0.02;
+	const faceCenterBinding = faceBase && faceBaseTriangles
+		? findFaceSurfaceBinding(faceBase.rest, faceBaseTriangles, mouthCenterX, mouthCenterY)
+		: null;
+	const faceLeftBinding = faceBase && faceBaseTriangles
+		? findFaceSurfaceBinding(faceBase.rest, faceBaseTriangles, mouthCenterX - mouthHalfWidth, mouthCenterY)
+		: null;
+	const faceRightBinding = faceBase && faceBaseTriangles
+		? findFaceSurfaceBinding(faceBase.rest, faceBaseTriangles, mouthCenterX + mouthHalfWidth, mouthCenterY)
+		: null;
+	const faceSurfaceBindings: FaceSurfaceBindings | null =
+		faceCenterBinding && faceLeftBinding && faceRightBinding
+			? { center: faceCenterBinding, left: faceLeftBinding, right: faceRightBinding }
+			: null;
 
 	const neckRootIndex = nearestVertexIndex(body.rest, body.bounds.centerX, body.bounds.maxY);
 	const neckRootRestX = body.rest[neckRootIndex * 2];
@@ -551,6 +699,10 @@ export function createWhaleSecondaryRig(
 	let earLagZ = 0;
 	let mouthOpening = 0;
 	let mouthShape = 0;
+	let cachedFaceCenterX = mouthCenterX;
+	let cachedFaceCenterY = mouthCenterY;
+	let cachedFaceCosine = 1;
+	let cachedFaceSine = 0;
 	let cachedFinRPivotX = finRPivotRestX;
 	let cachedFinRPivotY = finRPivotRestY;
 	let cachedFinLPivotX = finLPivotRestX;
@@ -696,6 +848,37 @@ export function createWhaleSecondaryRig(
 			cachedTailPivotY = currentCoordinate(currentTailPositions, tail.pivotIndex, 1, cachedTailPivotY);
 		}
 
+		// Sample the native FaceBase surface on every update, including redraws
+		// with no elapsed time. The mouth uses only the current center and chord
+		// orientation; FaceBase shear and scale remain excluded from the local
+		// mouth attachment.
+		const currentFacePositions = faceBaseIndex === undefined ? undefined : corePositions[faceBaseIndex];
+		const currentFaceCenterX = faceSurfaceCoordinate(faceSurfaceBindings?.center ?? null, currentFacePositions, 0);
+		const currentFaceCenterY = faceSurfaceCoordinate(faceSurfaceBindings?.center ?? null, currentFacePositions, 1);
+		const currentFaceLeftX = faceSurfaceCoordinate(faceSurfaceBindings?.left ?? null, currentFacePositions, 0);
+		const currentFaceLeftY = faceSurfaceCoordinate(faceSurfaceBindings?.left ?? null, currentFacePositions, 1);
+		const currentFaceRightX = faceSurfaceCoordinate(faceSurfaceBindings?.right ?? null, currentFacePositions, 0);
+		const currentFaceRightY = faceSurfaceCoordinate(faceSurfaceBindings?.right ?? null, currentFacePositions, 1);
+		const faceChordX = currentFaceRightX - currentFaceLeftX;
+		const faceChordY = currentFaceRightY - currentFaceLeftY;
+		const faceChordLength = Math.hypot(faceChordX, faceChordY);
+		if (
+			isFiniteNumber(currentFaceCenterX) &&
+			isFiniteNumber(currentFaceCenterY) &&
+			isFiniteNumber(faceChordLength) &&
+			faceChordLength > FACE_TRIANGLE_AREA_EPSILON
+		) {
+			cachedFaceCenterX = currentFaceCenterX;
+			cachedFaceCenterY = currentFaceCenterY;
+			cachedFaceCosine = faceChordX / faceChordLength;
+			cachedFaceSine = faceChordY / faceChordLength;
+		} else {
+			cachedFaceCenterX = mouthCenterX;
+			cachedFaceCenterY = mouthCenterY;
+			cachedFaceCosine = 1;
+			cachedFaceSine = 0;
+		}
+
 		const rawHeadAngle = clamp(smoothedHeadZ * 0.95 + smoothedHeadY * 0.18, -HEAD_MAX_ROTATION_DEGREES, HEAD_MAX_ROTATION_DEGREES) * DEGREES_TO_RADIANS;
 		headAngle = rawHeadAngle * headScale;
 		// A rigid head turns around the collar/chin anchor. Independent head
@@ -828,8 +1011,6 @@ export function createWhaleSecondaryRig(
 
 			// The mouth drawables are driven from their neutral meshes so Core's
 			// collapsed/form-shaped vertices cannot create a large circular overlay.
-			// They rejoin the shared head/body fields below and therefore keep the
-			// same face motion as the surrounding drawables.
 			if (isMouthOpen && mouthOpen) {
 				const neutralX = mouthOpen.rest[vertex];
 				const neutralY = mouthOpen.rest[vertex + 1];
@@ -845,6 +1026,14 @@ export function createWhaleSecondaryRig(
 				x = mouthCenterX + (neutralX - mouthClosed.bounds.centerX) * closedWidthScale;
 				y = neutralY + mouthShape * mouthClosed.bounds.height * MOUTH_CLOSED_CURVATURE_FRACTION *
 					(2 * normalizedX * normalizedX - 1);
+			}
+			if ((isMouthOpen && mouthOpen) || (isMouthClosed && mouthClosed)) {
+				// Attach the locally shaped mouth to native FaceBase center and
+				// in-plane rotation before applying the supplemental fields below.
+				const mouthDX = x - mouthCenterX;
+				const mouthDY = y - mouthCenterY;
+				x = cachedFaceCenterX + mouthDX * cachedFaceCosine - mouthDY * cachedFaceSine;
+				y = cachedFaceCenterY + mouthDX * cachedFaceSine + mouthDY * cachedFaceCosine;
 			}
 
 			// Local rotations are applied first, using current Core roots so Core
