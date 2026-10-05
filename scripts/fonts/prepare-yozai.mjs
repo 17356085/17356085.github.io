@@ -198,6 +198,48 @@ async function collectCharacterFrequency(projectRoot) {
 	return frequencies;
 }
 
+/** Keep interface and public card text together before article-body glyphs. */
+async function collectInterfaceCharacters(projectRoot) {
+	const characters = new Set();
+	const add = (text) => {
+		for (const character of text) characters.add(character.codePointAt(0));
+	};
+	const addStrings = (text) => {
+		const withoutLineComments = text
+			.split(/\r?\n/)
+			.filter((line) => !line.trimStart().startsWith("//"))
+			.join("\n");
+		for (const match of withoutLineComments.matchAll(/["']([^"'\r\n]*)["']/g))
+			add(match[1]);
+	};
+	const themeRoot = dirname(shironesRequire.resolve("shirones"));
+	addStrings(
+		await readFile(join(themeRoot, "src/i18n/languages/zh_CN.ts"), "utf8"),
+	);
+	for (const entry of await readdir(join(projectRoot, "shirones/config"), {
+		withFileTypes: true,
+	})) {
+		if (entry.isFile() && entry.name.endsWith(".ts"))
+			addStrings(
+				await readFile(
+					join(projectRoot, "shirones/config", entry.name),
+					"utf8",
+				),
+			);
+	}
+	for (const file of await collectTextFiles(join(projectRoot, "src/content"))) {
+		if (!/\.mdx?$/.test(file)) continue;
+		const text = await readFile(file, "utf8");
+		const frontmatter = text.match(
+			/^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/,
+		)?.[1];
+		if (frontmatter && !/^draft:\s*true\b/m.test(frontmatter)) add(frontmatter);
+	}
+	const mascotPath = join(projectRoot, "src/components/WhaleMascot.astro");
+	if (existsSync(mascotPath)) addStrings(await readFile(mascotPath, "utf8"));
+	return characters;
+}
+
 /** @param {number[]} codePoints */
 function toUnicodeRange(codePoints) {
 	const sorted = [...codePoints].sort((left, right) => left - right);
@@ -235,7 +277,7 @@ async function readJson(path) {
 
 /** @param {string} path @param {unknown} value */
 async function writeJson(path, value) {
-	const temporaryPath = `${path}.tmp`;
+	const temporaryPath = `${path}.${process.pid}.tmp`;
 	await writeFile(temporaryPath, `${JSON.stringify(value, null, 2)}\n`, "utf8");
 	await rename(temporaryPath, path);
 }
@@ -262,7 +304,12 @@ export async function prepareYozaiFontSubsets() {
 	const sourceHash = createHash("sha256").update(sourceBuffer).digest("hex");
 	const supportedCodePoints = readSupportedCodePoints(sourceBuffer);
 	const frequencies = await collectCharacterFrequency(projectRoot);
+	const interfaceCharacters = await collectInterfaceCharacters(projectRoot);
 	const orderedCodePoints = [...supportedCodePoints].sort((left, right) => {
+		const interfaceDifference =
+			Number(interfaceCharacters.has(right)) -
+			Number(interfaceCharacters.has(left));
+		if (interfaceDifference) return interfaceDifference;
 		const frequencyDifference =
 			(frequencies.get(right) ?? 0) - (frequencies.get(left) ?? 0);
 		return frequencyDifference || left - right;
@@ -291,10 +338,27 @@ export async function prepareYozaiFontSubsets() {
 			typeof variant?.file === "string" &&
 			existsSync(join(projectRoot, variant.file)),
 	);
+	const cachedHashes = [];
+	if (previousCacheMatches && cacheFilesExist) {
+		for (const variant of previousVariants) {
+			cachedHashes.push(
+				sha256(await readFile(join(projectRoot, variant.file))),
+			);
+		}
+	}
+	const hasVerifiedCache =
+		previousManifest?.coverageVerified === true &&
+		Array.isArray(previousManifest.outputHashes) &&
+		previousManifest.outputHashes.length === previousVariants.length &&
+		cachedHashes.every(
+			(hash, index) => hash === previousManifest.outputHashes[index],
+		);
+	const cacheCorrupted =
+		Array.isArray(previousManifest?.outputHashes) && !hasVerifiedCache;
 
 	let variants;
 	let generated = false;
-	if (previousCacheMatches && cacheFilesExist) {
+	if (previousCacheMatches && cacheFilesExist && !cacheCorrupted) {
 		variants = previousVariants;
 	} else {
 		generated = true;
@@ -309,7 +373,7 @@ export async function prepareYozaiFontSubsets() {
 		for (const [index, chunk] of chunks.entries()) {
 			const relativeOutput = variants[index].file;
 			const outputPath = join(projectRoot, relativeOutput);
-			const temporaryPath = `${outputPath}.tmp`;
+			const temporaryPath = `${outputPath}.${process.pid}.tmp`;
 			const subsetBuffer = await subsetFont(
 				sourceBuffer,
 				String.fromCodePoint(...chunk),
@@ -329,9 +393,17 @@ export async function prepareYozaiFontSubsets() {
 	const expectedSets = chunks.map((chunk) => new Set(chunk));
 	const coveredCodePoints = new Set();
 	const sizes = [];
+	const outputHashes = [];
 	for (const [index, variant] of variants.entries()) {
 		const outputPath = join(projectRoot, variant.file);
 		const outputBuffer = await readFile(outputPath);
+		outputHashes.push(sha256(outputBuffer));
+		if (!generated && hasVerifiedCache) {
+			for (const codePoint of expectedSets[index])
+				coveredCodePoints.add(codePoint);
+			sizes.push(outputBuffer.length);
+			continue;
+		}
 		const sfntBuffer = await fontverter.convert(outputBuffer, "sfnt");
 		const outputCodePoints = readSupportedCodePoints(Buffer.from(sfntBuffer));
 		for (const codePoint of outputCodePoints) {
@@ -384,6 +456,7 @@ export async function prepareYozaiFontSubsets() {
 		supportedCharacters: supportedCodePoints.size,
 		variantCount: variants.length,
 		coverageVerified: true,
+		outputHashes,
 		generatedAt: new Date().toISOString(),
 		cached: !generated,
 		stats,
