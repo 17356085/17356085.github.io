@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { createServer } from "node:http";
 import { join, relative, resolve } from "node:path";
@@ -13,6 +14,7 @@ const animeSnapshotPath = join(
 	"anime-snapshots",
 	"bangumi.json",
 );
+const live2dManifestPath = join(root, "docs", "live2d", "release-manifest.json");
 const issues = [];
 const expectedHiddenPosts = [
 	{
@@ -149,6 +151,153 @@ function localOutputFile(reference) {
 	const cleanPath = value.replace(/^\/+/, "");
 	if (cleanPath.endsWith("/")) return join(dist, cleanPath, "index.html");
 	return join(dist, cleanPath);
+}
+
+function dataAttribute(tag, name) {
+	return tag.match(new RegExp(`\\b${name}="([^"]*)"`))?.[1] ?? null;
+}
+
+function assertLive2DBootstrap() {
+	const routes = [
+		{ label: "homepage", route: "/" },
+		{ label: "Friends", route: "/friends/" },
+	];
+	let checkedRoutes = 0;
+	let dockCount = 0;
+	let localModelCoreCount = 0;
+
+	for (const { label, route } of routes) {
+		const output = outputFileForRoute(route);
+		if (!existsSync(output)) {
+			fail(`missing ${label} output for Live2D bootstrap: ${route}`);
+			continue;
+		}
+
+		const html = readFileSync(output, "utf8");
+		const docks = html.match(/<[^>]*\bdata-whale-dock\b[^>]*>/gi) ?? [];
+		if (docks.length === 0) {
+			fail(`${label} output is missing the data-whale-dock start tag`);
+			continue;
+		}
+		if (docks.length !== 1) {
+			fail(`${label} output has ${docks.length} data-whale-dock start tags; expected 1`);
+		}
+
+		checkedRoutes += 1;
+		dockCount += docks.length;
+		const dock = docks[0];
+		for (const [name, expected] of [
+			["data-live2d-enabled", "true"],
+			["data-renderer", "loading"],
+			["data-live2d-ready", "false"],
+		]) {
+			const actual = dataAttribute(dock, name);
+			if (actual !== expected) {
+				fail(
+					`${label} Live2D ${name} must be ${expected}; found ${actual ?? "<missing>"}`,
+				);
+			}
+		}
+
+		for (const name of ["data-live2d-model", "data-live2d-core"]) {
+			const reference = dataAttribute(dock, name);
+			const localFile = reference ? localOutputFile(reference) : null;
+			if (!localFile || !existsSync(localFile)) {
+				fail(
+					`${label} Live2D ${name} does not resolve to a local dist file: ${reference ?? "<missing>"}`,
+				);
+				continue;
+			}
+			localModelCoreCount += 1;
+		}
+	}
+
+	console.log(
+		`[output] Live2D bootstrap: routes=${routes.length}, checked=${checkedRoutes}, docks=${dockCount}, local model/core=${localModelCoreCount}`,
+	);
+}
+
+function assertLive2DManifest() {
+	if (!existsSync(live2dManifestPath)) {
+		fail("missing Live2D release manifest: docs/live2d/release-manifest.json");
+		return;
+	}
+
+	let manifest;
+	try {
+		manifest = JSON.parse(readFileSync(live2dManifestPath, "utf8"));
+	} catch (error) {
+		fail(
+			`Live2D release manifest is not valid JSON: ${error instanceof Error ? error.message : String(error)}`,
+		);
+		return;
+	}
+
+	const files = [];
+	if (!Array.isArray(manifest?.groups)) {
+		fail("Live2D release manifest is missing groups");
+	} else {
+		for (const [index, group] of manifest.groups.entries()) {
+			if (!Array.isArray(group?.files)) {
+				fail(`Live2D release manifest group ${index} is missing files`);
+				continue;
+			}
+			files.push(...group.files);
+		}
+	}
+
+	if (files.length !== 18) {
+		fail(`Live2D release manifest resource count mismatch: expected 18, found ${files.length}`);
+	}
+
+	let checked = 0;
+	let missing = 0;
+	let mismatched = 0;
+	for (const entry of files) {
+		const manifestPath =
+			typeof entry?.path === "string" ? entry.path.replaceAll("\\", "/") : "";
+		const relativePath = manifestPath.startsWith("public/")
+			? manifestPath.slice("public/".length)
+			: null;
+		const localFile = relativePath ? localOutputFile(`/${relativePath}`) : null;
+		if (!localFile || !existsSync(localFile)) {
+			missing += 1;
+			fail(`Live2D manifest asset is missing from dist: ${manifestPath || "<invalid path>"}`);
+			continue;
+		}
+
+		let bytes;
+		try {
+			bytes = readFileSync(localFile);
+		} catch (error) {
+			missing += 1;
+			fail(
+				`Live2D manifest asset could not be read from dist: ${manifestPath} (${error instanceof Error ? error.message : String(error)})`,
+			);
+			continue;
+		}
+
+		checked += 1;
+		let mismatch = false;
+		if (bytes.length !== entry?.bytes) {
+			mismatch = true;
+			fail(
+				`Live2D manifest byte mismatch: ${manifestPath} expected=${entry?.bytes} found=${bytes.length}`,
+			);
+		}
+		const sha256 = createHash("sha256").update(bytes).digest("hex");
+		if (sha256 !== entry?.sha256) {
+			mismatch = true;
+			fail(
+				`Live2D manifest SHA mismatch: ${manifestPath} expected=${entry?.sha256} found=${sha256}`,
+			);
+		}
+		if (mismatch) mismatched += 1;
+	}
+
+	console.log(
+		`[output] Live2D manifest: resources=${files.length}, checked=${checked}, missing=${missing}, mismatched=${mismatched}`,
+	);
 }
 
 function collectSourceImageReferences(documents) {
@@ -559,6 +708,8 @@ async function main() {
 	assertSiteIdentity();
 	assertAnimeSnapshot();
 	assertFriendsOutput();
+	assertLive2DBootstrap();
+	assertLive2DManifest();
 	assertNoDemoData();
 	await pagefindSearchChecks();
 

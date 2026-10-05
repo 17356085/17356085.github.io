@@ -1,6 +1,4 @@
 ---
-import { existsSync } from "node:fs";
-import { fileURLToPath } from "node:url";
 import { getSortedPosts } from "@utils/content-utils";
 import { isEncryptedPost } from "@utils/post-encryption";
 import { getPostUrl, url } from "@utils/url-utils";
@@ -11,16 +9,15 @@ const postUrls = (await getSortedPosts())
 const assetStyle = `--whale-idle: url("${url("/live2d/whale-maid/fallback/idle.webp")}"); --whale-action: url("${url("/live2d/whale-maid/fallback/actions.webp")}"); --whale-look: url("${url("/live2d/whale-maid/fallback/look.webp")}");`;
 const live2dModelUrl = url("/live2d/whale-maid/whale-maid.model3.json");
 const live2dCoreUrl = url("/live2d/vendor/live2dcubismcore.min.js");
-const live2dModelFile = fileURLToPath(new URL("../../public/live2d/whale-maid/whale-maid.model3.json", import.meta.url));
-const live2dCoreFile = fileURLToPath(new URL("../../public/live2d/vendor/live2dcubismcore.min.js", import.meta.url));
-const live2dAssetsAvailable = existsSync(live2dModelFile) && existsSync(live2dCoreFile);
+// 发布包始终包含模型与 Core；客户端加载失败时由现有逻辑回退到精灵图。
+// 不使用 import.meta.url 探测 public：静态构建后组件已被移入服务端产物。
 ---
 
-<aside class="whale-dock" style={assetStyle} data-whale-dock data-renderer={live2dAssetsAvailable ? "loading" : "sprite"} data-state="idle" data-motion="reduced" data-live2d-enabled={live2dAssetsAvailable ? "true" : "false"} data-live2d-ready="false" data-live2d-model={live2dModelUrl} data-live2d-core={live2dCoreUrl} data-base-url={url("/")} aria-busy={live2dAssetsAvailable ? "true" : "false"} aria-label="博客助手" data-posts={JSON.stringify(postUrls)}>
+<aside class="whale-dock" style={assetStyle} data-whale-dock data-renderer="loading" data-state="idle" data-motion="reduced" data-live2d-enabled="true" data-live2d-ready="false" data-live2d-model={live2dModelUrl} data-live2d-core={live2dCoreUrl} data-base-url={url("/")} aria-busy="true" aria-label="博客助手" data-posts={JSON.stringify(postUrls)}>
 	<div class="whale-scene" data-whale-scene>
 		<button class="whale-character" data-whale-character type="button" aria-label="打招呼" aria-expanded="false" aria-controls="whale-dialogue" disabled>
 			<span class="whale-lean" aria-hidden="true"><span class="whale-breathe"><span class="whale-clip"><span class="whale-frames"></span></span></span></span>
-			<canvas class="whale-live2d" data-whale-live2d width="192" height="208" aria-hidden="true" hidden={!live2dAssetsAvailable}></canvas>
+			<canvas class="whale-live2d" data-whale-live2d width="192" height="208" aria-hidden="true"></canvas>
 		</button>
 		<div class="whale-dialogue" id="whale-dialogue" data-whale-dialogue role="group" aria-label="问候" hidden>
 			<button class="whale-close" data-whale-close type="button" aria-label="收起这句问候">×</button>

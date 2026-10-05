@@ -118,8 +118,8 @@
     "files": [
       {
         "path": "src/components/WhaleMascot.astro",
-        "bytes": 32981,
-        "sha256": "0ba58848794a4ecbb1af43f1f92f78c77c27a4425064db28860be455a691e2a8"
+        "bytes": 32630,
+        "sha256": "70a3a2648ce7dceec6b53afbcf8234cbffa275c5388d34febcd631d472c57b5e"
       },
       {
         "path": "src/layouts/MainGridLayout.astro",
@@ -147,10 +147,10 @@
         "sha256": "08cf4f12443a87242efeed2b87e3136038eda0edb5309e9628e48757f1bb45a1"
       }
     ],
-    "total_bytes": 190409
+    "total_bytes": 190058
   },
   "totals": {
     "assets_bytes": 4809458,
-    "source_bytes": 190409
+    "source_bytes": 190058
   }
 }
