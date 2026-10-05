@@ -1,0 +1,26 @@
+{
+	"Version": 3,
+	"FileReferences": {
+		"Moc": "whale-maid.moc3",
+		"Textures": [
+			"whale-maid.2048/texture_00.png"
+		],
+		"Physics": "whale-maid.physics3.json",
+		"DisplayInfo": "whale-maid.cdi3.json",
+		"Motions": {
+			"Idle": [{ "File": "motions/idle.motion3.json" }],
+			"Greet": [{ "File": "motions/greet.motion3.json" }],
+			"Wave": [{ "File": "motions/wave.motion3.json" }],
+			"Pet": [{ "File": "motions/pet.motion3.json" }],
+			"Sleep": [{ "File": "motions/sleep.motion3.json" }],
+			"Wake": [{ "File": "motions/wake.motion3.json" }]
+		}
+	},
+	"Groups": [
+		{
+			"Target": "Parameter",
+			"Name": "EyeBlink",
+			"Ids": []
+		}
+	]
+}

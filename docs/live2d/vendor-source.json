@@ -1,0 +1,63 @@
+{
+  "manifest_version": 1,
+  "asset": "live2d-web-core",
+  "recorded_on": "2026-10-03",
+  "source": {
+    "kind": "official user-provided local zip",
+    "archive": "CubismSdkForWeb-5-r.5.zip",
+    "archive_bytes": 20708681,
+    "archive_sha256": "67064a7fb1812cf502f5c4a03bfe12cc638c75a621bb4acf06bb28763df06ba0",
+    "sdk_package": "CubismSdkForWeb-5-r.5",
+    "sdk_version": "5-r.5",
+    "core_version": "06.00.0001",
+    "core_version_evidence": "Core/CHANGELOG.md: Upgrade Core version to 06.00.0001."
+  },
+  "files": [
+    {
+      "path": "live2dcubismcore.min.js",
+      "archive_entry": "CubismSdkForWeb-5-r.5/Core/live2dcubismcore.min.js",
+      "bytes": 228042,
+      "sha256": "8741f739779b5d5210872bd3d7d99f0f1e56e6c87409e7d26d6bb4b80aa1ef47"
+    },
+    {
+      "path": "CoreLICENSE.md",
+      "archive_entry": "CubismSdkForWeb-5-r.5/Core/LICENSE.md",
+      "bytes": 520,
+      "sha256": "b81e37048010ef1d336106151201a0323c3309cae44aecdedf57831fe88fa991"
+    },
+    {
+      "path": "SDKLICENSE.md",
+      "archive_entry": "CubismSdkForWeb-5-r.5/LICENSE.md",
+      "bytes": 3042,
+      "sha256": "787a7d1454240865420b96ea9a20ab5e1a5ec3c1abced2e308288c2de8aac991"
+    },
+    {
+      "path": "CoreREADME.md",
+      "archive_entry": "CubismSdkForWeb-5-r.5/Core/README.md",
+      "bytes": 770,
+      "sha256": "7a27d6d2586c555fca63e25baa9369f9da8a83781e35900c4b09ea437a5297f5"
+    },
+    {
+      "path": "RedistributableFiles.txt",
+      "archive_entry": "CubismSdkForWeb-5-r.5/Core/RedistributableFiles.txt",
+      "bytes": 205,
+      "sha256": "d16c123688299e1e69a7f5ebc01b3bd75a8d408c024002a7d35b2aae94003f8c"
+    },
+    {
+      "path": "CoreCHANGELOG.md",
+      "archive_entry": "CubismSdkForWeb-5-r.5/Core/CHANGELOG.md",
+      "bytes": 6982,
+      "sha256": "21556a2d10d8fe8aa5f9ff61786eed77b02f9595a8d8e713ba12de4e291c8327",
+      "documentation_copy": {
+        "path": "docs/live2d/CoreCHANGELOG.md",
+        "bytes": 6981,
+        "sha256": "18217ac51bc5cdf6655794a82eede352edbed7861ce681c352b1dbe5e7a5643c",
+        "normalization": "Removed one trailing space on line 44 for repository whitespace gate; original archive entry hash above is unchanged."
+      }
+    }
+  ],
+  "claim_boundaries": {
+    "source_integrity": "Each listed file was copied byte-for-byte from its archive entry and is recorded with its extracted byte length and SHA-256.",
+    "runtime": "Core execution, browser playback, build, deployment, and release verification are outside this manifest."
+  }
+}

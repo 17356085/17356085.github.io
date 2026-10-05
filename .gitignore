@@ -70,6 +70,9 @@ public/assets/moments/thumbnails/*
 .codex-*.log
 research/
 
+# Live2D authoring projects, candidates, local tools and observation captures.
+/artwork/whale-maid-live2d/
+
 # playwright
 .playwright-cli/
 test-results/

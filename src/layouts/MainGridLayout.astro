@@ -1,0 +1,135 @@
+---
+import BannerStage from "@components/organisms/BannerStage.astro";
+import CategoryBar from "@components/organisms/CategoryBar.astro";
+import ContextMenu from "@components/organisms/ContextMenu.svelte";
+import FloatingControls from "@components/organisms/FloatingControls.astro";
+import Footer from "@components/organisms/Footer.astro";
+import WhaleMascot from "../components/WhaleMascot.astro";
+import RouteProgress from "@components/organisms/RouteProgress.svelte";
+import SideBar from "@components/organisms/SideBar.astro";
+import SiteNavigationDrawer from "@components/organisms/SiteNavigationDrawer.svelte";
+import TopAppBar from "@components/organisms/TopAppBar.astro";
+import {
+	generateGridClasses,
+	generateMainContentClasses,
+	generatePrimarySidebarClasses,
+	generateSecondarySidebarClasses,
+	getResponsiveSidebarConfig,
+	isDualColumn,
+} from "@utils/responsive-utils";
+import type { MarkdownHeading } from "astro";
+import { contextMenuConfig } from "@/config";
+import type { SidebarPage } from "@/types/sidebarConfig";
+import Layout from "@layouts/Layout.astro";
+
+interface Props {
+	title?: string;
+	banner?: string;
+	ogImage?: string;
+	description?: string;
+	/** Banner 可选日期，使用 YYYY-MM-DD 等可直接写入 time[datetime] 的值。 */
+	bannerDate?: string;
+	lang?: string;
+	setOGTypeArticle?: boolean;
+	headings?: MarkdownHeading[];
+	/** 文章页所属分类名，透传给 CategoryBar 做弱高亮 */
+	postCategory?: string;
+	/** 当前页面标识符（SidebarPage），透传给 SideBar 做 pages 过滤，并输出到
+	 *  #swup-container 的 data-current-page——Swup 替换容器时同步该属性，
+	 *  侧栏据此在站内导航后重新过滤 */
+	page?: SidebarPage;
+	hasComments?: boolean;
+}
+
+const {
+	title,
+	banner,
+	ogImage,
+	description,
+	bannerDate,
+	lang,
+	setOGTypeArticle,
+	headings = [],
+	postCategory,
+	page,
+	hasComments,
+} = Astro.props;
+
+// 响应式侧栏配置（数据驱动布局）
+const sidebarResponsive = getResponsiveSidebarConfig();
+const gridClasses = generateGridClasses(sidebarResponsive);
+const sidebarClasses = generatePrimarySidebarClasses(sidebarResponsive);
+const secondarySidebarClasses =
+	generateSecondarySidebarClasses(sidebarResponsive);
+const mainContentClasses = generateMainContentClasses(sidebarResponsive);
+---
+
+<Layout title={title} banner={banner} ogImage={ogImage} description={description} lang={lang} setOGTypeArticle={setOGTypeArticle} page={page}>
+
+<!-- Navbar -->
+<slot slot="head" name="head"></slot>
+<header id="top-row" class="z-50 pointer-events-none relative transition-all duration-700 max-w-[var(--page-width)] px-0 md:px-4 mx-auto" class:list={[""]}>
+    <div id="navbar-wrapper" class="pointer-events-auto sticky top-0 transition-all">
+        <TopAppBar></TopAppBar>
+    </div>
+</header>
+
+<!-- Banner -->
+<BannerStage page={page} title={title} description={description} date={bannerDate} />
+
+<!-- Main content -->
+<div id="main-layout" class="absolute w-full z-30 pointer-events-none">
+    <!-- The pointer-events-none here prevent blocking the click event of the TOC -->
+    <div class="relative max-w-[var(--page-width)] mx-auto pointer-events-auto">
+		<div id="main-grid" class:list={["transition duration-[var(--m3e-duration-long)] w-full left-0 right-0 grid grid-rows-[auto_1fr_auto] lg:grid-rows-[auto] mx-auto gap-4 px-2 md:px-4", gridClasses]}>
+			<SideBar class={sidebarClasses} currentPage={page} headings={headings}></SideBar>
+			{isDualColumn(sidebarResponsive) && (
+				<SideBar id="sidebar-secondary" column="secondary" class={secondarySidebarClasses} currentPage={page} headings={headings}></SideBar>
+			)}
+
+            <!-- 主内容列：分类导航栏静态渲染（位于 Swup 容器外），
+                 页面切换时保持固定不重渲染；仅内容区随导航替换 -->
+            <div id="main-content-column" class={mainContentClasses.replace("transition-swup-fade", "").trim()}>
+                <CategoryBar currentPostCategory={postCategory}></CategoryBar>
+                <main
+                    id="swup-container"
+                    data-current-post-category={postCategory || ""}
+                    data-current-page={page}
+                    data-has-comments={hasComments ? "true" : "false"}
+                    data-banner-title={title || ""}
+                    data-banner-description={description || ""}
+                    data-banner-date={bannerDate || ""}
+                    class="transition-swup-fade"
+                >
+                    <div id="content-wrapper" class="onload-animation">
+                        <!-- the overflow-hidden here prevent long text break the layout-->
+                        <!-- make id different from windows.swup global property -->
+                        <slot></slot>
+                        <div class="footer col-span-2 onload-animation hidden lg:block">
+                            <Footer></Footer>
+                        </div>
+                    </div>
+                </main>
+            </div>
+
+            <div class="footer col-span-2 onload-animation block lg:hidden">
+                <Footer></Footer>
+            </div>
+        </div>
+
+        <FloatingControls page={page} headings={headings} hasComments={hasComments} />
+        <WhaleMascot />
+        <RouteProgress client:load />
+    </div>
+</div>
+
+<SiteNavigationDrawer client:load />
+{contextMenuConfig.enable && (
+	<ContextMenu
+		actions={contextMenuConfig.actions}
+		pages={contextMenuConfig.pages}
+		client:load
+	/>
+)}
+
+</Layout>

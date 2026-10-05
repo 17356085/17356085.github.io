@@ -8,6 +8,9 @@ export default defineConfig({
 	integrations: [
 		shirones({
 			pagefind: false,
+			components: {
+				"layouts/MainGridLayout": "./src/layouts/MainGridLayout.astro",
+			},
 			excludeRoutes: [
 				"/albums",
 				"/compass",

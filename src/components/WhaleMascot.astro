@@ -1,0 +1,646 @@
+---
+import { existsSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import { getSortedPosts } from "@utils/content-utils";
+import { isEncryptedPost } from "@utils/post-encryption";
+import { getPostUrl, url } from "@utils/url-utils";
+
+const postUrls = (await getSortedPosts())
+	.filter((entry) => entry.data.draft !== true && !isEncryptedPost(entry.data))
+	.map((entry) => getPostUrl(entry));
+const assetStyle = `--whale-idle: url("${url("/live2d/whale-maid/fallback/idle.webp")}"); --whale-action: url("${url("/live2d/whale-maid/fallback/actions.webp")}"); --whale-look: url("${url("/live2d/whale-maid/fallback/look.webp")}");`;
+const live2dModelUrl = url("/live2d/whale-maid/whale-maid.model3.json");
+const live2dCoreUrl = url("/live2d/vendor/live2dcubismcore.min.js");
+const live2dModelFile = fileURLToPath(new URL("../../public/live2d/whale-maid/whale-maid.model3.json", import.meta.url));
+const live2dCoreFile = fileURLToPath(new URL("../../public/live2d/vendor/live2dcubismcore.min.js", import.meta.url));
+const live2dAssetsAvailable = existsSync(live2dModelFile) && existsSync(live2dCoreFile);
+---
+
+<aside class="whale-dock" style={assetStyle} data-whale-dock data-renderer={live2dAssetsAvailable ? "loading" : "sprite"} data-state="idle" data-motion="reduced" data-live2d-enabled={live2dAssetsAvailable ? "true" : "false"} data-live2d-ready="false" data-live2d-model={live2dModelUrl} data-live2d-core={live2dCoreUrl} data-base-url={url("/")} aria-busy={live2dAssetsAvailable ? "true" : "false"} aria-label="博客助手" data-posts={JSON.stringify(postUrls)}>
+	<div class="whale-scene" data-whale-scene>
+		<button class="whale-character" data-whale-character type="button" aria-label="打招呼" aria-expanded="false" aria-controls="whale-dialogue" disabled>
+			<span class="whale-lean" aria-hidden="true"><span class="whale-breathe"><span class="whale-clip"><span class="whale-frames"></span></span></span></span>
+			<canvas class="whale-live2d" data-whale-live2d width="192" height="208" aria-hidden="true" hidden={!live2dAssetsAvailable}></canvas>
+		</button>
+		<div class="whale-dialogue" id="whale-dialogue" data-whale-dialogue role="group" aria-label="问候" hidden>
+			<button class="whale-close" data-whale-close type="button" aria-label="收起这句问候">×</button>
+			<p data-whale-message></p>
+		</div>
+		<button class="whale-menu-toggle whale-tool" data-whale-menu type="button" aria-label="小工具" aria-expanded="false" aria-controls="whale-tools" hidden>
+			<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6h14M5 12h14M5 18h14" /></svg>
+		</button>
+		<nav class="whale-tools" id="whale-tools" data-whale-tools aria-label="小工具" hidden>
+			<button class="whale-tool" data-whale-chat type="button" aria-label="打招呼" title="打招呼"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 0 1-8 8H5l-3 3V11a9 9 0 0 1 18 0Z" /><path d="M7 10h8M7 14h5" /></svg></button>
+			<a class="whale-tool" data-whale-random href={postUrls[0]} aria-label="随机读一篇" title="随机读一篇"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h3c5 0 5 12 10 12h5M3 18h3c5 0 5-12 10-12h5M18 3l3 3-3 3M18 15l3 3-3 3" /></svg></a>
+			<button class="whale-tool" data-whale-sleep type="button" aria-label="休息一下" title="休息一下"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14A9 9 0 0 1 10 3a9 9 0 1 0 10 11Z" /></svg></button>
+		</nav>
+	</div>
+	<button class="whale-wake" data-whale-wake type="button" aria-label="唤回助手" hidden><span data-whale-wake-label>唤回</span> <span aria-hidden="true">☾</span></button>
+	<span class="whale-sr" data-whale-announcement role="status" aria-live="polite" aria-atomic="true"></span>
+</aside>
+
+<script>
+	import { mountWhaleLive2D, type WhaleLive2DHandle } from "../scripts/whale-live2d";
+
+	(() => {
+		const dockElement = document.querySelector<HTMLElement>("[data-whale-dock]");
+		if (!dockElement || dockElement.dataset.ready === "true") return;
+		const dock = dockElement;
+		const scene = dock.querySelector<HTMLElement>("[data-whale-scene]")!;
+		const character = dock.querySelector<HTMLButtonElement>("[data-whale-character]")!;
+		const live2dCanvas = dock.querySelector<HTMLCanvasElement>("[data-whale-live2d]");
+		const dialogue = dock.querySelector<HTMLElement>("[data-whale-dialogue]")!;
+		const message = dock.querySelector<HTMLElement>("[data-whale-message]")!;
+		const menu = dock.querySelector<HTMLButtonElement>("[data-whale-menu]")!;
+		const tools = dock.querySelector<HTMLElement>("[data-whale-tools]")!;
+		const randomLink = dock.querySelector<HTMLAnchorElement>("[data-whale-random]")!;
+		const wake = dock.querySelector<HTMLButtonElement>("[data-whale-wake]")!;
+		const wakeLabel = dock.querySelector<HTMLElement>("[data-whale-wake-label]")!;
+		const announcement = dock.querySelector<HTMLElement>("[data-whale-announcement]")!;
+		const frames = dock.querySelector<HTMLElement>(".whale-frames")!;
+		const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+		const hoverQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
+		const storageKey = "whale-maid-resting-v1";
+		const greetingSessionKey = "whale-maid-greeted-paths-v1";
+		let resting = false;
+		let obscured = false;
+		let wakeReactionPending = false;
+		let menuPinned = false;
+		let suppressMenuFocus = false;
+		let pointerFrame = 0;
+		let waveTimer = 0;
+		let bubbleTimer = 0;
+		let menuCloseTimer = 0;
+		let routeTimer = 0;
+		let protectedUntil = 0;
+		let bubbleKeepFocused = false;
+		let conversation = 0;
+		let point = { x: 0, y: 0 };
+		let postUrls: string[] = [];
+		const greetedPaths = new Set<string>();
+		let live2dHandle: WhaleLive2DHandle | null = null;
+		let live2dLoading = false;
+		let live2dRuntimeReady = false;
+		let rendererSettled = false;
+		let greetingReactionPending = false;
+		type ChatReaction = "wave" | "pet" | "greet";
+		const chatReactionKinds: readonly ChatReaction[] = ["wave", "pet", "greet"];
+		let chatReactionBag: ChatReaction[] = [...chatReactionKinds];
+		let lastChatReaction: ChatReaction | null = null;
+		let chatDebounceUntil = 0;
+		const CHAT_DEBOUNCE_MS = 500;
+		try {
+			const parsed: unknown = JSON.parse(dock.dataset.posts || "[]");
+			if (Array.isArray(parsed)) postUrls = parsed.filter((value): value is string => typeof value === "string" && new URL(value, location.href).origin === location.origin);
+			resting = localStorage.getItem(storageKey) === "true";
+		} catch { /* The mascot also works without browser storage. */ }
+		try {
+			const parsed: unknown = JSON.parse(sessionStorage.getItem(greetingSessionKey) || "[]");
+			if (Array.isArray(parsed)) {
+				for (const value of parsed) if (typeof value === "string") greetedPaths.add(value);
+			}
+		} catch { /* Session storage may be unavailable in private browsing. */ }
+
+		function reducedMotion() {
+			return motionQuery.matches || document.documentElement.classList.contains("motion-reduced");
+		}
+		function clamp(value: number, minimum: number, maximum: number) {
+			return Math.min(maximum, Math.max(minimum, value));
+		}
+		function syncLive2DPlayback() {
+			live2dHandle?.setPaused(resting || obscured || reducedMotion() || document.hidden);
+		}
+		function reactLive2D(kind: "greet" | "pet" | "wave" | "sleep" | "wake") {
+			if (!live2dHandle || resting || obscured || reducedMotion() || document.hidden) return;
+			live2dHandle.react(kind);
+			dock!.dataset.lastReaction = kind;
+		}
+		function refillChatReactionBag() {
+			const next = [...chatReactionKinds];
+			for (let index = next.length - 1; index > 0; index -= 1) {
+				const swapIndex = Math.floor(Math.random() * (index + 1));
+				[next[index], next[swapIndex]] = [next[swapIndex], next[index]];
+			}
+			if (lastChatReaction && next[0] === lastChatReaction) {
+				const alternateIndex = next.findIndex((kind) => kind !== lastChatReaction);
+				[next[0], next[alternateIndex]] = [next[alternateIndex], next[0]];
+			}
+			chatReactionBag = next;
+		}
+		function nextChatReaction(): ChatReaction {
+			if (!chatReactionBag.length) refillChatReactionBag();
+			const kind = chatReactionBag.shift()!;
+			lastChatReaction = kind;
+			return kind;
+		}
+		function setIdle() {
+			dock!.dataset.state = "idle";
+			dock!.style.setProperty("--whale-lean", "0deg");
+			dock!.style.setProperty("--whale-nod", "0px");
+			live2dHandle?.setLook(0, 0);
+		}
+		function flushGreetingReaction() {
+			if (!greetingReactionPending || !live2dHandle || resting || obscured || reducedMotion() || document.hidden) return;
+			greetingReactionPending = false;
+			reactLive2D("greet");
+		}
+		function syncMotion() {
+			dock!.dataset.motion = reducedMotion() ? "reduced" : "full";
+			window.clearTimeout(waveTimer);
+			cancelAnimationFrame(pointerFrame);
+			pointerFrame = 0;
+			setIdle();
+			syncLive2DPlayback();
+			flushGreetingReaction();
+		}
+		function settleRenderer(renderer: "live2d" | "sprite") {
+			if (rendererSettled && !(renderer === "sprite" && dock.dataset.renderer === "live2d")) return;
+			rendererSettled = true;
+			dock.dataset.renderer = renderer;
+			dock.dataset.ready = "false";
+			dock.dataset.live2dReady = "false";
+			dock.setAttribute("aria-busy", "true");
+			character.disabled = true;
+			menu.hidden = true;
+			if (live2dCanvas) live2dCanvas.hidden = true;
+			syncMotion();
+			setResting(resting);
+			if (renderer === "live2d") {
+				dock.dataset.live2dReady = "true";
+				if (live2dCanvas) live2dCanvas.hidden = false;
+			}
+			dock.dataset.ready = "true";
+			character.disabled = false;
+			menu.hidden = false;
+			dock.setAttribute("aria-busy", "false");
+			if (wakeReactionPending && !resting) {
+				wakeReactionPending = false;
+				chooseArticle();
+				if (!obscured) {
+					character.focus({ preventScroll: true });
+					say("休息好啦，我回来陪你。", true);
+					reactLive2D("wake");
+					playSpriteWave();
+				}
+			} else pageGreeting();
+		}
+		function startLive2D() {
+			if (resting || obscured || rendererSettled || live2dLoading || live2dRuntimeReady) return;
+			dock.dataset.renderer = "loading";
+			dock.setAttribute("aria-busy", "true");
+			if (dock.dataset.live2dEnabled !== "true" || !live2dCanvas) {
+				settleRenderer("sprite");
+				return;
+			}
+			const modelUrl = dock.dataset.live2dModel;
+			const coreUrl = dock.dataset.live2dCore;
+			if (!modelUrl || !coreUrl) {
+				settleRenderer("sprite");
+				return;
+			}
+			live2dLoading = true;
+			live2dCanvas.hidden = true;
+			let loadingPromise: Promise<WhaleLive2DHandle>;
+			try {
+				loadingPromise = mountWhaleLive2D(live2dCanvas, modelUrl, coreUrl, {
+					onReady: () => {
+						if (rendererSettled) return;
+						live2dRuntimeReady = true;
+					},
+					onError: () => {
+						if (rendererSettled) return;
+						live2dLoading = false;
+						live2dRuntimeReady = false;
+						live2dCanvas.hidden = true;
+						live2dHandle?.destroy();
+						live2dHandle = null;
+						settleRenderer("sprite");
+					},
+				});
+			} catch {
+				live2dLoading = false;
+				live2dRuntimeReady = false;
+				settleRenderer("sprite");
+				return;
+			}
+			void loadingPromise.then((handle) => {
+				live2dLoading = false;
+				if (rendererSettled) {
+					handle.destroy();
+					return;
+				}
+				if (!live2dRuntimeReady) {
+					handle.destroy();
+					settleRenderer("sprite");
+					return;
+				}
+				live2dHandle = handle;
+				handle.setLook(0, 0);
+				syncLive2DPlayback();
+				settleRenderer("live2d");
+			}, () => {
+				live2dLoading = false;
+				live2dRuntimeReady = false;
+				live2dCanvas.hidden = true;
+				live2dHandle?.destroy();
+				live2dHandle = null;
+				settleRenderer("sprite");
+			});
+		}
+		function closeBubble() {
+			window.clearTimeout(bubbleTimer);
+			dialogue.hidden = true;
+			character.setAttribute("aria-expanded", "false");
+			protectedUntil = 0;
+			bubbleKeepFocused = false;
+		}
+		function scheduleClose(delay: number, keepFocused = false) {
+			window.clearTimeout(bubbleTimer);
+			bubbleTimer = window.setTimeout(() => {
+				if (!keepFocused || !dialogue.contains(document.activeElement)) closeBubble();
+			}, delay);
+		}
+		function say(text: string, manual = false) {
+			if (resting || obscured || document.hidden || (!manual && Date.now() < protectedUntil)) return;
+			message.textContent = text;
+			dialogue.hidden = false;
+			character.setAttribute("aria-expanded", "true");
+			bubbleKeepFocused = manual;
+			if (manual) {
+				protectedUntil = Date.now() + 10000;
+				announcement.textContent = text;
+			}
+			scheduleClose(manual ? 10000 : 4500, manual);
+		}
+		function playSpriteWave() {
+			if (dock.dataset.renderer !== "sprite") return;
+			window.clearTimeout(waveTimer);
+			setIdle();
+			if (reducedMotion()) return;
+			// Flush the idle pose once so repeated clicks restart the CSS reaction.
+			void frames.offsetWidth;
+			dock!.dataset.state = "wave";
+			waveTimer = window.setTimeout(setIdle, 680);
+		}
+		function playChatReaction(kind: ChatReaction) {
+			playSpriteWave();
+			reactLive2D(kind);
+		}
+		function chat() {
+			if (resting || obscured || !rendererSettled) return;
+			const now = Date.now();
+			if (now < chatDebounceUntil) return;
+			chatDebounceUntil = now + CHAT_DEBOUNCE_MS;
+			const lines = [
+				"你来啦！今天也一起逛逛吧。",
+				"正在认真读吗？我会安静陪着你，偶尔记得让眼睛休息一下呀。",
+				"不知道从哪篇开始？点旁边的随机按钮，让我带你翻一页。",
+				"学习笔记、番剧，还有日常的小事……这里藏着好多片段。",
+				"收到啦。你慢慢看，我就在这里。",
+			];
+			greetingReactionPending = false;
+			menuPinned = false;
+			setMenu(false);
+			say(lines[conversation++ % lines.length], true);
+			playChatReaction(nextChatReaction());
+		}
+		function setMenu(open: boolean) {
+			window.clearTimeout(menuCloseTimer);
+			tools.hidden = !open;
+			menu.setAttribute("aria-expanded", String(open));
+		}
+		function menuHasFocus() {
+			return document.activeElement === menu || tools.contains(document.activeElement);
+		}
+		function scheduleMenuClose(delay = 200) {
+			window.clearTimeout(menuCloseTimer);
+			if (menuPinned) return;
+			menuCloseTimer = window.setTimeout(() => {
+				if (menuPinned || menu.matches(":hover") || tools.matches(":hover") || menuHasFocus()) return;
+				setMenu(false);
+			}, delay);
+		}
+		function normalPath(path: string) {
+			try {
+				return decodeURI(path).replace(/\/+$/, "") || "/";
+			} catch {
+				return path.replace(/\/+$/, "") || "/";
+			}
+		}
+		function pathWithoutBase(path: string) {
+			const normalized = normalPath(path);
+			const basePath = normalPath(dock.dataset.baseUrl || "/");
+			if (basePath !== "/" && (normalized === basePath || normalized.startsWith(`${basePath}/`))) {
+				return normalPath(normalized.slice(basePath.length) || "/");
+			}
+			return normalized;
+		}
+		function routeFromPath(pathname: string) {
+			const path = pathWithoutBase(pathname);
+			if (path === "/" || /^\/page\/\d+$/.test(path)) return "home";
+			if (path === "/posts" || /^\/posts\/page\/\d+$/.test(path)) return "home";
+			if (path.startsWith("/posts/")) return "post";
+			const routes = ["archive", "friends", "moments", "anime", "compass", "skills", "projects", "devices", "games", "timeline", "albums", "about", "categories", "tags", "series", "rss", "atom"];
+			return routes.find((route) => path === `/${route}` || path.startsWith(`/${route}/`)) || "";
+		}
+		function currentPage() {
+			const content = document.querySelector<HTMLElement>("#swup-container");
+			return content?.dataset.currentPage?.trim() || document.body.dataset.currentPage?.trim() || routeFromPath(location.pathname);
+		}
+		function currentPath() {
+			return normalPath(location.pathname);
+		}
+		function truncateTitle(value: string, maximum = 24) {
+			const title = value.replace(/\s+/g, " ").trim();
+			const characters = Array.from(title);
+			return characters.length > maximum ? `${characters.slice(0, maximum - 1).join("")}…` : title;
+		}
+		function chooseArticle() {
+			const path = currentPath();
+			const choices = postUrls.filter((postUrl) => normalPath(new URL(postUrl, location.href).pathname) !== path);
+			if (!choices.length) {
+				randomLink.removeAttribute("href");
+				randomLink.setAttribute("aria-disabled", "true");
+				randomLink.setAttribute("tabindex", "-1");
+				randomLink.title = "暂时没有其他文章";
+				return;
+			}
+			randomLink.href = choices[Math.floor(Math.random() * choices.length)];
+			randomLink.removeAttribute("aria-disabled");
+			randomLink.removeAttribute("tabindex");
+			randomLink.title = "随机读一篇";
+		}
+		function pageGreeting() {
+			if (dock.dataset.renderer === "loading") return;
+			chooseArticle();
+			const path = currentPath();
+			if (resting || obscured || document.hidden || greetedPaths.has(path)) return;
+			greetedPaths.add(path);
+			try { sessionStorage.setItem(greetingSessionKey, JSON.stringify([...greetedPaths])); } catch { /* Session storage may be unavailable. */ }
+			setIdle();
+			const content = document.querySelector<HTMLElement>("#swup-container");
+			const page = currentPage();
+			const title = content?.dataset.bannerTitle?.trim() || content?.querySelector("h1")?.textContent?.trim();
+			const hour = new Date().getHours();
+			const time = hour < 6 ? "夜深啦" : hour < 11 ? "早上好" : hour < 14 ? "中午好" : hour < 18 ? "下午好" : "晚上好";
+			const greetings: Record<string, string> = {
+				home: `${time}，欢迎来到这里。找个喜欢的片段，慢慢读吧。`,
+				archive: "旧笔记都收在这里啦。也许能翻到一篇正合心意的。",
+				friends: "这里是小窝的朋友们，欢迎去串门呀。",
+				anime: "今天想看什么？一起翻翻番剧收藏吧。",
+				about: "想多了解这里吗？这里记着小窝主人的一些小事。",
+				categories: "按分类找找看，学习和生活都在这里。",
+				tags: "顺着标签走，也许会发现意想不到的笔记。",
+				notFound: "这条路好像走丢啦，回首页找找吧。",
+			};
+			const text = page === "post" && title
+				? `正在读《${truncateTitle(title)}》，慢慢看呀。`
+				: greetings[page || ""] || "又翻开一页啦。这里的每个片段，都可以慢慢看。";
+			protectedUntil = 0;
+			say(text);
+			greetingReactionPending = true;
+			flushGreetingReaction();
+		}
+		function setResting(value: boolean, focus = false) {
+			resting = value;
+			if (value) greetingReactionPending = false;
+			closeBubble();
+			menuPinned = false;
+			setMenu(false);
+			setIdle();
+			window.clearTimeout(waveTimer);
+			cancelAnimationFrame(pointerFrame);
+			pointerFrame = 0;
+			scene.hidden = value;
+			wake.hidden = !value;
+			wake.disabled = false;
+			wakeLabel.textContent = "唤回";
+			dock!.dataset.resting = String(value);
+			try { localStorage.setItem(storageKey, String(value)); } catch { /* Session-only fallback. */ }
+			syncLive2DPlayback();
+			if (!value && !rendererSettled) {
+				wakeReactionPending = focus;
+				scene.hidden = true;
+				wake.hidden = !focus;
+				wake.disabled = focus;
+				wakeLabel.textContent = focus ? "正在唤回…" : "唤回";
+				startLive2D();
+				return;
+			}
+			if (focus) (value ? wake : character).focus({ preventScroll: true });
+			if (!value && focus) {
+				say("休息好啦，我回来陪你。", true);
+				reactLive2D("wake");
+				playSpriteWave();
+			}
+		}
+
+		character.addEventListener("click", chat);
+		dock.querySelector<HTMLButtonElement>("[data-whale-chat]")!.addEventListener("click", chat);
+		dock.querySelector<HTMLButtonElement>("[data-whale-close]")!.addEventListener("click", () => { closeBubble(); character.focus({ preventScroll: true }); });
+		menu.addEventListener("click", () => { menuPinned = !menuPinned; setMenu(menuPinned); });
+		menu.addEventListener("pointerenter", () => { if (hoverQuery.matches && !resting && !obscured) setMenu(true); });
+		menu.addEventListener("pointerleave", () => { if (hoverQuery.matches) scheduleMenuClose(); });
+		tools.addEventListener("pointerenter", () => { if (hoverQuery.matches && !resting) window.clearTimeout(menuCloseTimer); });
+		tools.addEventListener("pointerleave", () => { if (hoverQuery.matches) scheduleMenuClose(); });
+		menu.addEventListener("focus", () => {
+			if (suppressMenuFocus) { suppressMenuFocus = false; return; }
+			if (!resting) setMenu(true);
+		});
+		menu.addEventListener("focusout", () => { queueMicrotask(() => { if (!menuHasFocus()) scheduleMenuClose(); }); });
+		tools.addEventListener("focusin", () => { if (!resting) { window.clearTimeout(menuCloseTimer); setMenu(true); } });
+		tools.addEventListener("focusout", () => { queueMicrotask(() => { if (!menuHasFocus()) scheduleMenuClose(); }); });
+		dock.addEventListener("focusout", () => {
+			queueMicrotask(() => {
+				if (!dialogue.contains(document.activeElement) && !dialogue.hidden) scheduleClose(2000);
+			});
+		});
+		dock.querySelector<HTMLButtonElement>("[data-whale-sleep]")!.addEventListener("click", () => setResting(true, true));
+		wake.addEventListener("click", () => setResting(false, true));
+		randomLink.addEventListener("click", (event) => {
+			if (!randomLink.hasAttribute("href")) event.preventDefault();
+			menuPinned = false;
+			setMenu(false);
+		});
+		document.addEventListener("pointerdown", (event) => {
+			if (!(event.target instanceof Node) || dock.contains(event.target)) return;
+			menuPinned = false;
+			setMenu(false);
+		}, { passive: true });
+		randomLink.addEventListener("pointerenter", chooseArticle);
+		randomLink.addEventListener("focus", chooseArticle);
+		document.addEventListener("keydown", (event) => {
+			if (event.key !== "Escape" || (dialogue.hidden && tools.hidden)) return;
+			const focusInside = dock.contains(document.activeElement);
+			closeBubble(); menuPinned = false; setMenu(false);
+			if (focusInside && document.activeElement !== menu) {
+				suppressMenuFocus = true;
+				menu.focus({ preventScroll: true });
+			}
+		});
+		frames.addEventListener("animationend", () => { if (dock.dataset.state === "wave") setIdle(); });
+		document.addEventListener("pointermove", (event) => {
+			if (event.pointerType !== "mouse" || !rendererSettled || resting || obscured || reducedMotion() || document.hidden || dock.dataset.state === "wave") return;
+			point = { x: event.clientX, y: event.clientY };
+			if (pointerFrame) return;
+			pointerFrame = requestAnimationFrame(() => {
+				pointerFrame = 0;
+				if (!rendererSettled || resting || obscured || document.hidden || reducedMotion() || dock.dataset.state === "wave") return;
+				const rect = character.getBoundingClientRect();
+				const dx = point.x - (rect.left + rect.width / 2);
+				const dy = point.y - (rect.top + rect.height * 0.3);
+				const radiusCap = window.matchMedia("(min-width: 1024px)").matches ? 320 : 180;
+				const radius = Math.min(radiusCap, rect.width * 1.7);
+				const distance = Math.hypot(dx, dy);
+				if (distance > radius) {
+					if (dock.dataset.renderer === "live2d") live2dHandle?.setLook(0, 0);
+					else if (dock.dataset.state !== "idle") setIdle();
+					return;
+				}
+				const lookX = clamp(dx / Math.max(radius, 1), -1, 1);
+				const lookY = clamp(-dy / Math.max(radius, 1), -1, 1);
+				live2dHandle?.setLook(
+					lookX,
+					lookY,
+				);
+				if (dock.dataset.renderer === "live2d") return;
+				const direction = (Math.round(Math.atan2(dx, -dy) / (Math.PI / 8)) + 16) % 16;
+				dock.dataset.state = "look";
+				dock.style.setProperty("--whale-look-x", `${(direction % 8) * 100 / 7}%`);
+				dock.style.setProperty("--whale-look-y", direction < 8 ? "0%" : "100%");
+				dock.style.setProperty("--whale-lean", `${clamp(dx / Math.max(rect.width * 1.7, 1), -1, 1) * 2}deg`);
+				dock.style.setProperty("--whale-nod", `${clamp(dy / Math.max(rect.height * 1.7, 1), -1, 1) * 1.5}px`);
+			});
+		}, { passive: true });
+		document.documentElement.addEventListener("pointerleave", setIdle);
+		motionQuery.addEventListener("change", syncMotion);
+		new MutationObserver(syncMotion).observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+		document.addEventListener("visibilitychange", () => {
+			dock.dataset.paused = String(document.hidden);
+			cancelAnimationFrame(pointerFrame); pointerFrame = 0;
+			window.clearTimeout(waveTimer); window.clearTimeout(bubbleTimer); window.clearTimeout(routeTimer); window.clearTimeout(menuCloseTimer);
+			setIdle();
+			syncLive2DPlayback();
+			if (!document.hidden) {
+				flushGreetingReaction();
+				if (!dialogue.hidden) scheduleClose(4000, bubbleKeepFocused);
+			}
+		});
+		document.addEventListener("swup:page:view", () => {
+			window.clearTimeout(routeTimer);
+			closeBubble();
+			greetingReactionPending = false;
+			menuPinned = false;
+			setMenu(false);
+			setIdle();
+			routeTimer = window.setTimeout(() => pageGreeting(), 0);
+		});
+		// Search uses the theme's closed class; Fancybox mounts its own modal.
+		// Keep this separate from the visitor's persisted rest preference.
+		const overlaySelector = "#search-panel, .top-app-bar__search-shell, .fancybox__container, dialog";
+		function syncOverlay() {
+			const search = document.getElementById("search-panel");
+			const next = Boolean(
+				(search && !search.hidden && !search.classList.contains("float-panel-closed")) ||
+				document.querySelector(".top-app-bar__search-shell--expanded, .fancybox__container, dialog[open]"),
+			);
+			if (next === obscured) return;
+			obscured = next;
+			dock.dataset.obscured = String(next);
+			dock.inert = next;
+			if (next) {
+				dock.setAttribute("aria-hidden", "true");
+				closeBubble();
+				menuPinned = false;
+				setMenu(false);
+				cancelAnimationFrame(pointerFrame);
+				pointerFrame = 0;
+				setIdle();
+			} else {
+				dock.removeAttribute("aria-hidden");
+				if (!resting && !rendererSettled) startLive2D();
+			}
+			syncLive2DPlayback();
+		}
+		new MutationObserver((records) => {
+			// Model telemetry changes every second: do not scan for those updates.
+			if (records.some((record) => record.type === "attributes"
+				? record.target instanceof Element && record.target.matches(overlaySelector)
+				: [...record.addedNodes, ...record.removedNodes].some((node) =>
+					node instanceof Element && (node.matches(overlaySelector) || node.querySelector(overlaySelector))))) syncOverlay();
+		}).observe(document.body, { subtree: true, childList: true, attributes: true, attributeFilter: ["class", "hidden", "open"] });
+		syncOverlay();
+		if (resting || obscured) {
+			dock.dataset.renderer = "deferred";
+			dock.dataset.ready = "true";
+			dock.setAttribute("aria-busy", "false");
+			scene.hidden = true;
+			wake.hidden = !resting;
+			dock.dataset.resting = String(resting);
+		} else startLive2D();
+	})();
+</script>
+
+<style>
+	.whale-dock {
+		--whale-size: 260px;
+		--whale-fab-right: max(var(--m3e-space-6, 24px), env(safe-area-inset-right));
+		--whale-fab-size: var(--m3e-size-fab, 56px);
+		--whale-fab-gap: var(--m3e-space-4, 16px);
+		--whale-dock-right: calc(var(--whale-fab-right) + var(--whale-fab-size) + var(--whale-fab-gap));
+		--whale-rail-bottom: max(108px, calc(env(safe-area-inset-bottom) + 108px));
+		position: fixed;
+		z-index: 39;
+		right: var(--whale-dock-right);
+		bottom: max(12px, env(safe-area-inset-bottom));
+		width: var(--whale-size);
+		aspect-ratio: 192 / 208;
+		pointer-events: none;
+		font: 500 0.875rem/1.6 var(--font-family, system-ui, sans-serif);
+		color: var(--on-surface, #24202a);
+	}
+	.whale-dock [hidden] { display: none !important; }
+	.whale-dock[data-obscured="true"] { visibility: hidden; }
+	.whale-scene, .whale-character, .whale-lean, .whale-breathe, .whale-clip { display: block; width: 100%; height: 100%; }
+	.whale-character { position: relative; padding: 0; border: 0; background: none; cursor: pointer; pointer-events: auto; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+	.whale-character:disabled { cursor: default; }
+	.whale-live2d { position: absolute; z-index: 1; inset: 0; display: block; width: 100%; height: 100%; pointer-events: none; }
+	.whale-dock[data-renderer="loading"] .whale-character,
+	.whale-dock[data-renderer="loading"] .whale-menu-toggle,
+	.whale-dock[data-renderer="loading"] .whale-tools { visibility: hidden; pointer-events: none; }
+	.whale-dock[data-renderer="live2d"] .whale-lean { visibility: hidden; }
+	.whale-lean { transform: translateY(var(--whale-nod, 0px)) rotate(var(--whale-lean, 0deg)); transform-origin: 50% 90%; transition: transform 160ms cubic-bezier(0.25, 1, 0.5, 1); }
+	.whale-breathe { transform-origin: 50% 95%; }
+	.whale-clip { overflow: hidden; }
+	.whale-frames { display: block; width: 700%; height: 100%; background: var(--whale-idle) no-repeat 0 0 / 100% 100%; }
+	.whale-dock[data-state="look"] .whale-frames { width: 100%; background-image: var(--whale-look); background-size: 800% 200%; background-position: var(--whale-look-x, 0%) var(--whale-look-y, 0%); }
+	.whale-dock[data-state="wave"] .whale-frames { width: 400%; background-image: var(--whale-action); background-size: 200% 400%; background-position: 0 66.666667%; }
+	@media (prefers-reduced-motion: no-preference) {
+		.whale-dock[data-renderer="sprite"][data-ready="true"][data-motion="full"] .whale-breathe { animation: whale-breathe 4.4s ease-in-out infinite; }
+		.whale-dock[data-renderer="sprite"][data-ready="true"][data-motion="full"][data-state="idle"] .whale-frames { animation: whale-blink 4s steps(6, end) infinite; }
+		.whale-dock[data-renderer="sprite"][data-ready="true"][data-motion="full"][data-state="wave"] .whale-frames { animation: whale-wave 166.667ms steps(4, end) 4; }
+	}
+	@keyframes whale-breathe { 50% { transform: translateY(-1px) scaleY(1.012); } }
+	@keyframes whale-blink { 6.25%, 100% { transform: translateX(-85.714286%); } }
+	@keyframes whale-wave { to { transform: translateX(-100%); } }
+	.whale-dock[data-paused="true"] .whale-frames, .whale-dock[data-paused="true"] .whale-breathe,
+	.whale-dock[data-obscured="true"] .whale-frames, .whale-dock[data-obscured="true"] .whale-breathe { animation-play-state: paused; }
+	.whale-dialogue { position: absolute; right: 0; left: auto; bottom: max(calc(100% + 10px), 208px); box-sizing: border-box; width: min(240px, calc(100vw - var(--whale-dock-right) - 12px)); padding: 14px 42px 14px 14px; border: 1px solid var(--outline-variant, #bcb5c3); border-radius: 14px; background: var(--surface-container-high, #f5eef9); pointer-events: auto; overflow-wrap: anywhere; }
+	.whale-dialogue p { margin: 0; }
+	.whale-close { position: absolute; top: 6px; right: 6px; display: grid; place-items: center; width: 32px; height: 32px; padding: 0; background: none; border: 0; border-radius: 8px; color: var(--on-surface, #24202a); font: 400 1.4rem/1 system-ui; cursor: pointer; }
+	.whale-tools { position: fixed; right: var(--whale-fab-right); left: auto; bottom: calc(var(--whale-rail-bottom) + 44px + 8px); display: flex; flex-direction: column; gap: 4px; pointer-events: auto; }
+	.whale-tool { display: grid; place-items: center; box-sizing: border-box; width: 44px; height: 44px; padding: 10px; border: 1px solid var(--outline-variant, #bcb5c3); border-radius: 10px; background: var(--surface-container-high, #f5eef9); color: var(--on-surface, #24202a); cursor: pointer; text-decoration: none; pointer-events: auto; }
+	.whale-tool svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+	.whale-menu-toggle { position: fixed; right: var(--whale-fab-right); left: auto; bottom: var(--whale-rail-bottom); }
+	.whale-tool[aria-disabled="true"] { opacity: 0.5; cursor: default; }
+	.whale-tool:hover, .whale-close:hover { background: var(--secondary-container, #e9ddf2); color: var(--on-secondary-container, #352540); }
+	.whale-wake { position: fixed; right: var(--whale-fab-right); left: auto; bottom: var(--whale-rail-bottom); display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 8px 12px; border: 1px solid var(--outline-variant, #bcb5c3); border-radius: 12px; background: var(--surface-container-high, #f5eef9); color: var(--on-surface, #24202a); cursor: pointer; font: inherit; pointer-events: auto; }
+	.whale-dock button:focus-visible, .whale-dock a:focus-visible { outline: 2px solid var(--primary, #75548a); outline-offset: 3px; border-radius: 10px; }
+	.whale-sr { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+	@media (max-width: 1023px) { .whale-dock { --whale-rail-bottom: max(156px, calc(env(safe-area-inset-bottom) + 156px)); } }
+	@media (max-width: 40rem) { .whale-dock { --whale-size: 120px; } }
+	@media (max-height: 420px) { .whale-dock { --whale-size: 100px; } .whale-dialogue { max-height: max(48px, calc(100dvh - 232px)); overflow-y: auto; } }
+	@media (prefers-reduced-motion: reduce) { .whale-lean { transform: none; transition: none; } .whale-frames, .whale-breathe { animation: none; transform: none; } }
+	:global(html.motion-reduced) .whale-lean { transform: none; transition: none; }
+	:global(html.motion-reduced) .whale-frames, :global(html.motion-reduced) .whale-breathe { animation: none; transform: none; }
+</style>

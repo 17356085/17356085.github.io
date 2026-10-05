@@ -1,0 +1,253 @@
+{
+	"Version": 3,
+	"Parameters": [
+		{
+			"Id": "ParamAngleX",
+			"GroupId": "",
+			"Name": "角度 X"
+		},
+		{
+			"Id": "ParamAngleY",
+			"GroupId": "",
+			"Name": "角度 Y"
+		},
+		{
+			"Id": "ParamAngleZ",
+			"GroupId": "",
+			"Name": "角度 Z"
+		},
+		{
+			"Id": "ParamEyeLOpen",
+			"GroupId": "",
+			"Name": "左眼 开闭"
+		},
+		{
+			"Id": "ParamEyeLSmile",
+			"GroupId": "",
+			"Name": "左眼 微笑"
+		},
+		{
+			"Id": "ParamEyeROpen",
+			"GroupId": "",
+			"Name": "右眼 开闭"
+		},
+		{
+			"Id": "ParamEyeRSmile",
+			"GroupId": "",
+			"Name": "右眼 微笑"
+		},
+		{
+			"Id": "ParamEyeBallX",
+			"GroupId": "",
+			"Name": "眼珠 X"
+		},
+		{
+			"Id": "ParamEyeBallY",
+			"GroupId": "",
+			"Name": "眼珠 Y"
+		},
+		{
+			"Id": "ParamBrowLY",
+			"GroupId": "",
+			"Name": "左眉 上下"
+		},
+		{
+			"Id": "ParamBrowRY",
+			"GroupId": "",
+			"Name": "右眉 上下"
+		},
+		{
+			"Id": "ParamBrowLX",
+			"GroupId": "",
+			"Name": "左眉 左右"
+		},
+		{
+			"Id": "ParamBrowRX",
+			"GroupId": "",
+			"Name": "右眉 左右"
+		},
+		{
+			"Id": "ParamBrowLAngle",
+			"GroupId": "",
+			"Name": "左眉 角度"
+		},
+		{
+			"Id": "ParamBrowRAngle",
+			"GroupId": "",
+			"Name": "右眉 角度"
+		},
+		{
+			"Id": "ParamBrowLForm",
+			"GroupId": "",
+			"Name": "左眉 変形"
+		},
+		{
+			"Id": "ParamBrowRForm",
+			"GroupId": "",
+			"Name": "右眉 変形"
+		},
+		{
+			"Id": "ParamMouthForm",
+			"GroupId": "",
+			"Name": "嘴 变形"
+		},
+		{
+			"Id": "ParamMouthOpenY",
+			"GroupId": "",
+			"Name": "嘴 开闭"
+		},
+		{
+			"Id": "ParamCheek",
+			"GroupId": "",
+			"Name": "脸颊泛红"
+		},
+		{
+			"Id": "ParamBodyAngleX",
+			"GroupId": "",
+			"Name": "身体旋转 X"
+		},
+		{
+			"Id": "ParamBodyAngleY",
+			"GroupId": "",
+			"Name": "身体旋转 Y"
+		},
+		{
+			"Id": "ParamBodyAngleZ",
+			"GroupId": "",
+			"Name": "身体旋转 Z"
+		},
+		{
+			"Id": "ParamBreath",
+			"GroupId": "",
+			"Name": "呼吸"
+		},
+		{
+			"Id": "ParamHairFront",
+			"GroupId": "",
+			"Name": "摇动 前发"
+		},
+		{
+			"Id": "ParamHairSide",
+			"GroupId": "",
+			"Name": "摇动 侧发"
+		},
+		{
+			"Id": "ParamHairBack",
+			"GroupId": "",
+			"Name": "摇动 后发"
+		},
+		{
+			"Id": "ParamTail",
+			"GroupId": "",
+			"Name": "尾巴摇摆"
+		},
+		{
+			"Id": "ParamArmLA",
+			"GroupId": "",
+			"Name": "左手招呼"
+		}
+	],
+	"ParameterGroups": [],
+	"Parts": [
+		{
+			"Id": "REFERENCE_ONLY",
+			"Name": "REFERENCE_ONLY"
+		},
+		{
+			"Id": "MouthOpen",
+			"Name": "MouthOpen"
+		},
+		{
+			"Id": "EyeClosedR",
+			"Name": "EyeClosedR"
+		},
+		{
+			"Id": "EyeClosedL",
+			"Name": "EyeClosedL"
+		},
+		{
+			"Id": "Ahoge",
+			"Name": "Ahoge"
+		},
+		{
+			"Id": "Headband",
+			"Name": "Headband"
+		},
+		{
+			"Id": "HairFront",
+			"Name": "HairFront"
+		},
+		{
+			"Id": "EarR",
+			"Name": "EarR"
+		},
+		{
+			"Id": "EarL",
+			"Name": "EarL"
+		},
+		{
+			"Id": "Mouth",
+			"Name": "Mouth"
+		},
+		{
+			"Id": "BrowR",
+			"Name": "BrowR"
+		},
+		{
+			"Id": "BrowL",
+			"Name": "BrowL"
+		},
+		{
+			"Id": "EyeBallR",
+			"Name": "EyeBallR"
+		},
+		{
+			"Id": "EyeBallL",
+			"Name": "EyeBallL"
+		},
+		{
+			"Id": "EyeR",
+			"Name": "EyeR"
+		},
+		{
+			"Id": "EyeL",
+			"Name": "EyeL"
+		},
+		{
+			"Id": "Face",
+			"Name": "Face"
+		},
+		{
+			"Id": "ArmR",
+			"Name": "ArmR"
+		},
+		{
+			"Id": "ArmL",
+			"Name": "ArmL"
+		},
+		{
+			"Id": "Body",
+			"Name": "Body"
+		},
+		{
+			"Id": "HairBackR",
+			"Name": "HairBackR"
+		},
+		{
+			"Id": "HairBackL",
+			"Name": "HairBackL"
+		},
+		{
+			"Id": "LegR",
+			"Name": "LegR"
+		},
+		{
+			"Id": "LegL",
+			"Name": "LegL"
+		},
+		{
+			"Id": "Tail",
+			"Name": "Tail"
+		}
+	]
+}

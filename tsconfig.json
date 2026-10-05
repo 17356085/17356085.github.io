@@ -6,7 +6,8 @@
   ],
   "exclude": [
     "dist",
-    "node_modules"
+    "node_modules",
+    "artwork/whale-maid-live2d"
   ],
   "compilerOptions": {
     "strictNullChecks": true,

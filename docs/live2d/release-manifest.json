@@ -1,0 +1,156 @@
+{
+  "manifest_version": 1,
+  "asset": "live2d-whale-maid",
+  "groups": [
+    {
+      "name": "whale-maid-model",
+      "root": "public/live2d/whale-maid",
+      "files": [
+        {
+          "path": "public/live2d/whale-maid/motions/greet.motion3.json",
+          "bytes": 7230,
+          "sha256": "5fff384f449830d02986d5dad08e2db6ccb7d84724ba6b448b5a23c8370fcb3f"
+        },
+        {
+          "path": "public/live2d/whale-maid/motions/idle.motion3.json",
+          "bytes": 27765,
+          "sha256": "2f000b7bab15d7329cf6ec54951a1a77bc54d8a065097b717e48f2439f02c260"
+        },
+        {
+          "path": "public/live2d/whale-maid/motions/pet.motion3.json",
+          "bytes": 7581,
+          "sha256": "eecebbb40efd4c834ae548b791b3c519576ea254e365d5df546fd3fda81297bc"
+        },
+        {
+          "path": "public/live2d/whale-maid/motions/sleep.motion3.json",
+          "bytes": 7717,
+          "sha256": "12f4f516a45a9ac5b8a75291c301e1dd2ba08e29cbc475824e22d819a24abfdd"
+        },
+        {
+          "path": "public/live2d/whale-maid/motions/wake.motion3.json",
+          "bytes": 5669,
+          "sha256": "d033b388aa6d3a9cec06bffec0c233fa501a85babbbf27c568c8f0632edf5ec3"
+        },
+        {
+          "path": "public/live2d/whale-maid/motions/wave.motion3.json",
+          "bytes": 7325,
+          "sha256": "1ae9496026819b43e5e034ab2c83009cd565ffd2d504ac949dc5527e90308bdf"
+        },
+        {
+          "path": "public/live2d/whale-maid/whale-maid.2048/texture_00.png",
+          "bytes": 2446706,
+          "sha256": "ac73a1ecb2774df574f18e924bb0a165da6d29cb70ef935185c07296366b0902"
+        },
+        {
+          "path": "public/live2d/whale-maid/whale-maid.cdi3.json",
+          "bytes": 3566,
+          "sha256": "976719dd03dde30f1d511c3901895b43897ff0588f596366e5d87b1c9c2f1ff8"
+        },
+        {
+          "path": "public/live2d/whale-maid/whale-maid.moc3",
+          "bytes": 150144,
+          "sha256": "c3c2da16f065ae8ac7cb46fa91ce883d6696eb837ad528fa54f8e8ff6a37d56e"
+        },
+        {
+          "path": "public/live2d/whale-maid/whale-maid.model3.json",
+          "bytes": 641,
+          "sha256": "e671b85e44cc8f2eb56cb7119bd01ae1d506282f29289de34e067a6812f4c001"
+        },
+        {
+          "path": "public/live2d/whale-maid/whale-maid.physics3.json",
+          "bytes": 1799,
+          "sha256": "e7add3b9dc2ba99eafddbbc05a5668359d6331933a75e1b438bfe576b7c09b55"
+        }
+      ],
+      "total_bytes": 2666143
+    },
+    {
+      "name": "whale-maid-fallback",
+      "root": "public/live2d/whale-maid/fallback",
+      "files": [
+        {
+          "path": "public/live2d/whale-maid/fallback/actions.webp",
+          "bytes": 964260,
+          "sha256": "1fc10ae20303d5e4bd067ed454cea410283ea0f20e5fa41b060516c70ea30e48"
+        },
+        {
+          "path": "public/live2d/whale-maid/fallback/idle.webp",
+          "bytes": 261138,
+          "sha256": "5c265e9c00838b25c016997d7706049c4e7a3ef85eb115b91c5208d4beb06444"
+        },
+        {
+          "path": "public/live2d/whale-maid/fallback/look.webp",
+          "bytes": 686108,
+          "sha256": "089f8dfbff5a49f439cb170a3b2137b91c8d6c09e8d8f1c64811173b0dffe635"
+        }
+      ],
+      "total_bytes": 1911506
+    },
+    {
+      "name": "cubism-core",
+      "root": "public/live2d/vendor",
+      "files": [
+        {
+          "path": "public/live2d/vendor/CoreLICENSE.md",
+          "bytes": 520,
+          "sha256": "b81e37048010ef1d336106151201a0323c3309cae44aecdedf57831fe88fa991"
+        },
+        {
+          "path": "public/live2d/vendor/RedistributableFiles.txt",
+          "bytes": 205,
+          "sha256": "d16c123688299e1e69a7f5ebc01b3bd75a8d408c024002a7d35b2aae94003f8c"
+        },
+        {
+          "path": "public/live2d/vendor/SDKLICENSE.md",
+          "bytes": 3042,
+          "sha256": "787a7d1454240865420b96ea9a20ab5e1a5ec3c1abced2e308288c2de8aac991"
+        },
+        {
+          "path": "public/live2d/vendor/live2dcubismcore.min.js",
+          "bytes": 228042,
+          "sha256": "8741f739779b5d5210872bd3d7d99f0f1e56e6c87409e7d26d6bb4b80aa1ef47"
+        }
+      ],
+      "total_bytes": 231809
+    }
+  ],
+  "source": {
+    "files": [
+      {
+        "path": "src/components/WhaleMascot.astro",
+        "bytes": 32981,
+        "sha256": "0ba58848794a4ecbb1af43f1f92f78c77c27a4425064db28860be455a691e2a8"
+      },
+      {
+        "path": "src/layouts/MainGridLayout.astro",
+        "bytes": 5510,
+        "sha256": "ab9abf61988a88c10b6953eaddf9ba37b935b43587b8a9728957c490392194c8"
+      },
+      {
+        "path": "src/scripts/whale-live2d-motion.ts",
+        "bytes": 16292,
+        "sha256": "792eefbc64c3ab6996f957d796cdf9ab15684d82d823c982fecd49ba69d66712"
+      },
+      {
+        "path": "src/scripts/whale-live2d-physics.ts",
+        "bytes": 38080,
+        "sha256": "7a6c37ab27d987664f59e33fcb68990526ae638ee7fe1f8a28f8abca1d21ed1d"
+      },
+      {
+        "path": "src/scripts/whale-live2d-secondary.ts",
+        "bytes": 31206,
+        "sha256": "c6396feec4b746b9fa128624d63bfd9891830f033a6ca91700d8cc314dbf6424"
+      },
+      {
+        "path": "src/scripts/whale-live2d.ts",
+        "bytes": 66340,
+        "sha256": "08cf4f12443a87242efeed2b87e3136038eda0edb5309e9628e48757f1bb45a1"
+      }
+    ],
+    "total_bytes": 190409
+  },
+  "totals": {
+    "assets_bytes": 4809458,
+    "source_bytes": 190409
+  }
+}
