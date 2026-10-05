@@ -880,6 +880,8 @@ export async function mountWhaleLive2D(
     bodyZ: 0,
     tail: 0,
     breath: 0,
+    mouthOpen: 0,
+    mouthForm: 0,
     reaction: null,
     reactionProgress: 0,
   };
@@ -944,7 +946,7 @@ export async function mountWhaleLive2D(
     // No diagnostic labels are displayed in the blog interface.
     if (coreModel) {
       const pose: Record<string, number> = {};
-      for (const id of ['ParamAngleX', 'ParamAngleY', 'ParamAngleZ', 'ParamBodyAngleZ', 'ParamEyeBallX', 'ParamEyeBallY', 'ParamBreath', 'ParamHairFront', 'ParamHairBack', 'ParamTail', 'ParamArmLA']) {
+      for (const id of ['ParamAngleX', 'ParamAngleY', 'ParamAngleZ', 'ParamBodyAngleZ', 'ParamEyeBallX', 'ParamEyeBallY', 'ParamMouthOpenY', 'ParamMouthForm', 'ParamBreath', 'ParamHairFront', 'ParamHairBack', 'ParamTail', 'ParamArmLA']) {
         const index = coreModel.parameters.ids.indexOf(id);
         if (index >= 0) pose[id] = Number(coreModel.parameters.values[index].toFixed(4));
       }
@@ -1649,6 +1651,8 @@ export async function mountWhaleLive2D(
         secondaryPose.bodyZ = coreModel.parameters.values[parameterIndex.get('ParamBodyAngleZ') ?? -1] ?? 0;
         secondaryPose.tail = coreModel.parameters.values[parameterIndex.get('ParamTail') ?? -1] ?? 0;
         secondaryPose.breath = coreModel.parameters.values[parameterIndex.get('ParamBreath') ?? -1] ?? 0;
+        secondaryPose.mouthOpen = coreModel.parameters.values[parameterIndex.get('ParamMouthOpenY') ?? -1] ?? 0;
+        secondaryPose.mouthForm = coreModel.parameters.values[parameterIndex.get('ParamMouthForm') ?? -1] ?? 0;
         secondaryPose.reaction = activeMotionAction?.kind ?? activeReaction?.kind ?? null;
         secondaryPose.reactionProgress = activeMotionAction
           ? clamp(activeMotionAction.elapsed / activeMotionAction.motion.clip.duration, 0, 1)
@@ -1676,7 +1680,8 @@ export async function mountWhaleLive2D(
         ) {
           continue;
         }
-        const opacity = coreModel.drawables.opacities[drawableIndex] ?? 0;
+        const coreOpacity = coreModel.drawables.opacities[drawableIndex] ?? 0;
+        const opacity = secondaryRig ? secondaryRig.opacity(drawableIndex, coreOpacity) : coreOpacity;
         if (!(opacity > 0)) {
           continue;
         }

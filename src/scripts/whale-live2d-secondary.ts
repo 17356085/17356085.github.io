@@ -21,6 +21,8 @@ export interface WhaleSecondaryPose {
 	readonly bodyZ: number;
 	readonly tail: number;
 	readonly breath: number;
+	readonly mouthOpen: number;
+	readonly mouthForm: number;
 	readonly reaction: WhaleSecondaryReaction | null;
 	readonly reactionProgress: number;
 }
@@ -33,6 +35,8 @@ export interface WhaleSecondaryRig {
 	readonly update: (pose: WhaleSecondaryPose, currentPositions: readonly Float32Array[]) => void;
 	/** Return a non-Core output buffer for the drawable, or the input on error. */
 	readonly positions: (drawableIndex: number, currentPositions: Float32Array) => Float32Array;
+	/** Return the drawable opacity after the local mouth visibility field. */
+	readonly opacity: (drawableIndex: number, currentOpacity: number) => number;
 	/** Static semantic IDs with secondary fields enabled. */
 	readonly summary: () => WhaleSecondarySummary;
 	/** Maximum absolute per-coordinate displacement observed since update(). */
@@ -77,6 +81,8 @@ const ARM_ID = 'ArmR2';
 const FIN_R_ID = 'FinR';
 const FIN_L_ID = 'FinL';
 const AHOGE_ID = 'Ahoge2';
+const MOUTH_OPEN_ID = 'MouthOpen2';
+const MOUTH_CLOSED_ID = 'MouthClosed';
 const BOW_R_EDGE_ID = 'BowREdge';
 const HAIR_BACK_R_ID = 'HairBackR2';
 const HAIR_BACK_L_ID = 'HairBackL2';
@@ -135,6 +141,11 @@ const BODY_FOOT_RIGID_FRACTION = 0.15;
 const BODY_FOOT_BLEND_END_FRACTION = 0.30;
 const NECK_BLEND_START_FRACTION = 0.015;
 const NECK_BLEND_END_FRACTION = 0.065;
+const MOUTH_OPEN_X_SCALE = 0.58;
+const MOUTH_OPEN_Y_SCALE_MIN = 0.12;
+const MOUTH_OPEN_Y_SCALE_PER_OPENING = 0.36;
+const MOUTH_OPEN_Y_SCALE_MAX = 0.48;
+const MOUTH_CLOSED_CURVATURE_FRACTION = 0.14;
 const DEGREES_TO_RADIANS = Math.PI / 180;
 
 function isFiniteNumber(value: number): boolean {
@@ -427,6 +438,12 @@ export function createWhaleSecondaryRig(
 	const hairLIndex = indexById.get(HAIR_BACK_L_ID);
 	const hairR = hairRIndex === undefined ? null : drawables[hairRIndex];
 	const hairL = hairLIndex === undefined ? null : drawables[hairLIndex];
+	const mouthOpenIndex = indexById.get(MOUTH_OPEN_ID);
+	const mouthClosedIndex = indexById.get(MOUTH_CLOSED_ID);
+	const mouthOpen = mouthOpenIndex === undefined ? null : drawables[mouthOpenIndex];
+	const mouthClosed = mouthClosedIndex === undefined ? null : drawables[mouthClosedIndex];
+	const mouthCenterX = mouthClosed?.bounds.centerX ?? mouthOpen?.bounds.centerX ?? 0;
+	const mouthCenterY = mouthClosed?.bounds.centerY ?? mouthOpen?.bounds.centerY ?? 0;
 
 	const neckRootIndex = nearestVertexIndex(body.rest, body.bounds.centerX, body.bounds.maxY);
 	const neckRootRestX = body.rest[neckRootIndex * 2];
@@ -525,6 +542,8 @@ export function createWhaleSecondaryRig(
 	let smoothedBodyZ = 0;
 	let earLagX = 0;
 	let earLagZ = 0;
+	let mouthOpening = 0;
+	let mouthShape = 0;
 	let cachedFinRPivotX = finRPivotRestX;
 	let cachedFinRPivotY = finRPivotRestY;
 	let cachedFinLPivotX = finLPivotRestX;
@@ -617,6 +636,8 @@ export function createWhaleSecondaryRig(
 		const targetHeadY = clamp(safePoseValue(pose.headY, 0), -30, 30);
 		const targetHeadZ = clamp(safePoseValue(pose.headZ, 0), -30, 30);
 		const targetBodyZ = clamp(safePoseValue(pose.bodyZ, 0), -10, 10);
+		mouthOpening = clamp(safePoseValue(pose.mouthOpen, 0), 0, 1);
+		mouthShape = clamp(safePoseValue(pose.mouthForm, 0), -1, 1);
 		if (firstMotionUpdate) {
 			smoothedLookX = targetLookX;
 			smoothedHeadX = targetHeadX;
@@ -747,6 +768,8 @@ export function createWhaleSecondaryRig(
 		const isAhoge = id === AHOGE_ID;
 		const isTail = id === TAIL_ID;
 		const isBody = id === BODY_ID;
+		const isMouthOpen = id === MOUTH_OPEN_ID;
+		const isMouthClosed = id === MOUTH_CLOSED_ID;
 
 		let localPivotX = 0;
 		let localPivotY = 0;
@@ -773,6 +796,32 @@ export function createWhaleSecondaryRig(
 			const currentY = currentPositions[vertex + 1];
 			let x = finiteOrFallback(currentX, 0);
 			let y = finiteOrFallback(currentY, 0);
+
+			// The mouth drawables are driven from their neutral meshes so Core's
+			// collapsed/form-shaped vertices cannot create a large circular overlay.
+			// They rejoin the shared head/body fields below and therefore keep the
+			// same face motion as the surrounding drawables.
+			if (isMouthOpen && mouthOpen) {
+				const neutralX = mouthOpen.rest[vertex];
+				const neutralY = mouthOpen.rest[vertex + 1];
+				const heightScale = clamp(
+					MOUTH_OPEN_Y_SCALE_MIN + MOUTH_OPEN_Y_SCALE_PER_OPENING * mouthOpening,
+					MOUTH_OPEN_Y_SCALE_MIN,
+					MOUTH_OPEN_Y_SCALE_MAX,
+				);
+				x = mouthCenterX + (neutralX - mouthOpen.bounds.centerX) * MOUTH_OPEN_X_SCALE;
+				y = mouthCenterY + (neutralY - mouthOpen.bounds.centerY) * heightScale;
+			} else if (isMouthClosed && mouthClosed) {
+				const neutralX = mouthClosed.rest[vertex];
+				const neutralY = mouthClosed.rest[vertex + 1];
+				const halfWidth = mouthClosed.bounds.width / 2;
+				const normalizedX = halfWidth > 0
+					? clamp((neutralX - mouthClosed.bounds.centerX) / halfWidth, -1, 1)
+					: 0;
+				x = neutralX;
+				y = neutralY + mouthShape * mouthClosed.bounds.height * MOUTH_CLOSED_CURVATURE_FRACTION *
+					(2 * normalizedX * normalizedX - 1);
+			}
 
 			// Local rotations are applied first, using current Core roots so Core
 			// physics and expression movement remain the source of truth.
@@ -851,9 +900,22 @@ export function createWhaleSecondaryRig(
 		return drawable.output;
 	};
 
+	const opacity = (drawableIndex: number, currentOpacity: number): number => {
+		const drawable = drawables[drawableIndex];
+		if (!drawable || (drawable.id !== MOUTH_OPEN_ID && drawable.id !== MOUTH_CLOSED_ID)) {
+			return currentOpacity;
+		}
+		if (!isFiniteNumber(currentOpacity)) {
+			return 0;
+		}
+		const blend = smoothstep((mouthOpening - 0.02) / 0.12);
+		return drawable.id === MOUTH_OPEN_ID ? blend : 1 - blend;
+	};
+
 	return Object.freeze({
 		update,
 		positions,
+		opacity,
 		summary: () => summary,
 		get maxDisplacement(): number {
 			return frameMaxDisplacement;

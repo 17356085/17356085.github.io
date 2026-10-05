@@ -138,19 +138,19 @@
       },
       {
         "path": "src/scripts/whale-live2d-secondary.ts",
-        "bytes": 31206,
-        "sha256": "c6396feec4b746b9fa128624d63bfd9891830f033a6ca91700d8cc314dbf6424"
+        "bytes": 34060,
+        "sha256": "ba332f4f0bcd7e8b7338ea49235738af07fa2f283f14204313bc85d478534e57"
       },
       {
         "path": "src/scripts/whale-live2d.ts",
-        "bytes": 66340,
-        "sha256": "08cf4f12443a87242efeed2b87e3136038eda0edb5309e9628e48757f1bb45a1"
+        "bytes": 66745,
+        "sha256": "3adaba9b4fb485d823d46f2d6b24ebf730a36b725845fa5dac1edf5afba8bc46"
       }
     ],
-    "total_bytes": 190058
+    "total_bytes": 193317
   },
   "totals": {
     "assets_bytes": 4809458,
-    "source_bytes": 190058
+    "source_bytes": 193317
   }
 }
