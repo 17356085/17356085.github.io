@@ -33,6 +33,12 @@ const sources = [
 		widths: [320, 480, 640],
 		quality: 82,
 	},
+	{
+		id: "wsl-hadoop-cover",
+		url: "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/images/posts/a605ca763b48b3428c7e6354e9104475.webp",
+		widths: [320, 480, 640],
+		quality: 82,
+	},
 ];
 const publish = process.argv.includes("--publish");
 await mkdir(work, { recursive: true });

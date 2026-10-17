@@ -16,5 +16,11 @@
 		"srcset": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/images/site/responsive/sakiko-cover-41c544a6ad1b-320.webp 320w, https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/images/site/responsive/sakiko-cover-49a66aceb9b7-480.webp 480w, https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/images/site/responsive/sakiko-cover-66a9288c1714-640.webp 640w",
 		"width": 7414,
 		"height": 4449
+	},
+	"https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/images/posts/a605ca763b48b3428c7e6354e9104475.webp": {
+		"src": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/images/site/responsive/wsl-hadoop-cover-f7dd770fee72-640.webp",
+		"srcset": "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/images/site/responsive/wsl-hadoop-cover-8df597896a97-320.webp 320w, https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/images/site/responsive/wsl-hadoop-cover-85787e7beadb-480.webp 480w, https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/images/site/responsive/wsl-hadoop-cover-f7dd770fee72-640.webp 640w",
+		"width": 1920,
+		"height": 1082
 	}
 }
