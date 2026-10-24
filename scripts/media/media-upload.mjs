@@ -1,5 +1,6 @@
 import { createHash } from "node:crypto";
 import { existsSync, readFileSync, statSync } from "node:fs";
+import * as http from "node:http";
 import { basename, extname, resolve } from "node:path";
 
 import {
@@ -34,6 +35,9 @@ function parseArgs() {
 
 	for (let index = 0; index < args.length; index += 1) {
 		const arg = args[index];
+		if (arg === "--") {
+			continue;
+		}
 		if (arg === "--alt") {
 			alt = args[++index] ?? "";
 		} else if (arg === "--category") {
@@ -88,6 +92,36 @@ Options:
   --dry-run          Validate and show the planned key without uploading
   --help             Show this help
 `);
+}
+
+function configureProxy(config) {
+	const env = process.env;
+	const httpsProxy =
+		env.https_proxy ||
+		env.HTTPS_PROXY ||
+		env.http_proxy ||
+		env.HTTP_PROXY ||
+		config.proxy;
+	const httpProxy = env.http_proxy || env.HTTP_PROXY || httpsProxy;
+	if (!httpsProxy && !httpProxy) return;
+	const normalize = (value) => {
+		try {
+			const url = new URL(value.includes("://") ? value : `http://${value}`);
+			if (!["http:", "https:"].includes(url.protocol)) throw new Error();
+			return url.href;
+		} catch {
+			throw new Error("Invalid media proxy: use an HTTP or HTTPS proxy URL.");
+		}
+	};
+	const proxyEnv = {
+		...env,
+		http_proxy: normalize(httpProxy),
+		https_proxy: normalize(httpsProxy),
+	};
+	if (typeof http.setGlobalProxyFromEnv !== "function") {
+		throw new Error("Proxy uploads require Node.js 24.16 or newer.");
+	}
+	http.setGlobalProxyFromEnv(proxyEnv);
 }
 
 function fetchWithTimeout(url, options = {}, timeoutMs = 30_000) {
@@ -221,6 +255,7 @@ async function upload(config, file, body, key) {
 async function main() {
 	const options = parseArgs();
 	const config = loadMediaConfig({ requireCredentials: !options.dryRun });
+	if (!options.dryRun) configureProxy(config);
 	const results = [];
 
 	for (const input of options.files) {
@@ -259,8 +294,9 @@ async function main() {
 try {
 	await main();
 } catch (error) {
+	const code = error?.cause?.code ?? error?.code;
 	console.error(
-		`[media:upload] ${error instanceof Error ? error.message : "upload failed"}`,
+		`[media:upload] ${error instanceof Error ? error.message : "upload failed"}${code ? ` (${code})` : ""}`,
 	);
 	process.exitCode = 1;
 }

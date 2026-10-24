@@ -7,7 +7,7 @@
       ""
     ]
   ],
-  "trigger_on_file_creation": true,
+  "trigger_on_file_creation": false,
   "auto_jump_to_cursor": false,
   "enable_system_commands": false,
   "shell_path": "",
@@ -15,8 +15,12 @@
   "enable_folder_templates": true,
   "folder_templates": [
     {
-      "folder": "",
-      "template": ""
+      "folder": "src/content/posts",
+      "template": "templates/博客文章模板.md"
+    },
+    {
+      "folder": "src/content/notes",
+      "template": "templates/知识笔记模板.md"
     }
   ],
   "enable_file_templates": false,
@@ -28,11 +32,7 @@
   ],
   "syntax_highlighting": true,
   "syntax_highlighting_mobile": false,
-  "enabled_templates_hotkeys": [
-    ""
-  ],
-  "startup_templates": [
-    ""
-  ],
+  "enabled_templates_hotkeys": [],
+  "startup_templates": [],
   "intellisense_render": 1
 }

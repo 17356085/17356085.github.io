@@ -5949,31 +5949,101 @@ class PicGoUploader {
     async uploadFileByClipboard(fileList) {
         let data;
         let res;
+        let fullResultRecordedByUploadFiles = false;
         if (this.settings.remoteServerMode) {
             res = await this.uploadFileByData(fileList);
             data = await res.json();
         }
         else {
-            res = await obsidian.requestUrl({
-                url: this.settings.uploadServer,
-                method: "POST",
-            });
-            data = await res.json;
+            const file = fileList?.[0];
+            if (!file || typeof file.arrayBuffer !== "function") {
+                return {
+                    code: -1,
+                    msg: "Clipboard file is missing or invalid",
+                    data: "",
+                };
+            }
+            if (typeof file.name !== "string" || file.name.length === 0) {
+                return {
+                    code: -1,
+                    msg: "Clipboard file name is missing or invalid",
+                    data: "",
+                };
+            }
+            if (file.size === 0) {
+                return {
+                    code: -1,
+                    msg: "Clipboard file is empty",
+                    data: "",
+                };
+            }
+            let tempDir;
+            let tempPath;
+            try {
+                let arrayBuffer;
+                try {
+                    arrayBuffer = await file.arrayBuffer();
+                }
+                catch (error) {
+                    return {
+                        code: -1,
+                        msg: "Clipboard file could not be read",
+                        data: "",
+                    };
+                }
+                if (!arrayBuffer || typeof arrayBuffer.byteLength !== "number" || arrayBuffer.byteLength === 0) {
+                    return {
+                        code: -1,
+                        msg: "Clipboard file is empty",
+                        data: "",
+                    };
+                }
+                const fileName = require$$0$1.basename(file.name);
+                if (!fileName || fileName === "." || fileName === "..") {
+                    return {
+                        code: -1,
+                        msg: "Clipboard file name is invalid",
+                        data: "",
+                    };
+                }
+                tempDir = await require$$0.promises.mkdtemp(require$$0$1.join(require$$0$3.tmpdir(), "obsidian-image-auto-upload-"));
+                tempPath = require$$0$1.join(tempDir, fileName);
+                await require$$0.promises.writeFile(tempPath, node_buffer.Buffer.from(arrayBuffer));
+                data = await this.uploadFiles([tempPath]);
+                fullResultRecordedByUploadFiles = true;
+            }
+            finally {
+                if (tempPath) {
+                    await require$$0.promises.rm(tempPath, { force: true });
+                }
+                if (tempDir) {
+                    await require$$0.promises.rm(tempDir, { recursive: true, force: true });
+                }
+            }
         }
-        if (res.status !== 200) {
+        if (res && res.status !== 200) {
             return {
                 code: -1,
                 msg: data.msg,
                 data: "",
             };
         }
+        if (!this.settings.remoteServerMode && (!data || data.success !== true)) {
+            return {
+                code: -1,
+                msg: data?.msg || "Upload failed",
+                data: "",
+            };
+        }
         // piclist
         if (data.fullResult) {
-            const uploadUrlFullResultList = data.fullResult || [];
-            this.settings.uploadedImages = [
-                ...(this.settings.uploadedImages || []),
-                ...uploadUrlFullResultList,
-            ];
+            if (!fullResultRecordedByUploadFiles) {
+                const uploadUrlFullResultList = data.fullResult || [];
+                this.settings.uploadedImages = [
+                    ...(this.settings.uploadedImages || []),
+                    ...uploadUrlFullResultList,
+                ];
+            }
             this.plugin.saveSettings();
         }
         return {

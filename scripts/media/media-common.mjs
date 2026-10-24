@@ -251,6 +251,7 @@ export function loadMediaConfig({ requireCredentials = false } = {}) {
 			source.region ??
 			"auto",
 		publicBaseUrl,
+		proxy: source.proxy ?? "",
 		picgoPath: picgo?.path ?? null,
 	};
 

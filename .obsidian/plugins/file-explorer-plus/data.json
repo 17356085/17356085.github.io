@@ -1,0 +1,44 @@
+{
+  "hideStrictPathFilters": true,
+  "pinFilters": {
+    "active": false,
+    "tags": [],
+    "paths": [],
+    "frontMatter": []
+  },
+  "hideFilters": {
+    "active": true,
+    "tags": [],
+    "paths": [
+      {
+        "name": "工程与构建目录",
+        "active": true,
+        "type": "DIRECTORIES",
+        "patternType": "REGEX",
+        "pattern": "^(?:\\.astro|\\.git|\\.githooks|\\.github|\\.obsidian|\\.shirones|\\.tmp|\\.tmp-recheck-a|\\.vscode|artwork|dist|node_modules|public|scripts|shirones|workflows)$"
+      },
+      {
+        "name": "根目录工程文件",
+        "active": true,
+        "type": "FILES",
+        "patternType": "REGEX",
+        "pattern": "^(?:\\.gitattributes|\\.gitignore|\\.npmrc|astro\\.config\\.mjs|biome\\.json|CONTRIBUTING\\.md|frontmatter\\.json|LICENSE|package\\.json|pagefind\\.yml|pnpm-lock\\.yaml|PRODUCT\\.md|README\\.md|tsconfig\\.json|vercel\\.json)$"
+      },
+      {
+        "name": "正文以外的源代码",
+        "active": true,
+        "type": "FILES_AND_DIRECTORIES",
+        "patternType": "REGEX",
+        "pattern": "^src/(?!content(?:/|$)).+$"
+      },
+      {
+        "name": "写作以外的文档",
+        "active": true,
+        "type": "FILES_AND_DIRECTORIES",
+        "patternType": "REGEX",
+        "pattern": "^docs/(?!Obsidian(?:/|$))(?!knowledge-system(?:\\.md)?$).+$"
+      }
+    ],
+    "frontMatter": []
+  }
+}

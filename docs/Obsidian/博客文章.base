@@ -1,0 +1,36 @@
+filters:
+  and:
+    - file.ext == "md"
+    - file.inFolder("src/content/posts")
+properties:
+  file.name:
+    displayName: 文章
+  note.published:
+    displayName: 发布日期
+  note.updated:
+    displayName: 更新日期
+  note.draft:
+    displayName: 草稿
+  note.category:
+    displayName: 分类
+  note.tags:
+    displayName: 标签
+views:
+  - type: table
+    name: 全部文章
+    order:
+      - file.name
+      - note.draft
+      - note.published
+      - note.updated
+      - note.category
+      - note.tags
+  - type: table
+    name: 待发布草稿
+    filters:
+      and:
+        - note.draft == true
+    order:
+      - file.name
+      - note.category
+      - note.updated

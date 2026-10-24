@@ -2,5 +2,18 @@
   "obsidian-git",
   "obsidian42-brat",
   "templater-obsidian",
-  "obsidian-image-auto-upload-plugin"
+  "obsidian-image-auto-upload-plugin",
+  "quickadd",
+  "obsidian-linter",
+  "cm-chs-patch",
+  "text-extractor",
+  "pdf-plus",
+  "obsidian-tasks-plugin",
+  "obsidian-excalidraw-plugin",
+  "obsidian-latex-suite",
+  "omnisearch",
+  "file-explorer-plus",
+  "editing-toolbar",
+  "obsidian-outliner",
+  "table-editor-obsidian"
 ]

@@ -14,8 +14,17 @@ const animeSnapshotPath = join(
 	"anime-snapshots",
 	"bangumi.json",
 );
-const live2dManifestPath = join(root, "docs", "live2d", "release-manifest.json");
+const live2dManifestPath = join(
+	root,
+	"docs",
+	"live2d",
+	"release-manifest.json",
+);
 const issues = [];
+const knowledgeBaseTarget = {
+	relative: "engineering/knowledge-base.md",
+	route: "/notes/engineering/knowledge-base/",
+};
 const expectedHiddenPosts = [
 	{
 		relative: "2025/搭建博客教程（一）.md",
@@ -180,7 +189,9 @@ function assertLive2DBootstrap() {
 			continue;
 		}
 		if (docks.length !== 1) {
-			fail(`${label} output has ${docks.length} data-whale-dock start tags; expected 1`);
+			fail(
+				`${label} output has ${docks.length} data-whale-dock start tags; expected 1`,
+			);
 		}
 
 		checkedRoutes += 1;
@@ -247,7 +258,9 @@ function assertLive2DManifest() {
 	}
 
 	if (files.length !== 18) {
-		fail(`Live2D release manifest resource count mismatch: expected 18, found ${files.length}`);
+		fail(
+			`Live2D release manifest resource count mismatch: expected 18, found ${files.length}`,
+		);
 	}
 
 	let checked = 0;
@@ -262,7 +275,9 @@ function assertLive2DManifest() {
 		const localFile = relativePath ? localOutputFile(`/${relativePath}`) : null;
 		if (!localFile || !existsSync(localFile)) {
 			missing += 1;
-			fail(`Live2D manifest asset is missing from dist: ${manifestPath || "<invalid path>"}`);
+			fail(
+				`Live2D manifest asset is missing from dist: ${manifestPath || "<invalid path>"}`,
+			);
 			continue;
 		}
 
@@ -329,13 +344,57 @@ function contentCounts(documents) {
 	};
 }
 
+function findKnowledgeBaseDocument(notes) {
+	return notes.find(
+		(document) => document.relative === knowledgeBaseTarget.relative,
+	);
+}
+
+export function checkKnowledgeBaseRoute(document, generated) {
+	const isPublic = Boolean(document && document.frontmatter.draft !== true);
+	const expectedGenerated = isPublic;
+	const issue =
+		generated === expectedGenerated
+			? null
+			: isPublic
+				? `missing generated route: ${knowledgeBaseTarget.route}`
+				: `draft or missing knowledge-base route still generated: ${knowledgeBaseTarget.route}`;
+	return {
+		isPublic,
+		generated,
+		expectedGenerated,
+		ok: issue === null,
+		issue,
+	};
+}
+
+export function checkKnowledgeBasePagefind(document, results) {
+	const isPublic = Boolean(document && document.frontmatter.draft !== true);
+	const targetMatches = results.filter(
+		(result) => result.raw_url === knowledgeBaseTarget.route,
+	);
+	const issue = isPublic
+		? results.length === 1 && targetMatches.length === 1
+			? null
+			: `Pagefind Note query did not resolve uniquely to ${knowledgeBaseTarget.route}`
+		: targetMatches.length === 0
+			? null
+			: `Pagefind exposed the draft or missing note route ${knowledgeBaseTarget.route}`;
+	return {
+		isPublic,
+		resultCount: results.length,
+		targetMatchCount: targetMatches.length,
+		ok: issue === null,
+		issue,
+	};
+}
+
 function assertRequiredRoutes() {
 	const routes = [
 		"/",
 		"/posts/",
 		"/archive/",
 		"/notes/",
-		"/notes/engineering/knowledge-base/",
 		"/anime/",
 		"/friends/",
 		"/robots.txt",
@@ -346,6 +405,18 @@ function assertRequiredRoutes() {
 		if (!routeExists(route)) fail(`missing generated route: ${route}`);
 	}
 	console.log(`[output] required routes: ${routes.length} checked`);
+}
+
+function assertKnowledgeBaseRoute(notes) {
+	const document = findKnowledgeBaseDocument(notes);
+	const result = checkKnowledgeBaseRoute(
+		document,
+		routeExists(knowledgeBaseTarget.route),
+	);
+	if (!result.ok) fail(result.issue);
+	console.log(
+		`[output] knowledge-base route: source=${document ? "present" : "missing"}, public=${result.isPublic}, generated=${result.generated}`,
+	);
 }
 
 function assertFriendsOutput() {
@@ -609,7 +680,7 @@ function createStaticServer() {
 	return server;
 }
 
-async function pagefindSearchChecks() {
+async function pagefindSearchChecks(notes) {
 	const pagefindEntry = join(dist, "pagefind", "pagefind.js");
 	const pagefindMetadata = join(dist, "pagefind", "pagefind-entry.json");
 	const fragments = walkFiles(join(dist, "pagefind", "fragment")).filter(
@@ -644,7 +715,12 @@ async function pagefindSearchChecks() {
 			return Promise.all(result.results.map((item) => item.data()));
 		};
 		const postResults = await search("RESTFul编程风格");
-		const noteResults = await search("公开知识库的主干与边界");
+		const knowledgeBase = findKnowledgeBaseDocument(notes);
+		const noteQuery =
+			typeof knowledgeBase?.frontmatter.title === "string"
+				? knowledgeBase.frontmatter.title
+				: "公开知识库的主干与边界";
+		const noteResults = await search(noteQuery);
 		const hiddenPostResults = await search("简单了解CDN");
 		const draftResults = await search("深夜反思");
 
@@ -656,14 +732,11 @@ async function pagefindSearchChecks() {
 				"Pagefind Post query did not resolve uniquely to /posts/2025/restful编程风格/",
 			);
 		}
-		if (
-			noteResults.length !== 1 ||
-			noteResults[0]?.raw_url !== "/notes/engineering/knowledge-base/"
-		) {
-			fail(
-				"Pagefind Note query did not resolve uniquely to the knowledge-base note",
-			);
-		}
+		const knowledgeBaseSearch = checkKnowledgeBasePagefind(
+			knowledgeBase,
+			noteResults,
+		);
+		if (!knowledgeBaseSearch.ok) fail(knowledgeBaseSearch.issue);
 		if (
 			hiddenPostResults.some((result) =>
 				expectedHiddenPosts.some(
@@ -674,15 +747,13 @@ async function pagefindSearchChecks() {
 			fail("Pagefind exposed a hidden post route for the query 简单了解CDN");
 		}
 		if (
-			draftResults.some(
-				(result) => result.raw_url === "/posts/2025/深夜反思/",
-			)
+			draftResults.some((result) => result.raw_url === "/posts/2025/深夜反思/")
 		) {
 			fail("Pagefind exposed the draft route /posts/2025/深夜反思/");
 		}
 		await index.destroy();
 		console.log(
-			`[output] Pagefind search: Post=1, hidden-routes=0, Note=1, draft=0; fragments=${fragments.length}`,
+			`[output] Pagefind search: Post=1, hidden-routes=0, Note=${knowledgeBaseSearch.resultCount}, Note-target=${knowledgeBaseSearch.targetMatchCount}, draft=0; fragments=${fragments.length}`,
 		);
 	} catch (error) {
 		fail(
@@ -702,6 +773,7 @@ async function main() {
 	const posts = collectionDocuments(join(root, "src", "content", "posts"));
 	const notes = collectionDocuments(join(root, "src", "content", "notes"));
 	assertRequiredRoutes();
+	assertKnowledgeBaseRoute(notes);
 	assertContentCounts(posts, notes);
 	assertHiddenPostRoutes(posts);
 	assertImages(posts, notes);
@@ -711,7 +783,7 @@ async function main() {
 	assertLive2DBootstrap();
 	assertLive2DManifest();
 	assertNoDemoData();
-	await pagefindSearchChecks();
+	await pagefindSearchChecks(notes);
 
 	if (issues.length > 0) {
 		for (const issue of issues) console.error(`[output] FAIL: ${issue}`);
@@ -721,4 +793,7 @@ async function main() {
 	console.log("[output] migration output checks passed");
 }
 
-await main();
+const invokedFile = process.argv[1]
+	? pathToFileURL(resolve(process.argv[1])).href
+	: null;
+if (invokedFile === import.meta.url) await main();

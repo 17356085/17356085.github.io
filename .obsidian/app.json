@@ -1,4 +1,29 @@
 {
   "showLineNumber": false,
-  "useMarkdownLinks": true
+  "useMarkdownLinks": true,
+  "readableLineLength": true,
+  "foldHeading": true,
+  "foldIndent": true,
+  "showIndentGuide": true,
+  "newLinkFormat": "relative",
+  "propertiesInDocument": "source",
+  "newFileLocation": "folder",
+  "newFileFolderPath": "docs/Obsidian/临时记录",
+  "userIgnoreFilters": [
+    "node_modules",
+    "dist",
+    ".astro",
+    ".git",
+    ".obsidian",
+    ".tmp",
+    ".tmp-recheck-a",
+    ".shirones",
+    ".content-src",
+    ".content-backup",
+    "artwork",
+    "public",
+    "templates",
+    "test-results",
+    "playwright-report"
+  ]
 }

@@ -1,0 +1,38 @@
+{
+  "quickadd:runQuickAdd": [
+    {
+      "modifiers": [
+        "Ctrl",
+        "Alt"
+      ],
+      "key": "N"
+    }
+  ],
+  "omnisearch:show-modal": [
+    {
+      "modifiers": [
+        "Ctrl",
+        "Alt"
+      ],
+      "key": "O"
+    }
+  ],
+  "obsidian-linter:lint-file": [
+    {
+      "modifiers": [
+        "Ctrl",
+        "Alt"
+      ],
+      "key": "L"
+    }
+  ],
+  "file-explorer-plus:toggle-global-hide-filters": [
+    {
+      "modifiers": [
+        "Ctrl",
+        "Alt"
+      ],
+      "key": "H"
+    }
+  ]
+}

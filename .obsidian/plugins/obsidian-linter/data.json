@@ -1,0 +1,45 @@
+{
+  "ruleConfigs": {
+    "heading-blank-lines": {
+      "enabled": true,
+      "bottom": true,
+      "empty-line-after-yaml": true
+    },
+    "paragraph-blank-lines": {
+      "enabled": true
+    },
+    "yaml-timestamp": {
+      "enabled": false
+    },
+    "yaml-title-alias": {
+      "enabled": false
+    }
+  },
+  "lintOnSave": false,
+  "recordLintOnSaveLogs": false,
+  "displayChanged": true,
+  "suppressMessageWhenNoChange": false,
+  "enableDiffPreviewView": true,
+  "suppressLintAllFilesConfirmationModal": false,
+  "suppressLintAllFilesInFolderConfirmationModal": false,
+  "lintOnFileChange": false,
+  "displayLintOnFileChangeNotice": false,
+  "settingsConvertedToConfigKeyValues": true,
+  "textAreaSettingsConvertedToListItemSettings": false,
+  "defaultArrayStyleMovedToCommonStyles": false,
+  "additionalFileExtensions": [],
+  "foldersToIgnore": [],
+  "filesToIgnore": [],
+  "linterLocale": "system-default",
+  "logLevel": "ERROR",
+  "lintCommands": [],
+  "customRegexes": [],
+  "commonStyles": {
+    "aliasArrayStyle": "single-line",
+    "tagArrayStyle": "single-line",
+    "defaultArrayStyle": "single-line",
+    "minimumNumberOfDollarSignsToBeAMathBlock": 2,
+    "escapeCharacter": "\"",
+    "removeUnnecessaryEscapeCharsForMultiLineArrays": false
+  }
+}
