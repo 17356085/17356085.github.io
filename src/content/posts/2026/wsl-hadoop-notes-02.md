@@ -1,6 +1,6 @@
 ---
 title: "WSL 下的 Hadoop 入门笔记（二）：HDFS 文件操作、分块与副本机制"
-published: 2026-10-18
+published: 2026-10-24
 updated: 2026-10-24
 description: "本篇继续启动完整的 HDFS 伪分布式服务，通过文件上传、下载和数据块检查，理解 HDFS 的基本存储原理。"
 image: "https://pub-1d883de109ca4cc6b2cd88abca8c4330.r2.dev/images/posts/cf840fe914a9c390a09a7c4c79867079.jpg"
