@@ -269,8 +269,25 @@ function saveLocalState() {
 	return after;
 }
 
-function restoreLocalState(stashRef) {
-	const applyArgs = ["stash", "apply", "--index", stashRef];
+function findStashSelector(stashCommit) {
+	const args = ["stash", "list", "--format=%gd%x09%H"];
+	const result = runGit(args);
+	if (!result.ok) {
+		return null;
+	}
+
+	for (const line of result.stdout.split(/\r?\n/)) {
+		const [selector, hash] = line.split("\t");
+		if (selector && hash === stashCommit) {
+			return selector;
+		}
+	}
+
+	return "";
+}
+
+function restoreLocalState(stashCommit) {
+	const applyArgs = ["stash", "apply", "--index", stashCommit];
 	const apply = runGit(applyArgs);
 	if (!apply.ok) {
 		reportFailure(
@@ -281,15 +298,40 @@ function restoreLocalState(stashRef) {
 		return false;
 	}
 
-	const dropArgs = ["stash", "drop", stashRef];
+	const selector = findStashSelector(stashCommit);
+	if (selector === null) {
+		console.warn(
+			"提交前同步：本地改动已恢复；无法读取 stash 列表，未删除任何 stash。",
+		);
+		return true;
+	}
+	if (!selector) {
+		console.warn(
+			"提交前同步：本地改动已恢复；原临时保存点仍保留，未删除其他 stash。",
+		);
+		return true;
+	}
+
+	const verifyArgs = ["rev-parse", "--verify", "--quiet", selector];
+	const verify = runGit(verifyArgs);
+	if (!verify.ok || verify.stdout.trim() !== stashCommit) {
+		console.warn(
+			"提交前同步：stash 引用已变化，保留临时保存点，未删除任何 stash。",
+		);
+		return true;
+	}
+
+	const dropArgs = ["stash", "drop", selector];
 	const drop = runGit(dropArgs);
 	if (!drop.ok) {
-		reportFailure(
-			"清理已成功恢复的临时保存点；本地内容已恢复，请检查 stash",
-			dropArgs,
-			drop,
+		console.warn(
+			"提交前同步：本地内容已恢复，但临时保存点未能清理，仍保留为备份。",
 		);
-		return false;
+		const stderr = String(drop.stderr).trim();
+		if (stderr) {
+			console.warn(stderr.length > 2000 ? stderr.slice(0, 2000) + "…" : stderr);
+		}
+		return true;
 	}
 
 	return true;
