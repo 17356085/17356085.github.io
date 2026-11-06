@@ -68,6 +68,31 @@ const mainContentClasses = generateMainContentClasses(sidebarResponsive);
 
 <!-- Navbar -->
 <slot slot="head" name="head"></slot>
+<style slot="head" is:global>
+	/* Keep the site's blue accent family coherent while leaving --mc-* dynamic. */
+	html:root {
+		--secondary: var(--mc-secondary, var(--primary));
+		--on-secondary: var(--mc-on-secondary, var(--on-primary));
+		--secondary-container: var(--mc-secondary-container, var(--primary-container));
+		--on-secondary-container: var(--mc-on-secondary-container, var(--on-primary-container));
+		--tertiary: var(--secondary);
+		--on-tertiary: var(--on-secondary);
+		--tertiary-container: var(--secondary-container);
+		--on-tertiary-container: var(--on-secondary-container);
+	}
+
+	/* Higher specificity than the theme's :root.dark rule keeps dark-mode fallbacks aligned. */
+	html.dark:root {
+		--secondary: var(--mc-secondary, var(--primary));
+		--on-secondary: var(--mc-on-secondary, var(--on-primary));
+		--secondary-container: var(--mc-secondary-container, var(--primary-container));
+		--on-secondary-container: var(--mc-on-secondary-container, var(--on-primary-container));
+		--tertiary: var(--secondary);
+		--on-tertiary: var(--on-secondary);
+		--tertiary-container: var(--secondary-container);
+		--on-tertiary-container: var(--on-secondary-container);
+	}
+</style>
 <header id="top-row" class="z-50 pointer-events-none relative transition-all duration-700 max-w-[var(--page-width)] px-0 md:px-4 mx-auto" class:list={[""]}>
     <div id="navbar-wrapper" class="pointer-events-auto sticky top-0 transition-all">
         <TopAppBar></TopAppBar>

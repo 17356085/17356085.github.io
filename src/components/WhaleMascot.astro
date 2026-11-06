@@ -634,7 +634,7 @@ const live2dCoreUrl = url("/live2d/vendor/live2dcubismcore.min.js");
 		aspect-ratio: 192 / 208;
 		pointer-events: none;
 		font: 500 0.875rem/1.6 var(--font-family, system-ui, sans-serif);
-		color: var(--on-surface, #24202a);
+		color: var(--on-surface, #172336);
 	}
 	.whale-dock [hidden] { display: none !important; }
 	.whale-dock[data-obscured="true"] { visibility: hidden; }
@@ -663,17 +663,17 @@ const live2dCoreUrl = url("/live2d/vendor/live2dcubismcore.min.js");
 	@keyframes whale-wave { to { transform: translateX(-100%); } }
 	.whale-dock[data-paused="true"] .whale-frames, .whale-dock[data-paused="true"] .whale-breathe,
 	.whale-dock[data-obscured="true"] .whale-frames, .whale-dock[data-obscured="true"] .whale-breathe { animation-play-state: paused; }
-	.whale-dialogue { position: absolute; right: 0; left: auto; bottom: max(calc(100% + 10px), 208px); box-sizing: border-box; width: min(240px, calc(100vw - var(--whale-dock-right) - 12px)); padding: 14px 42px 14px 14px; border: 1px solid var(--outline-variant, #bcb5c3); border-radius: 14px; background: var(--surface-container-high, #f5eef9); pointer-events: auto; overflow-wrap: anywhere; }
+	.whale-dialogue { position: absolute; right: 0; left: auto; bottom: max(calc(100% + 10px), 208px); box-sizing: border-box; width: min(240px, calc(100vw - var(--whale-dock-right) - 12px)); padding: 14px 42px 14px 14px; border: 1px solid var(--outline-variant, #b8c7da); border-radius: 14px; background: var(--surface-container-high, #edf3fa); pointer-events: auto; overflow-wrap: anywhere; }
 	.whale-dialogue p { margin: 0; }
-	.whale-close { position: absolute; top: 6px; right: 6px; display: grid; place-items: center; width: 32px; height: 32px; padding: 0; background: none; border: 0; border-radius: 8px; color: var(--on-surface, #24202a); font: 400 1.4rem/1 system-ui; cursor: pointer; }
+	.whale-close { position: absolute; top: 6px; right: 6px; display: grid; place-items: center; width: 32px; height: 32px; padding: 0; background: none; border: 0; border-radius: 8px; color: var(--on-surface, #172336); font: 400 1.4rem/1 system-ui; cursor: pointer; }
 	.whale-tools { position: fixed; right: var(--whale-fab-right); left: auto; bottom: calc(var(--whale-rail-bottom) + 44px + 8px); display: flex; flex-direction: column; gap: 4px; pointer-events: auto; }
-	.whale-tool { display: grid; place-items: center; box-sizing: border-box; width: 44px; height: 44px; padding: 10px; border: 1px solid var(--outline-variant, #bcb5c3); border-radius: 10px; background: var(--surface-container-high, #f5eef9); color: var(--on-surface, #24202a); cursor: pointer; text-decoration: none; pointer-events: auto; }
+	.whale-tool { display: grid; place-items: center; box-sizing: border-box; width: 44px; height: 44px; padding: 10px; border: 1px solid var(--outline-variant, #b8c7da); border-radius: 10px; background: var(--surface-container-high, #edf3fa); color: var(--on-surface, #172336); cursor: pointer; text-decoration: none; pointer-events: auto; }
 	.whale-tool svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
 	.whale-menu-toggle { position: fixed; right: var(--whale-fab-right); left: auto; bottom: var(--whale-rail-bottom); }
 	.whale-tool[aria-disabled="true"] { opacity: 0.5; cursor: default; }
-	.whale-tool:hover, .whale-close:hover { background: var(--secondary-container, #e9ddf2); color: var(--on-secondary-container, #352540); }
-	.whale-wake { position: fixed; right: var(--whale-fab-right); left: auto; bottom: var(--whale-rail-bottom); display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 8px 12px; border: 1px solid var(--outline-variant, #bcb5c3); border-radius: 12px; background: var(--surface-container-high, #f5eef9); color: var(--on-surface, #24202a); cursor: pointer; font: inherit; pointer-events: auto; }
-	.whale-dock button:focus-visible, .whale-dock a:focus-visible { outline: 2px solid var(--primary, #75548a); outline-offset: 3px; border-radius: 10px; }
+	.whale-tool:hover, .whale-close:hover { background: var(--secondary-container, #d9e8fb); color: var(--on-secondary-container, #153252); }
+	.whale-wake { position: fixed; right: var(--whale-fab-right); left: auto; bottom: var(--whale-rail-bottom); display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 8px 12px; border: 1px solid var(--outline-variant, #b8c7da); border-radius: 12px; background: var(--surface-container-high, #edf3fa); color: var(--on-surface, #172336); cursor: pointer; font: inherit; pointer-events: auto; }
+	.whale-dock button:focus-visible, .whale-dock a:focus-visible { outline: 2px solid var(--primary, #3c70b8); outline-offset: 3px; border-radius: 10px; }
 	.whale-sr { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 	@media (max-width: 1023px) { .whale-dock { --whale-rail-bottom: max(156px, calc(env(safe-area-inset-bottom) + 156px)); } }
 	@media (max-width: 40rem) { .whale-dock { --whale-size: 120px; } }
