@@ -10,7 +10,11 @@
  * apply motion weights, start a timer, or infer a playback frame rate.
  */
 
-export type WhaleMotionSegmentType = 'linear' | 'cubicBezier' | 'stepped' | 'inverseStepped';
+export type WhaleMotionSegmentType =
+	| "linear"
+	| "cubicBezier"
+	| "stepped"
+	| "inverseStepped";
 
 export interface WhaleMotionPoint {
 	readonly time: number;
@@ -42,29 +46,35 @@ export interface WhaleMotionClip {
 
 type MotionRecord = Record<string, unknown>;
 
-const ROOT_REQUIRED_KEYS = new Set(['Version', 'Meta', 'Curves']);
+const ROOT_REQUIRED_KEYS = new Set(["Version", "Meta", "Curves"]);
 const META_KEYS = new Set([
-	'Duration',
-	'Fps',
-	'Loop',
-	'AreBeziersRestricted',
-	'FadeInTime',
-	'FadeOutTime',
-	'CurveCount',
-	'TotalSegmentCount',
-	'TotalPointCount',
-	'UserDataCount',
-	'TotalUserDataSize',
+	"Duration",
+	"Fps",
+	"Loop",
+	"AreBeziersRestricted",
+	"FadeInTime",
+	"FadeOutTime",
+	"CurveCount",
+	"TotalSegmentCount",
+	"TotalPointCount",
+	"UserDataCount",
+	"TotalUserDataSize",
 ]);
-const CURVE_KEYS = new Set(['Target', 'Id', 'FadeInTime', 'FadeOutTime', 'Segments']);
-const USER_DATA_KEYS = new Set(['Time', 'Value']);
+const CURVE_KEYS = new Set([
+	"Target",
+	"Id",
+	"FadeInTime",
+	"FadeOutTime",
+	"Segments",
+]);
+const USER_DATA_KEYS = new Set(["Time", "Value"]);
 
 function hasOwn(record: MotionRecord, key: string): boolean {
 	return Object.prototype.hasOwnProperty.call(record, key);
 }
 
 function isRecord(value: unknown): value is MotionRecord {
-	return typeof value === 'object' && value !== null && !Array.isArray(value);
+	return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
 function invalid(path: string, detail: string): never {
@@ -72,65 +82,88 @@ function invalid(path: string, detail: string): never {
 }
 
 function unsupportedTarget(target: string): never {
-	throw new Error(`Unsupported motion3 target "${target}"; only "Parameter" curves are supported.`);
+	throw new Error(
+		`Unsupported motion3 target "${target}"; only "Parameter" curves are supported.`,
+	);
 }
 
 function expectRecord(value: unknown, path: string): MotionRecord {
 	if (!isRecord(value)) {
-		invalid(path, 'expected an object.');
+		invalid(path, "expected an object.");
 	}
 	return value;
 }
 
 function expectArray(value: unknown, path: string): unknown[] {
 	if (!Array.isArray(value)) {
-		invalid(path, 'expected an array.');
+		invalid(path, "expected an array.");
 	}
 	return value;
 }
 
-function assertAllowedKeys(record: MotionRecord, allowed: ReadonlySet<string>, path: string): void {
+function assertAllowedKeys(
+	record: MotionRecord,
+	allowed: ReadonlySet<string>,
+	path: string,
+): void {
 	for (const key of Object.keys(record)) {
 		if (!allowed.has(key)) {
-			invalid(`${path}.${key}`, 'unsupported property.');
+			invalid(`${path}.${key}`, "unsupported property.");
 		}
 	}
 }
 
 function finiteNumber(value: unknown, path: string): number {
-	if (typeof value !== 'number' || !Number.isFinite(value)) {
-		invalid(path, 'expected a finite number.');
+	if (typeof value !== "number" || !Number.isFinite(value)) {
+		invalid(path, "expected a finite number.");
 	}
 	return value;
 }
 
-function requiredFiniteNumber(record: MotionRecord, key: string, path: string): number {
+function requiredFiniteNumber(
+	record: MotionRecord,
+	key: string,
+	path: string,
+): number {
 	if (!hasOwn(record, key)) {
-		invalid(`${path}.${key}`, 'is required.');
+		invalid(`${path}.${key}`, "is required.");
 	}
 	return finiteNumber(record[key], `${path}.${key}`);
 }
 
-function optionalFiniteNumber(record: MotionRecord, key: string, path: string): number | undefined {
+function optionalFiniteNumber(
+	record: MotionRecord,
+	key: string,
+	path: string,
+): number | undefined {
 	if (!hasOwn(record, key)) {
 		return undefined;
 	}
 	return finiteNumber(record[key], `${path}.${key}`);
 }
 
-function optionalBoolean(record: MotionRecord, key: string, path: string, fallback: boolean): boolean {
+function optionalBoolean(
+	record: MotionRecord,
+	key: string,
+	path: string,
+	fallback: boolean,
+): boolean {
 	if (!hasOwn(record, key)) {
 		return fallback;
 	}
-	if (typeof record[key] !== 'boolean') {
-		invalid(`${path}.${key}`, 'expected a boolean.');
+	if (typeof record[key] !== "boolean") {
+		invalid(`${path}.${key}`, "expected a boolean.");
 	}
 	return record[key] as boolean;
 }
 
-function requiredString(record: MotionRecord, key: string, path: string): string {
-	if (!hasOwn(record, key) || typeof record[key] !== 'string') {
-		invalid(`${path}.${key}`, 'expected a string.');
+function requiredString(
+	record: MotionRecord,
+	key: string,
+	path: string,
+): string {
+	if (!hasOwn(record, key) || typeof record[key] !== "string") {
+		invalid(`${path}.${key}`, "expected a string.");
 	}
 	return record[key] as string;
 }
@@ -138,14 +171,18 @@ function requiredString(record: MotionRecord, key: string, path: string): string
 function countNumber(value: unknown, path: string): number {
 	const count = finiteNumber(value, path);
 	if (!Number.isSafeInteger(count) || count < 0) {
-		invalid(path, 'expected a non-negative integer count.');
+		invalid(path, "expected a non-negative integer count.");
 	}
 	return count;
 }
 
-function requiredCount(record: MotionRecord, key: string, path: string): number {
+function requiredCount(
+	record: MotionRecord,
+	key: string,
+	path: string,
+): number {
 	if (!hasOwn(record, key)) {
-		invalid(`${path}.${key}`, 'is required.');
+		invalid(`${path}.${key}`, "is required.");
 	}
 	return countNumber(record[key], `${path}.${key}`);
 }
@@ -154,7 +191,11 @@ function makePoint(time: number, value: number): WhaleMotionPoint {
 	return Object.freeze({ time, value });
 }
 
-function readPoint(values: readonly unknown[], offset: number, path: string): WhaleMotionPoint {
+function readPoint(
+	values: readonly unknown[],
+	offset: number,
+	path: string,
+): WhaleMotionPoint {
 	return makePoint(
 		finiteNumber(values[offset], `${path}[${offset}]`),
 		finiteNumber(values[offset + 1], `${path}[${offset + 1}]`),
@@ -167,19 +208,19 @@ function nearlyEqual(left: number, right: number, scale: number): boolean {
 
 function segmentType(value: number, path: string): WhaleMotionSegmentType {
 	if (!Number.isInteger(value)) {
-		invalid(path, 'segment identifier must be an integer from 0 to 3.');
+		invalid(path, "segment identifier must be an integer from 0 to 3.");
 	}
 	switch (value) {
 		case 0:
-			return 'linear';
+			return "linear";
 		case 1:
-			return 'cubicBezier';
+			return "cubicBezier";
 		case 2:
-			return 'stepped';
+			return "stepped";
 		case 3:
-			return 'inverseStepped';
+			return "inverseStepped";
 		default:
-			invalid(path, 'unsupported segment identifier; expected 0, 1, 2, or 3.');
+			invalid(path, "unsupported segment identifier; expected 0, 1, 2, or 3.");
 	}
 }
 
@@ -194,14 +235,14 @@ function parseCurve(
 	const record = expectRecord(value, path);
 	assertAllowedKeys(record, CURVE_KEYS, path);
 
-	const target = requiredString(record, 'Target', path);
-	if (target !== 'Parameter') {
+	const target = requiredString(record, "Target", path);
+	if (target !== "Parameter") {
 		unsupportedTarget(target);
 	}
 
-	const id = requiredString(record, 'Id', path);
+	const id = requiredString(record, "Id", path);
 	if (id.trim().length === 0) {
-		invalid(`${path}.Id`, 'must be non-empty.');
+		invalid(`${path}.Id`, "must be non-empty.");
 	}
 	if (seenIds.has(id)) {
 		invalid(`${path}.Id`, `duplicate parameter ID "${id}".`);
@@ -210,7 +251,10 @@ function parseCurve(
 
 	const rawSegments = expectArray(record.Segments, `${path}.Segments`);
 	if (rawSegments.length < 5) {
-		invalid(`${path}.Segments`, 'must contain an initial point and at least one segment.');
+		invalid(
+			`${path}.Segments`,
+			"must contain an initial point and at least one segment.",
+		);
 	}
 
 	const firstPoint = readPoint(rawSegments, 0, `${path}.Segments`);
@@ -225,11 +269,14 @@ function parseCurve(
 
 	while (position < rawSegments.length) {
 		const typePath = `${path}.Segments[${position}]`;
-		const type = segmentType(finiteNumber(rawSegments[position], typePath), typePath);
-		const addedPointCount = type === 'cubicBezier' ? 3 : 1;
+		const type = segmentType(
+			finiteNumber(rawSegments[position], typePath),
+			typePath,
+		);
+		const addedPointCount = type === "cubicBezier" ? 3 : 1;
 		const encodedWidth = 1 + addedPointCount * 2;
 		if (position + encodedWidth > rawSegments.length) {
-			invalid(typePath, 'segment is truncated.');
+			invalid(typePath, "segment is truncated.");
 		}
 
 		const segmentPoints: WhaleMotionPoint[] = [previousPoint];
@@ -237,10 +284,16 @@ function parseCurve(
 			const pointOffset = position + 1 + pointIndex * 2;
 			const point = readPoint(rawSegments, pointOffset, `${path}.Segments`);
 			if (point.time < 0 || point.time > duration) {
-				invalid(`${path}.Segments[${pointOffset}]`, `time must be within 0..${duration}.`);
+				invalid(
+					`${path}.Segments[${pointOffset}]`,
+					`time must be within 0..${duration}.`,
+				);
 			}
 			if (point.time < previousPoint.time) {
-				invalid(`${path}.Segments[${pointOffset}]`, 'point times must be monotonic.');
+				invalid(
+					`${path}.Segments[${pointOffset}]`,
+					"point times must be monotonic.",
+				);
 			}
 			segmentPoints.push(point);
 			previousPoint = point;
@@ -248,10 +301,13 @@ function parseCurve(
 
 		const endPoint = segmentPoints[segmentPoints.length - 1];
 		if (endPoint.time <= segmentPoints[0].time) {
-			invalid(typePath, 'segment end time must be greater than its start time.');
+			invalid(
+				typePath,
+				"segment end time must be greater than its start time.",
+			);
 		}
 
-		if (type === 'cubicBezier' && areBeziersRestricted) {
+		if (type === "cubicBezier" && areBeziersRestricted) {
 			const start = segmentPoints[0];
 			const control1 = segmentPoints[1];
 			const control2 = segmentPoints[2];
@@ -263,7 +319,10 @@ function parseCurve(
 				!nearlyEqual(control1.time, expectedControl1Time, duration) ||
 				!nearlyEqual(control2.time, expectedControl2Time, duration)
 			) {
-				invalid(typePath, 'restricted cubic Bézier time handles must be at one-third and two-thirds.');
+				invalid(
+					typePath,
+					"restricted cubic Bézier time handles must be at one-third and two-thirds.",
+				);
 			}
 		}
 
@@ -279,33 +338,38 @@ function parseCurve(
 
 	const curve: WhaleMotionCurve = Object.freeze({
 		id,
-		fadeInSeconds: optionalFiniteNumber(record, 'FadeInTime', path),
-		fadeOutSeconds: optionalFiniteNumber(record, 'FadeOutTime', path),
+		fadeInSeconds: optionalFiniteNumber(record, "FadeInTime", path),
+		fadeOutSeconds: optionalFiniteNumber(record, "FadeOutTime", path),
 		segments: Object.freeze(segments),
 	});
 	return { curve, segmentCount: segments.length, pointCount };
 }
 
 function validateUserData(root: MotionRecord, meta: MotionRecord): void {
-	const userDataValue = hasOwn(root, 'UserData') ? expectArray(root.UserData, 'UserData') : [];
+	const userDataValue = hasOwn(root, "UserData")
+		? expectArray(root.UserData, "UserData")
+		: [];
 	for (let index = 0; index < userDataValue.length; index += 1) {
 		const path = `UserData[${index}]`;
 		const entry = expectRecord(userDataValue[index], path);
 		assertAllowedKeys(entry, USER_DATA_KEYS, path);
 		finiteNumber(entry.Time, `${path}.Time`);
-		if (typeof entry.Value !== 'string') {
-			invalid(`${path}.Value`, 'expected a string.');
+		if (typeof entry.Value !== "string") {
+			invalid(`${path}.Value`, "expected a string.");
 		}
 	}
 
-	if (hasOwn(meta, 'UserDataCount')) {
-		const expectedCount = countNumber(meta.UserDataCount, 'Meta.UserDataCount');
+	if (hasOwn(meta, "UserDataCount")) {
+		const expectedCount = countNumber(meta.UserDataCount, "Meta.UserDataCount");
 		if (expectedCount !== userDataValue.length) {
-			invalid('Meta.UserDataCount', `declares ${expectedCount}, found ${userDataValue.length}.`);
+			invalid(
+				"Meta.UserDataCount",
+				`declares ${expectedCount}, found ${userDataValue.length}.`,
+			);
 		}
 	}
-	if (hasOwn(meta, 'TotalUserDataSize')) {
-		countNumber(meta.TotalUserDataSize, 'Meta.TotalUserDataSize');
+	if (hasOwn(meta, "TotalUserDataSize")) {
+		countNumber(meta.TotalUserDataSize, "Meta.TotalUserDataSize");
 	}
 }
 
@@ -316,37 +380,49 @@ function normalizedFadeSeconds(value: number | undefined): number {
 
 /** Parse and strictly validate a parsed motion3.json value. */
 export function parseWhaleMotion3(value: unknown): WhaleMotionClip {
-	const root = expectRecord(value, 'motion3');
+	const root = expectRecord(value, "motion3");
 	for (const key of ROOT_REQUIRED_KEYS) {
 		if (!hasOwn(root, key)) {
-			invalid(`motion3.${key}`, 'is required.');
+			invalid(`motion3.${key}`, "is required.");
 		}
 	}
 
-	const version = finiteNumber(root.Version, 'Version');
+	const version = finiteNumber(root.Version, "Version");
 	if (version !== 3) {
-		invalid('Version', 'only motion3 Version 3 is supported.');
+		invalid("Version", "only motion3 Version 3 is supported.");
 	}
 
-	const meta = expectRecord(root.Meta, 'Meta');
-	assertAllowedKeys(meta, META_KEYS, 'Meta');
-	const duration = requiredFiniteNumber(meta, 'Duration', 'Meta');
+	const meta = expectRecord(root.Meta, "Meta");
+	assertAllowedKeys(meta, META_KEYS, "Meta");
+	const duration = requiredFiniteNumber(meta, "Duration", "Meta");
 	if (duration <= 0) {
-		invalid('Meta.Duration', 'must be greater than zero.');
+		invalid("Meta.Duration", "must be greater than zero.");
 	}
-	finiteNumber(meta.Fps, 'Meta.Fps');
-	const loop = optionalBoolean(meta, 'Loop', 'Meta', false);
-	const areBeziersRestricted = optionalBoolean(meta, 'AreBeziersRestricted', 'Meta', false);
-	const fadeInSeconds = normalizedFadeSeconds(optionalFiniteNumber(meta, 'FadeInTime', 'Meta'));
-	const fadeOutSeconds = normalizedFadeSeconds(optionalFiniteNumber(meta, 'FadeOutTime', 'Meta'));
-	const expectedCurveCount = requiredCount(meta, 'CurveCount', 'Meta');
-	const expectedSegmentCount = requiredCount(meta, 'TotalSegmentCount', 'Meta');
-	const expectedPointCount = requiredCount(meta, 'TotalPointCount', 'Meta');
+	finiteNumber(meta.Fps, "Meta.Fps");
+	const loop = optionalBoolean(meta, "Loop", "Meta", false);
+	const areBeziersRestricted = optionalBoolean(
+		meta,
+		"AreBeziersRestricted",
+		"Meta",
+		false,
+	);
+	const fadeInSeconds = normalizedFadeSeconds(
+		optionalFiniteNumber(meta, "FadeInTime", "Meta"),
+	);
+	const fadeOutSeconds = normalizedFadeSeconds(
+		optionalFiniteNumber(meta, "FadeOutTime", "Meta"),
+	);
+	const expectedCurveCount = requiredCount(meta, "CurveCount", "Meta");
+	const expectedSegmentCount = requiredCount(meta, "TotalSegmentCount", "Meta");
+	const expectedPointCount = requiredCount(meta, "TotalPointCount", "Meta");
 	validateUserData(root, meta);
 
-	const rawCurves = expectArray(root.Curves, 'Curves');
+	const rawCurves = expectArray(root.Curves, "Curves");
 	if (rawCurves.length !== expectedCurveCount) {
-		invalid('Meta.CurveCount', `declares ${expectedCurveCount}, found ${rawCurves.length}.`);
+		invalid(
+			"Meta.CurveCount",
+			`declares ${expectedCurveCount}, found ${rawCurves.length}.`,
+		);
 	}
 
 	const curves: WhaleMotionCurve[] = [];
@@ -354,17 +430,29 @@ export function parseWhaleMotion3(value: unknown): WhaleMotionClip {
 	let segmentCount = 0;
 	let pointCount = 0;
 	for (let index = 0; index < rawCurves.length; index += 1) {
-		const parsed = parseCurve(rawCurves[index], index, duration, areBeziersRestricted, seenIds);
+		const parsed = parseCurve(
+			rawCurves[index],
+			index,
+			duration,
+			areBeziersRestricted,
+			seenIds,
+		);
 		curves.push(parsed.curve);
 		segmentCount += parsed.segmentCount;
 		pointCount += parsed.pointCount;
 	}
 
 	if (segmentCount !== expectedSegmentCount) {
-		invalid('Meta.TotalSegmentCount', `declares ${expectedSegmentCount}, found ${segmentCount}.`);
+		invalid(
+			"Meta.TotalSegmentCount",
+			`declares ${expectedSegmentCount}, found ${segmentCount}.`,
+		);
 	}
 	if (pointCount !== expectedPointCount) {
-		invalid('Meta.TotalPointCount', `declares ${expectedPointCount}, found ${pointCount}.`);
+		invalid(
+			"Meta.TotalPointCount",
+			`declares ${expectedPointCount}, found ${pointCount}.`,
+		);
 	}
 
 	return Object.freeze({
@@ -397,7 +485,11 @@ function cubicCoordinate(
 	);
 }
 
-function solveCubicTime(points: readonly WhaleMotionPoint[], time: number, restricted: boolean): number {
+function solveCubicTime(
+	points: readonly WhaleMotionPoint[],
+	time: number,
+	restricted: boolean,
+): number {
 	const first = points[0];
 	const control1 = points[1];
 	const control2 = points[2];
@@ -419,7 +511,13 @@ function solveCubicTime(points: readonly WhaleMotionPoint[], time: number, restr
 	let upper = 1;
 	for (let iteration = 0; iteration < 52; iteration += 1) {
 		const middle = (lower + upper) / 2;
-		const x = cubicCoordinate(first.time, control1.time, control2.time, last.time, middle);
+		const x = cubicCoordinate(
+			first.time,
+			control1.time,
+			control2.time,
+			last.time,
+			middle,
+		);
 		if (x < target) {
 			lower = middle;
 		} else {
@@ -429,7 +527,11 @@ function solveCubicTime(points: readonly WhaleMotionPoint[], time: number, restr
 	return clamp((lower + upper) / 2, 0, 1);
 }
 
-function cubicValue(points: readonly WhaleMotionPoint[], time: number, restricted: boolean): number {
+function cubicValue(
+	points: readonly WhaleMotionPoint[],
+	time: number,
+	restricted: boolean,
+): number {
 	const first = points[0];
 	const last = points[3];
 	if (time <= first.time) {
@@ -439,14 +541,24 @@ function cubicValue(points: readonly WhaleMotionPoint[], time: number, restricte
 		return last.value;
 	}
 	const t = solveCubicTime(points, time, restricted);
-	return cubicCoordinate(points[0].value, points[1].value, points[2].value, points[3].value, t);
+	return cubicCoordinate(
+		points[0].value,
+		points[1].value,
+		points[2].value,
+		points[3].value,
+		t,
+	);
 }
 
-function evaluateSegment(segment: WhaleMotionSegment, time: number, restricted: boolean): number {
+function evaluateSegment(
+	segment: WhaleMotionSegment,
+	time: number,
+	restricted: boolean,
+): number {
 	const points = segment.points;
 	const first = points[0];
 	switch (segment.type) {
-		case 'linear': {
+		case "linear": {
 			const last = points[1];
 			if (time <= first.time) {
 				return first.value;
@@ -454,19 +566,27 @@ function evaluateSegment(segment: WhaleMotionSegment, time: number, restricted: 
 			if (time >= last.time) {
 				return last.value;
 			}
-			const progress = clamp((time - first.time) / (last.time - first.time), 0, 1);
+			const progress = clamp(
+				(time - first.time) / (last.time - first.time),
+				0,
+				1,
+			);
 			return first.value + (last.value - first.value) * progress;
 		}
-		case 'cubicBezier':
+		case "cubicBezier":
 			return cubicValue(points, time, restricted);
-		case 'stepped':
+		case "stepped":
 			return first.value;
-		case 'inverseStepped':
+		case "inverseStepped":
 			return points[1].value;
 	}
 }
 
-function evaluateCurve(curve: WhaleMotionCurve, time: number, restricted: boolean): number {
+function evaluateCurve(
+	curve: WhaleMotionCurve,
+	time: number,
+	restricted: boolean,
+): number {
 	const first = curve.segments[0].points[0];
 	const lastSegment = curve.segments[curve.segments.length - 1];
 	const last = lastSegment.points[lastSegment.points.length - 1];
@@ -499,7 +619,7 @@ export function sampleWhaleMotion3(
 	out: Map<string, number>,
 ): void {
 	if (!Number.isFinite(elapsedSeconds)) {
-		throw new Error('Cannot sample motion3 with a non-finite elapsed time.');
+		throw new Error("Cannot sample motion3 with a non-finite elapsed time.");
 	}
 
 	const time = clip.loop

@@ -20,7 +20,7 @@
  * timer, render-loop, or FPS scheduler.
  */
 
-export type WhalePhysicsType = 'X' | 'Y' | 'Angle';
+export type WhalePhysicsType = "X" | "Y" | "Angle";
 
 export interface WhalePhysicsVector2 {
 	readonly x: number;
@@ -133,32 +133,44 @@ export interface WhalePhysicsRuntime {
 
 type PhysicsRecord = Record<string, unknown>;
 
-const ROOT_KEYS = new Set(['Version', 'Meta', 'PhysicsSettings']);
+const ROOT_KEYS = new Set(["Version", "Meta", "PhysicsSettings"]);
 const META_KEYS = new Set([
-	'PhysicsSettingCount',
-	'TotalInputCount',
-	'TotalOutputCount',
-	'VertexCount',
-	'Fps',
-	'EffectiveForces',
-	'PhysicsDictionary',
+	"PhysicsSettingCount",
+	"TotalInputCount",
+	"TotalOutputCount",
+	"VertexCount",
+	"Fps",
+	"EffectiveForces",
+	"PhysicsDictionary",
 ]);
-const EFFECTIVE_FORCES_KEYS = new Set(['Gravity', 'Wind']);
-const DICTIONARY_KEYS = new Set(['Id', 'Name']);
-const SETTING_KEYS = new Set(['Id', 'Input', 'Output', 'Vertices', 'Normalization']);
-const NORMALIZATION_KEYS = new Set(['Position', 'Angle']);
-const NORMALIZATION_VALUE_KEYS = new Set(['Minimum', 'Default', 'Maximum']);
-const INPUT_KEYS = new Set(['Source', 'Weight', 'Type', 'Reflect']);
+const EFFECTIVE_FORCES_KEYS = new Set(["Gravity", "Wind"]);
+const DICTIONARY_KEYS = new Set(["Id", "Name"]);
+const SETTING_KEYS = new Set([
+	"Id",
+	"Input",
+	"Output",
+	"Vertices",
+	"Normalization",
+]);
+const NORMALIZATION_KEYS = new Set(["Position", "Angle"]);
+const NORMALIZATION_VALUE_KEYS = new Set(["Minimum", "Default", "Maximum"]);
+const INPUT_KEYS = new Set(["Source", "Weight", "Type", "Reflect"]);
 const OUTPUT_KEYS = new Set([
-	'Destination',
-	'VertexIndex',
-	'Scale',
-	'Weight',
-	'Type',
-	'Reflect',
+	"Destination",
+	"VertexIndex",
+	"Scale",
+	"Weight",
+	"Type",
+	"Reflect",
 ]);
-const PARAMETER_KEYS = new Set(['Target', 'Id']);
-const VERTEX_KEYS = new Set(['Position', 'Mobility', 'Delay', 'Acceleration', 'Radius']);
+const PARAMETER_KEYS = new Set(["Target", "Id"]);
+const VERTEX_KEYS = new Set([
+	"Position",
+	"Mobility",
+	"Delay",
+	"Acceleration",
+	"Radius",
+]);
 
 const AIR_RESISTANCE = 5;
 const MAXIMUM_WEIGHT = 100;
@@ -171,51 +183,59 @@ function hasOwn(record: PhysicsRecord, key: string): boolean {
 }
 
 function isRecord(value: unknown): value is PhysicsRecord {
-	return typeof value === 'object' && value !== null && !Array.isArray(value);
+	return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
 function invalid(path: string, detail: string): never {
-	throw new Error('Invalid physics3 ' + path + ': ' + detail);
+	throw new Error("Invalid physics3 " + path + ": " + detail);
 }
 
 function unsupported(path: string, detail: string): never {
-	throw new Error('Unsupported physics3 ' + path + ': ' + detail);
+	throw new Error("Unsupported physics3 " + path + ": " + detail);
 }
 
 function expectRecord(value: unknown, path: string): PhysicsRecord {
 	if (!isRecord(value)) {
-		invalid(path, 'expected an object.');
+		invalid(path, "expected an object.");
 	}
 	return value;
 }
 
 function expectArray(value: unknown, path: string): unknown[] {
 	if (!Array.isArray(value)) {
-		invalid(path, 'expected an array.');
+		invalid(path, "expected an array.");
 	}
 	return value;
 }
 
-function assertAllowedKeys(record: PhysicsRecord, allowed: ReadonlySet<string>, path: string): void {
+function assertAllowedKeys(
+	record: PhysicsRecord,
+	allowed: ReadonlySet<string>,
+	path: string,
+): void {
 	for (const key of Object.keys(record)) {
 		if (!allowed.has(key)) {
-			invalid(path + '.' + key, 'unsupported property.');
+			invalid(path + "." + key, "unsupported property.");
 		}
 	}
 }
 
 function finiteNumber(value: unknown, path: string): number {
-	if (typeof value !== 'number' || !Number.isFinite(value)) {
-		invalid(path, 'expected a finite number.');
+	if (typeof value !== "number" || !Number.isFinite(value)) {
+		invalid(path, "expected a finite number.");
 	}
 	return value;
 }
 
-function requiredFiniteNumber(record: PhysicsRecord, key: string, path: string): number {
+function requiredFiniteNumber(
+	record: PhysicsRecord,
+	key: string,
+	path: string,
+): number {
 	if (!hasOwn(record, key)) {
-		invalid(path + '.' + key, 'is required.');
+		invalid(path + "." + key, "is required.");
 	}
-	return finiteNumber(record[key], path + '.' + key);
+	return finiteNumber(record[key], path + "." + key);
 }
 
 function optionalFiniteNumber(
@@ -227,42 +247,63 @@ function optionalFiniteNumber(
 	if (!hasOwn(record, key)) {
 		return fallback;
 	}
-	return finiteNumber(record[key], path + '.' + key);
+	return finiteNumber(record[key], path + "." + key);
 }
 
-function requiredBoolean(record: PhysicsRecord, key: string, path: string): boolean {
-	if (!hasOwn(record, key) || typeof record[key] !== 'boolean') {
-		invalid(path + '.' + key, 'expected a boolean.');
+function requiredBoolean(
+	record: PhysicsRecord,
+	key: string,
+	path: string,
+): boolean {
+	if (!hasOwn(record, key) || typeof record[key] !== "boolean") {
+		invalid(path + "." + key, "expected a boolean.");
 	}
 	return record[key] as boolean;
 }
 
-function requiredString(record: PhysicsRecord, key: string, path: string): string {
-	if (!hasOwn(record, key) || typeof record[key] !== 'string') {
-		invalid(path + '.' + key, 'expected a string.');
+function requiredString(
+	record: PhysicsRecord,
+	key: string,
+	path: string,
+): string {
+	if (!hasOwn(record, key) || typeof record[key] !== "string") {
+		invalid(path + "." + key, "expected a string.");
 	}
 	return record[key] as string;
 }
 
-function nonEmptyString(record: PhysicsRecord, key: string, path: string): string {
+function nonEmptyString(
+	record: PhysicsRecord,
+	key: string,
+	path: string,
+): string {
 	const value = requiredString(record, key, path);
 	if (value.trim().length === 0) {
-		invalid(path + '.' + key, 'must be non-empty.');
+		invalid(path + "." + key, "must be non-empty.");
 	}
 	return value;
 }
 
-function requiredCount(record: PhysicsRecord, key: string, path: string): number {
+function requiredCount(
+	record: PhysicsRecord,
+	key: string,
+	path: string,
+): number {
 	const value = requiredFiniteNumber(record, key, path);
 	if (!Number.isSafeInteger(value) || value < 0) {
-		invalid(path + '.' + key, 'expected a non-negative safe integer count.');
+		invalid(path + "." + key, "expected a non-negative safe integer count.");
 	}
 	return value;
 }
 
-function rangeNumber(value: number, minimum: number, maximum: number, path: string): number {
+function rangeNumber(
+	value: number,
+	minimum: number,
+	maximum: number,
+	path: string,
+): number {
 	if (value < minimum || value > maximum) {
-		invalid(path, 'must be in ' + minimum + '..' + maximum + '.');
+		invalid(path, "must be in " + minimum + ".." + maximum + ".");
 	}
 	return value;
 }
@@ -273,30 +314,33 @@ function frozenVector(x: number, y: number): WhalePhysicsVector2 {
 
 function readVector(value: unknown, path: string): WhalePhysicsVector2 {
 	const record = expectRecord(value, path);
-	assertAllowedKeys(record, new Set(['X', 'Y']), path);
+	assertAllowedKeys(record, new Set(["X", "Y"]), path);
 	return frozenVector(
-		requiredFiniteNumber(record, 'X', path),
-		requiredFiniteNumber(record, 'Y', path),
+		requiredFiniteNumber(record, "X", path),
+		requiredFiniteNumber(record, "Y", path),
 	);
 }
 
-function readNormalization(value: unknown, path: string): WhalePhysicsNormalization {
+function readNormalization(
+	value: unknown,
+	path: string,
+): WhalePhysicsNormalization {
 	const record = expectRecord(value, path);
 	assertAllowedKeys(record, NORMALIZATION_VALUE_KEYS, path);
-	const minimum = requiredFiniteNumber(record, 'Minimum', path);
-	const defaultValue = requiredFiniteNumber(record, 'Default', path);
-	const maximum = requiredFiniteNumber(record, 'Maximum', path);
+	const minimum = requiredFiniteNumber(record, "Minimum", path);
+	const defaultValue = requiredFiniteNumber(record, "Default", path);
+	const maximum = requiredFiniteNumber(record, "Maximum", path);
 	if (minimum >= maximum) {
-		invalid(path, 'Minimum must be less than Maximum.');
+		invalid(path, "Minimum must be less than Maximum.");
 	}
 	if (defaultValue < minimum || defaultValue > maximum) {
-		invalid(path + '.Default', 'must be within Minimum..Maximum.');
+		invalid(path + ".Default", "must be within Minimum..Maximum.");
 	}
 	return Object.freeze({ minimum, default: defaultValue, maximum });
 }
 
 function readPhysicsType(value: unknown, path: string): WhalePhysicsType {
-	if (value === 'X' || value === 'Y' || value === 'Angle') {
+	if (value === "X" || value === "Y" || value === "Angle") {
 		return value;
 	}
 	unsupported(path, 'Type must be "X", "Y", or "Angle".');
@@ -305,67 +349,84 @@ function readPhysicsType(value: unknown, path: string): WhalePhysicsType {
 function readParameter(value: unknown, path: string): string {
 	const record = expectRecord(value, path);
 	assertAllowedKeys(record, PARAMETER_KEYS, path);
-	const target = requiredString(record, 'Target', path);
-	if (target !== 'Parameter') {
-		unsupported(path + '.Target', 'only "Parameter" is supported, received "' + target + '".');
+	const target = requiredString(record, "Target", path);
+	if (target !== "Parameter") {
+		unsupported(
+			path + ".Target",
+			'only "Parameter" is supported, received "' + target + '".',
+		);
 	}
-	return nonEmptyString(record, 'Id', path);
+	return nonEmptyString(record, "Id", path);
 }
 
 function readInput(value: unknown, path: string): WhalePhysicsInput {
 	const record = expectRecord(value, path);
 	assertAllowedKeys(record, INPUT_KEYS, path);
-	const sourceId = readParameter(record.Source, path + '.Source');
+	const sourceId = readParameter(record.Source, path + ".Source");
 	const weight = rangeNumber(
-		requiredFiniteNumber(record, 'Weight', path),
+		requiredFiniteNumber(record, "Weight", path),
 		0,
 		100,
-		path + '.Weight',
+		path + ".Weight",
 	);
-	const type = readPhysicsType(record.Type, path + '.Type');
-	const reflect = requiredBoolean(record, 'Reflect', path);
+	const type = readPhysicsType(record.Type, path + ".Type");
+	const reflect = requiredBoolean(record, "Reflect", path);
 	return Object.freeze({ sourceId, weight, type, reflect });
 }
 
-function readOutput(value: unknown, path: string, vertexCount: number): WhalePhysicsOutput {
+function readOutput(
+	value: unknown,
+	path: string,
+	vertexCount: number,
+): WhalePhysicsOutput {
 	const record = expectRecord(value, path);
 	assertAllowedKeys(record, OUTPUT_KEYS, path);
-	const destinationId = readParameter(record.Destination, path + '.Destination');
-	const vertexIndex = requiredFiniteNumber(record, 'VertexIndex', path);
+	const destinationId = readParameter(
+		record.Destination,
+		path + ".Destination",
+	);
+	const vertexIndex = requiredFiniteNumber(record, "VertexIndex", path);
 	if (!Number.isSafeInteger(vertexIndex)) {
-		invalid(path + '.VertexIndex', 'must be a safe integer.');
+		invalid(path + ".VertexIndex", "must be a safe integer.");
 	}
 	if (vertexIndex < 1 || vertexIndex >= vertexCount) {
-		invalid(path + '.VertexIndex', 'must be in 1..' + (vertexCount - 1) + '.');
+		invalid(path + ".VertexIndex", "must be in 1.." + (vertexCount - 1) + ".");
 	}
-	const scale = requiredFiniteNumber(record, 'Scale', path);
+	const scale = requiredFiniteNumber(record, "Scale", path);
 	const weight = rangeNumber(
-		requiredFiniteNumber(record, 'Weight', path),
+		requiredFiniteNumber(record, "Weight", path),
 		0,
 		100,
-		path + '.Weight',
+		path + ".Weight",
 	);
-	const type = readPhysicsType(record.Type, path + '.Type');
-	const reflect = requiredBoolean(record, 'Reflect', path);
-	return Object.freeze({ destinationId, vertexIndex, scale, weight, type, reflect });
+	const type = readPhysicsType(record.Type, path + ".Type");
+	const reflect = requiredBoolean(record, "Reflect", path);
+	return Object.freeze({
+		destinationId,
+		vertexIndex,
+		scale,
+		weight,
+		type,
+		reflect,
+	});
 }
 
 function readParticle(value: unknown, path: string): WhalePhysicsParticle {
 	const record = expectRecord(value, path);
 	assertAllowedKeys(record, VERTEX_KEYS, path);
-	const position = readVector(record.Position, path + '.Position');
-	const mobility = requiredFiniteNumber(record, 'Mobility', path);
-	const delay = requiredFiniteNumber(record, 'Delay', path);
-	const acceleration = requiredFiniteNumber(record, 'Acceleration', path);
-	const radius = requiredFiniteNumber(record, 'Radius', path);
+	const position = readVector(record.Position, path + ".Position");
+	const mobility = requiredFiniteNumber(record, "Mobility", path);
+	const delay = requiredFiniteNumber(record, "Delay", path);
+	const acceleration = requiredFiniteNumber(record, "Acceleration", path);
+	const radius = requiredFiniteNumber(record, "Radius", path);
 	for (const [key, field] of [
-		['Mobility', mobility],
-		['Delay', delay],
-		['Acceleration', acceleration],
-		['Radius', radius],
+		["Mobility", mobility],
+		["Delay", delay],
+		["Acceleration", acceleration],
+		["Radius", radius],
 	] as const) {
 		if (field < 0) {
-			invalid(path + '.' + key, 'must not be negative.');
+			invalid(path + "." + key, "must not be negative.");
 		}
 	}
 	return Object.freeze({ position, mobility, delay, acceleration, radius });
@@ -376,37 +437,41 @@ function readSetting(
 	index: number,
 	seenSettingIds: Set<string>,
 ): WhalePhysicsSetting {
-	const path = 'PhysicsSettings[' + index + ']';
+	const path = "PhysicsSettings[" + index + "]";
 	const record = expectRecord(value, path);
 	assertAllowedKeys(record, SETTING_KEYS, path);
-	const id = nonEmptyString(record, 'Id', path);
+	const id = nonEmptyString(record, "Id", path);
 	if (seenSettingIds.has(id)) {
-		invalid(path + '.Id', 'duplicate physics setting ID "' + id + '".');
+		invalid(path + ".Id", 'duplicate physics setting ID "' + id + '".');
 	}
 	seenSettingIds.add(id);
 
-	const inputs = expectArray(record.Input, path + '.Input').map((item, inputIndex) =>
-		readInput(item, path + '.Input[' + inputIndex + ']'),
+	const inputs = expectArray(record.Input, path + ".Input").map(
+		(item, inputIndex) => readInput(item, path + ".Input[" + inputIndex + "]"),
 	);
-	const rawVertices = expectArray(record.Vertices, path + '.Vertices');
+	const rawVertices = expectArray(record.Vertices, path + ".Vertices");
 	if (rawVertices.length === 0) {
-		invalid(path + '.Vertices', 'must contain at least the root particle.');
+		invalid(path + ".Vertices", "must contain at least the root particle.");
 	}
 	const vertices = rawVertices.map((item, vertexIndex) =>
-		readParticle(item, path + '.Vertices[' + vertexIndex + ']'),
+		readParticle(item, path + ".Vertices[" + vertexIndex + "]"),
 	);
-	const outputs = expectArray(record.Output, path + '.Output').map((item, outputIndex) =>
-		readOutput(item, path + '.Output[' + outputIndex + ']', vertices.length),
+	const outputs = expectArray(record.Output, path + ".Output").map(
+		(item, outputIndex) =>
+			readOutput(item, path + ".Output[" + outputIndex + "]", vertices.length),
 	);
-	const normalization = expectRecord(record.Normalization, path + '.Normalization');
-	assertAllowedKeys(normalization, NORMALIZATION_KEYS, path + '.Normalization');
+	const normalization = expectRecord(
+		record.Normalization,
+		path + ".Normalization",
+	);
+	assertAllowedKeys(normalization, NORMALIZATION_KEYS, path + ".Normalization");
 	const normalizationPosition = readNormalization(
 		normalization.Position,
-		path + '.Normalization.Position',
+		path + ".Normalization.Position",
 	);
 	const normalizationAngle = readNormalization(
 		normalization.Angle,
-		path + '.Normalization.Angle',
+		path + ".Normalization.Angle",
 	);
 
 	return Object.freeze({
@@ -426,70 +491,93 @@ function readSetting(
  * resource can be parsed and cached before a Core model exists.
  */
 export function parseWhalePhysics3(value: unknown): WhalePhysicsRig {
-	const root = expectRecord(value, 'physics3');
-	assertAllowedKeys(root, ROOT_KEYS, 'physics3');
-	if (!hasOwn(root, 'Version') || finiteNumber(root.Version, 'Version') !== 3) {
-		invalid('Version', 'only physics3 Version 3 is supported.');
+	const root = expectRecord(value, "physics3");
+	assertAllowedKeys(root, ROOT_KEYS, "physics3");
+	if (!hasOwn(root, "Version") || finiteNumber(root.Version, "Version") !== 3) {
+		invalid("Version", "only physics3 Version 3 is supported.");
 	}
 
-	const meta = expectRecord(root.Meta, 'Meta');
-	assertAllowedKeys(meta, META_KEYS, 'Meta');
-	const expectedSettingCount = requiredCount(meta, 'PhysicsSettingCount', 'Meta');
-	const expectedInputCount = requiredCount(meta, 'TotalInputCount', 'Meta');
-	const expectedOutputCount = requiredCount(meta, 'TotalOutputCount', 'Meta');
-	const expectedVertexCount = requiredCount(meta, 'VertexCount', 'Meta');
-	const fps = optionalFiniteNumber(meta, 'Fps', 'Meta', 0);
+	const meta = expectRecord(root.Meta, "Meta");
+	assertAllowedKeys(meta, META_KEYS, "Meta");
+	const expectedSettingCount = requiredCount(
+		meta,
+		"PhysicsSettingCount",
+		"Meta",
+	);
+	const expectedInputCount = requiredCount(meta, "TotalInputCount", "Meta");
+	const expectedOutputCount = requiredCount(meta, "TotalOutputCount", "Meta");
+	const expectedVertexCount = requiredCount(meta, "VertexCount", "Meta");
+	const fps = optionalFiniteNumber(meta, "Fps", "Meta", 0);
 	if (fps < 0) {
-		invalid('Meta.Fps', 'must not be negative.');
+		invalid("Meta.Fps", "must not be negative.");
 	}
-	const effectiveForces = expectRecord(meta.EffectiveForces, 'Meta.EffectiveForces');
-	assertAllowedKeys(effectiveForces, EFFECTIVE_FORCES_KEYS, 'Meta.EffectiveForces');
-	const gravity = readVector(effectiveForces.Gravity, 'Meta.EffectiveForces.Gravity');
-	const wind = readVector(effectiveForces.Wind, 'Meta.EffectiveForces.Wind');
+	const effectiveForces = expectRecord(
+		meta.EffectiveForces,
+		"Meta.EffectiveForces",
+	);
+	assertAllowedKeys(
+		effectiveForces,
+		EFFECTIVE_FORCES_KEYS,
+		"Meta.EffectiveForces",
+	);
+	const gravity = readVector(
+		effectiveForces.Gravity,
+		"Meta.EffectiveForces.Gravity",
+	);
+	const wind = readVector(effectiveForces.Wind, "Meta.EffectiveForces.Wind");
 
-	const rawDictionary = expectArray(meta.PhysicsDictionary, 'Meta.PhysicsDictionary');
+	const rawDictionary = expectArray(
+		meta.PhysicsDictionary,
+		"Meta.PhysicsDictionary",
+	);
 	const dictionaryIds = new Set<string>();
 	const physicsDictionary = rawDictionary.map((item, index) => {
-		const path = 'Meta.PhysicsDictionary[' + index + ']';
+		const path = "Meta.PhysicsDictionary[" + index + "]";
 		const record = expectRecord(item, path);
 		assertAllowedKeys(record, DICTIONARY_KEYS, path);
-		const id = nonEmptyString(record, 'Id', path);
+		const id = nonEmptyString(record, "Id", path);
 		if (dictionaryIds.has(id)) {
-			invalid(path + '.Id', 'duplicate physics dictionary ID "' + id + '".');
+			invalid(path + ".Id", 'duplicate physics dictionary ID "' + id + '".');
 		}
 		dictionaryIds.add(id);
-		const name = requiredString(record, 'Name', path);
+		const name = requiredString(record, "Name", path);
 		return Object.freeze({ id, name });
 	});
 
-	const rawSettings = expectArray(root.PhysicsSettings, 'PhysicsSettings');
+	const rawSettings = expectArray(root.PhysicsSettings, "PhysicsSettings");
 	if (rawSettings.length !== expectedSettingCount) {
 		invalid(
-			'Meta.PhysicsSettingCount',
-			'declares ' + expectedSettingCount + ', found ' + rawSettings.length + '.',
+			"Meta.PhysicsSettingCount",
+			"declares " +
+				expectedSettingCount +
+				", found " +
+				rawSettings.length +
+				".",
 		);
 	}
 	const seenSettingIds = new Set<string>();
-	const settings = rawSettings.map((item, index) => readSetting(item, index, seenSettingIds));
+	const settings = rawSettings.map((item, index) =>
+		readSetting(item, index, seenSettingIds),
+	);
 	const inputs = settings.flatMap((setting) => setting.inputs);
 	const outputs = settings.flatMap((setting) => setting.outputs);
 	const particles = settings.flatMap((setting) => setting.vertices);
 	if (inputs.length !== expectedInputCount) {
 		invalid(
-			'Meta.TotalInputCount',
-			'declares ' + expectedInputCount + ', found ' + inputs.length + '.',
+			"Meta.TotalInputCount",
+			"declares " + expectedInputCount + ", found " + inputs.length + ".",
 		);
 	}
 	if (outputs.length !== expectedOutputCount) {
 		invalid(
-			'Meta.TotalOutputCount',
-			'declares ' + expectedOutputCount + ', found ' + outputs.length + '.',
+			"Meta.TotalOutputCount",
+			"declares " + expectedOutputCount + ", found " + outputs.length + ".",
 		);
 	}
 	if (particles.length !== expectedVertexCount) {
 		invalid(
-			'Meta.VertexCount',
-			'declares ' + expectedVertexCount + ', found ' + particles.length + '.',
+			"Meta.VertexCount",
+			"declares " + expectedVertexCount + ", found " + particles.length + ".",
 		);
 	}
 
@@ -572,11 +660,17 @@ function normalizeVector(value: MutableVector2): void {
 	}
 }
 
-function addVectors(left: MutableVector2, right: MutableVector2): MutableVector2 {
+function addVectors(
+	left: MutableVector2,
+	right: MutableVector2,
+): MutableVector2 {
 	return mutableVector(left.x + right.x, left.y + right.y);
 }
 
-function subtractVectors(left: MutableVector2, right: MutableVector2): MutableVector2 {
+function subtractVectors(
+	left: MutableVector2,
+	right: MutableVector2,
+): MutableVector2 {
 	return mutableVector(left.x - right.x, left.y - right.y);
 }
 
@@ -633,13 +727,17 @@ function normalizeParameterValue(
 	if (difference > 0) {
 		const positiveLength = maximum - middleValue;
 		if (positiveLength !== 0) {
-			result = difference * ((normalizedMaximumValue - normalizedDefault) / positiveLength);
+			result =
+				difference *
+				((normalizedMaximumValue - normalizedDefault) / positiveLength);
 			result += normalizedDefault;
 		}
 	} else if (difference < 0) {
 		const negativeLength = minimum - middleValue;
 		if (negativeLength !== 0) {
-			result = difference * ((normalizedMinimumValue - normalizedDefault) / negativeLength);
+			result =
+				difference *
+				((normalizedMinimumValue - normalizedDefault) / negativeLength);
 			result += normalizedDefault;
 		}
 	}
@@ -658,7 +756,7 @@ function loadInputs(
 		const { input, sourceIndex } = runtimeInput;
 		const weight = input.weight / MAXIMUM_WEIGHT;
 		const normalization =
-			input.type === 'Angle'
+			input.type === "Angle"
 				? runtimeSetting.setting.normalizationAngle
 				: runtimeSetting.setting.normalizationPosition;
 		const normalized = normalizeParameterValue(
@@ -671,9 +769,9 @@ function loadInputs(
 			normalization.default,
 			input.reflect,
 		);
-		if (input.type === 'X') {
+		if (input.type === "X") {
 			translation.x += normalized * weight;
-		} else if (input.type === 'Y') {
+		} else if (input.type === "Y") {
 			translation.y += normalized * weight;
 		} else {
 			angle += normalized * weight;
@@ -682,7 +780,10 @@ function loadInputs(
 	return { translation, angle };
 }
 
-function rotateInputTranslation(translation: MutableVector2, angle: number): void {
+function rotateInputTranslation(
+	translation: MutableVector2,
+	angle: number,
+): void {
 	rotateBySourceOrder(translation, degreesToRadian(-angle));
 }
 
@@ -708,14 +809,24 @@ function updateParticles(
 		);
 		particle.lastPosition = copyVector(particle.position);
 		const delay = particle.delay * deltaSeconds * 30;
-		const direction = subtractVectors(particle.position, particles[index - 1].position);
-		const radian = directionToRadian(particle.lastGravity, currentGravity) / AIR_RESISTANCE;
+		const direction = subtractVectors(
+			particle.position,
+			particles[index - 1].position,
+		);
+		const radian =
+			directionToRadian(particle.lastGravity, currentGravity) / AIR_RESISTANCE;
 		rotateBySourceOrder(direction, radian);
 		particle.position = addVectors(particles[index - 1].position, direction);
 		const velocity = multiplyVector(particle.velocity, delay);
 		const force = multiplyVector(multiplyVector(particle.force, delay), delay);
-		particle.position = addVectors(addVectors(particle.position, velocity), force);
-		const newDirection = subtractVectors(particle.position, particles[index - 1].position);
+		particle.position = addVectors(
+			addVectors(particle.position, velocity),
+			force,
+		);
+		const newDirection = subtractVectors(
+			particle.position,
+			particles[index - 1].position,
+		);
 		normalizeVector(newDirection);
 		particle.position = addVectors(
 			particles[index - 1].position,
@@ -780,9 +891,9 @@ function outputValue(
 	// The full Framework receives the parent gravity through Options. The
 	// parsed physics3 EffectiveForces.Gravity is the local equivalent here.
 	let value: number;
-	if (output.type === 'X') {
+	if (output.type === "X") {
 		value = translation.x;
-	} else if (output.type === 'Y') {
+	} else if (output.type === "Y") {
 		value = translation.y;
 	} else {
 		let reference: MutableVector2;
@@ -822,49 +933,77 @@ function applyOutput(
 }
 
 function readArrayLikeLength(value: unknown, path: string): number {
-	if ((typeof value !== 'object' && typeof value !== 'function') || value === null) {
-		throw new Error('Invalid physics model ' + path + ': expected an array-like object.');
+	if (
+		(typeof value !== "object" && typeof value !== "function") ||
+		value === null
+	) {
+		throw new Error(
+			"Invalid physics model " + path + ": expected an array-like object.",
+		);
 	}
 	const length = (value as { readonly length?: unknown }).length;
-	if (typeof length !== 'number' || !Number.isSafeInteger(length) || length < 0) {
+	if (
+		typeof length !== "number" ||
+		!Number.isSafeInteger(length) ||
+		length < 0
+	) {
 		throw new Error(
-			'Invalid physics model ' + path + '.length: expected a non-negative safe integer.',
+			"Invalid physics model " +
+				path +
+				".length: expected a non-negative safe integer.",
 		);
 	}
 	return length;
 }
 
 function validateModelView(model: WhalePhysicsModelView): void {
-	if (!model || typeof model !== 'object') {
-		throw new Error('Invalid physics model: expected a model view object.');
+	if (!model || typeof model !== "object") {
+		throw new Error("Invalid physics model: expected a model view object.");
 	}
 	if (!Array.isArray(model.parameterIds)) {
-		throw new Error('Invalid physics model parameterIds: expected an array.');
+		throw new Error("Invalid physics model parameterIds: expected an array.");
 	}
 	const parameterCount = model.parameterIds.length;
-	const valuesLength = readArrayLikeLength(model.values, 'values');
-	const minimumLength = readArrayLikeLength(model.minimumValues, 'minimumValues');
-	const maximumLength = readArrayLikeLength(model.maximumValues, 'maximumValues');
-	const defaultLength = readArrayLikeLength(model.defaultValues, 'defaultValues');
+	const valuesLength = readArrayLikeLength(model.values, "values");
+	const minimumLength = readArrayLikeLength(
+		model.minimumValues,
+		"minimumValues",
+	);
+	const maximumLength = readArrayLikeLength(
+		model.maximumValues,
+		"maximumValues",
+	);
+	const defaultLength = readArrayLikeLength(
+		model.defaultValues,
+		"defaultValues",
+	);
 	if (
 		valuesLength !== parameterCount ||
 		minimumLength !== parameterCount ||
 		maximumLength !== parameterCount ||
 		defaultLength !== parameterCount
 	) {
-		throw new Error('Invalid physics model: parameter arrays must have equal lengths.');
+		throw new Error(
+			"Invalid physics model: parameter arrays must have equal lengths.",
+		);
 	}
 	const seenIds = new Set<string>();
 	for (let index = 0; index < parameterCount; index += 1) {
 		const id = model.parameterIds[index];
-		if (typeof id !== 'string' || id.trim().length === 0) {
+		if (typeof id !== "string" || id.trim().length === 0) {
 			throw new Error(
-				'Invalid physics model parameterIds[' + index + ']: expected a non-empty string.',
+				"Invalid physics model parameterIds[" +
+					index +
+					"]: expected a non-empty string.",
 			);
 		}
 		if (seenIds.has(id)) {
 			throw new Error(
-				'Invalid physics model parameterIds[' + index + ']: duplicate ID "' + id + '".',
+				"Invalid physics model parameterIds[" +
+					index +
+					']: duplicate ID "' +
+					id +
+					'".',
 			);
 		}
 		seenIds.add(id);
@@ -879,15 +1018,21 @@ function validateModelView(model: WhalePhysicsModelView): void {
 			!Number.isFinite(defaultValue)
 		) {
 			throw new Error(
-				'Invalid physics model parameter ' + id + ': values and ranges must be finite.',
+				"Invalid physics model parameter " +
+					id +
+					": values and ranges must be finite.",
 			);
 		}
 		if (minimum > maximum) {
-			throw new Error('Invalid physics model parameter ' + id + ': minimum exceeds maximum.');
+			throw new Error(
+				"Invalid physics model parameter " + id + ": minimum exceeds maximum.",
+			);
 		}
 		if (defaultValue < minimum || defaultValue > maximum) {
 			throw new Error(
-				'Invalid physics model parameter ' + id + ': default is outside its range.',
+				"Invalid physics model parameter " +
+					id +
+					": default is outside its range.",
 			);
 		}
 	}
@@ -915,7 +1060,9 @@ function makeRuntimeSetting(
 		const sourceIndex = parameterIndices.get(input.sourceId);
 		if (sourceIndex === undefined) {
 			throw new Error(
-				'Physics parameter ID "' + input.sourceId + '" is missing from the model.',
+				'Physics parameter ID "' +
+					input.sourceId +
+					'" is missing from the model.',
 			);
 		}
 		return Object.freeze({ input, sourceIndex });
@@ -924,7 +1071,9 @@ function makeRuntimeSetting(
 		const destinationIndex = parameterIndices.get(output.destinationId);
 		if (destinationIndex === undefined) {
 			throw new Error(
-				'Physics parameter ID "' + output.destinationId + '" is missing from the model.',
+				'Physics parameter ID "' +
+					output.destinationId +
+					'" is missing from the model.',
 			);
 		}
 		return Object.freeze({ output, destinationIndex });
@@ -954,7 +1103,10 @@ function initializeParticles(runtimeSettings: readonly RuntimeSetting[]): void {
 		for (let index = 1; index < particles.length; index += 1) {
 			const particle = particles[index];
 			const previous = particles[index - 1];
-			particle.position = mutableVector(previous.position.x, previous.position.y + particle.radius);
+			particle.position = mutableVector(
+				previous.position.x,
+				previous.position.y + particle.radius,
+			);
 			particle.lastPosition = copyVector(particle.position);
 			particle.lastGravity = mutableVector(0, 1);
 			particle.velocity = mutableVector(0, 0);
@@ -974,7 +1126,9 @@ export function createWhalePhysicsRuntime(
 	model: WhalePhysicsModelView,
 ): WhalePhysicsRuntime {
 	if (!rig || rig.version !== 3 || !Array.isArray(rig.settings)) {
-		throw new Error('Invalid physics rig: expected parseWhalePhysics3() output.');
+		throw new Error(
+			"Invalid physics rig: expected parseWhalePhysics3() output.",
+		);
 	}
 	validateModelView(model);
 	const parameterIndices = new Map<string, number>();
@@ -995,7 +1149,9 @@ export function createWhalePhysicsRuntime(
 			const value = model.values[index];
 			if (!Number.isFinite(value)) {
 				throw new Error(
-					'Physics model parameter ' + model.parameterIds[index] + ' is non-finite.',
+					"Physics model parameter " +
+						model.parameterIds[index] +
+						" is non-finite.",
 				);
 			}
 			parameterCaches[index] = value;
@@ -1032,7 +1188,8 @@ export function createWhalePhysicsRuntime(
 				input.translation,
 				input.angle,
 				rig.wind,
-				MOVEMENT_THRESHOLD * runtimeSetting.setting.normalizationPosition.maximum,
+				MOVEMENT_THRESHOLD *
+					runtimeSetting.setting.normalizationPosition.maximum,
 			);
 			for (let index = 0; index < runtimeSetting.outputs.length; index += 1) {
 				const runtimeOutput = runtimeSetting.outputs[index];
@@ -1065,7 +1222,7 @@ export function createWhalePhysicsRuntime(
 
 	function evaluate(deltaSeconds: number): void {
 		if (!Number.isFinite(deltaSeconds)) {
-			throw new Error('Cannot evaluate physics3 with a non-finite delta time.');
+			throw new Error("Cannot evaluate physics3 with a non-finite delta time.");
 		}
 		if (deltaSeconds <= 0) {
 			return;
@@ -1078,7 +1235,8 @@ export function createWhalePhysicsRuntime(
 		while (remainTime >= physicsDeltaTime) {
 			for (const runtimeSetting of runtimeSettings) {
 				for (let index = 0; index < runtimeSetting.outputs.length; index += 1) {
-					runtimeSetting.previousOutputs[index] = runtimeSetting.currentOutputs[index];
+					runtimeSetting.previousOutputs[index] =
+						runtimeSetting.currentOutputs[index];
 				}
 			}
 			const inputWeight = physicsDeltaTime / remainTime;
@@ -1086,7 +1244,9 @@ export function createWhalePhysicsRuntime(
 				const value = model.values[index];
 				if (!Number.isFinite(value)) {
 					throw new Error(
-						'Physics model parameter ' + model.parameterIds[index] + ' is non-finite.',
+						"Physics model parameter " +
+							model.parameterIds[index] +
+							" is non-finite.",
 					);
 				}
 				parameterCaches[index] =
@@ -1102,7 +1262,8 @@ export function createWhalePhysicsRuntime(
 					input.angle,
 					physicsDeltaTime,
 					rig.wind,
-					MOVEMENT_THRESHOLD * runtimeSetting.setting.normalizationPosition.maximum,
+					MOVEMENT_THRESHOLD *
+						runtimeSetting.setting.normalizationPosition.maximum,
 				);
 				for (let index = 0; index < runtimeSetting.outputs.length; index += 1) {
 					const runtimeOutput = runtimeSetting.outputs[index];

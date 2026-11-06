@@ -8,7 +8,12 @@
  * timer is touched here.
  */
 
-export type WhaleSecondaryReaction = 'greet' | 'pet' | 'wave' | 'sleep' | 'wake';
+export type WhaleSecondaryReaction =
+	| "greet"
+	| "pet"
+	| "wave"
+	| "sleep"
+	| "wake";
 
 export interface WhaleSecondaryPose {
 	readonly seconds: number;
@@ -32,9 +37,15 @@ export type WhaleSecondarySummary = readonly string[];
 
 export interface WhaleSecondaryRig {
 	/** Set the scalar state used by the next positions() calls. */
-	readonly update: (pose: WhaleSecondaryPose, currentPositions: readonly Float32Array[]) => void;
+	readonly update: (
+		pose: WhaleSecondaryPose,
+		currentPositions: readonly Float32Array[],
+	) => void;
 	/** Return a non-Core output buffer for the drawable, or the input on error. */
-	readonly positions: (drawableIndex: number, currentPositions: Float32Array) => Float32Array;
+	readonly positions: (
+		drawableIndex: number,
+		currentPositions: Float32Array,
+	) => Float32Array;
 	/** Return the drawable opacity after the local mouth visibility field. */
 	readonly opacity: (drawableIndex: number, currentOpacity: number) => number;
 	/** Static semantic IDs with secondary fields enabled. */
@@ -87,42 +98,48 @@ interface FaceSurfaceBindings {
 	readonly right: FaceSurfaceBinding;
 }
 
-const BODY_ID = 'Body2';
-const ARM_ID = 'ArmR2';
-const FIN_R_ID = 'FinR';
-const FIN_L_ID = 'FinL';
-const AHOGE_ID = 'Ahoge2';
-const MOUTH_OPEN_ID = 'MouthOpen2';
-const MOUTH_CLOSED_ID = 'MouthClosed';
-const BOW_R_EDGE_ID = 'BowREdge';
-const HAIR_BACK_R_ID = 'HairBackR2';
-const HAIR_BACK_L_ID = 'HairBackL2';
-const TAIL_ID = 'Tail2';
+const BODY_ID = "Body2";
+const ARM_ID = "ArmR2";
+const FIN_R_ID = "FinR";
+const FIN_L_ID = "FinL";
+const AHOGE_ID = "Ahoge2";
+const MOUTH_OPEN_ID = "MouthOpen2";
+const MOUTH_CLOSED_ID = "MouthClosed";
+const BOW_R_EDGE_ID = "BowREdge";
+const HAIR_BACK_R_ID = "HairBackR2";
+const HAIR_BACK_L_ID = "HairBackL2";
+const TAIL_ID = "Tail2";
 
 /** The first 18 model drawables are one shared head field by design. */
 const HEAD_IDS = [
-	'MouthOpen2',
-	'EyelashClosedR',
-	'EyelashClosedL',
-	'Ahoge2',
-	'MaidHeadband',
-	'NeckHairEdges',
-	'HairFront2',
-	'BowREdge',
-	'FinR',
-	'FinL',
-	'MouthClosed',
-	'BrowR2',
-	'BrowL2',
-	'IrisR',
-	'IrisL',
-	'EyeWhiteR',
-	'EyeWhiteL',
-	'FaceBase',
+	"MouthOpen2",
+	"EyelashClosedR",
+	"EyelashClosedL",
+	"Ahoge2",
+	"MaidHeadband",
+	"NeckHairEdges",
+	"HairFront2",
+	"BowREdge",
+	"FinR",
+	"FinL",
+	"MouthClosed",
+	"BrowR2",
+	"BrowL2",
+	"IrisR",
+	"IrisL",
+	"EyeWhiteR",
+	"EyeWhiteL",
+	"FaceBase",
 ] as const;
 const HEAD_ID_SET = new Set<string>(HEAD_IDS);
 const HAIR_BACK_IDS = new Set([HAIR_BACK_R_ID, HAIR_BACK_L_ID]);
-const REQUIRED_LOCAL_IDS = [BODY_ID, ARM_ID, FIN_R_ID, FIN_L_ID, AHOGE_ID] as const;
+const REQUIRED_LOCAL_IDS = [
+	BODY_ID,
+	ARM_ID,
+	FIN_R_ID,
+	FIN_L_ID,
+	AHOGE_ID,
+] as const;
 
 const TWO_PI = Math.PI * 2;
 const ARM_PERIOD_SECONDS = 9.3;
@@ -149,7 +166,7 @@ const SLEEP_GLOBAL_SCALE = 0.2;
 const SLEEP_LOCAL_SCALE = 0.15;
 const BODY_PIVOT_Y_FRACTION = 0.22;
 const BODY_FOOT_RIGID_FRACTION = 0.15;
-const BODY_FOOT_BLEND_END_FRACTION = 0.30;
+const BODY_FOOT_BLEND_END_FRACTION = 0.3;
 const NECK_BLEND_START_FRACTION = 0.015;
 const NECK_BLEND_END_FRACTION = 0.065;
 const MOUTH_RESPONSE_RATE = 16;
@@ -199,10 +216,10 @@ function boundsFromPositions(positions: Float32Array): Bounds | null {
 	if (positions.length < 2 || positions.length % 2 !== 0) {
 		return null;
 	}
-	let minX = Infinity;
-	let minY = Infinity;
-	let maxX = -Infinity;
-	let maxY = -Infinity;
+	let minX = Number.POSITIVE_INFINITY;
+	let minY = Number.POSITIVE_INFINITY;
+	let maxX = Number.NEGATIVE_INFINITY;
+	let maxY = Number.NEGATIVE_INFINITY;
 	for (let index = 0; index < positions.length; index += 2) {
 		const x = positions[index];
 		const y = positions[index + 1];
@@ -259,9 +276,13 @@ function mergeBounds(current: Bounds | null, next: Bounds): Bounds {
 	};
 }
 
-function nearestVertexIndex(positions: Float32Array, targetX: number, targetY: number): number {
+function nearestVertexIndex(
+	positions: Float32Array,
+	targetX: number,
+	targetY: number,
+): number {
 	let nearest = 0;
-	let distance = Infinity;
+	let distance = Number.POSITIVE_INFINITY;
 	for (let index = 0; index < positions.length; index += 2) {
 		const dx = positions[index] - targetX;
 		const dy = positions[index + 1] - targetY;
@@ -281,7 +302,12 @@ function currentCoordinate(
 	fallback: number,
 ): number {
 	const offset = vertexIndex * 2 + coordinate;
-	if (positions && offset >= 0 && offset < positions.length && isFiniteNumber(positions[offset])) {
+	if (
+		positions &&
+		offset >= 0 &&
+		offset < positions.length &&
+		isFiniteNumber(positions[offset])
+	) {
 		return positions[offset];
 	}
 	return fallback;
@@ -343,14 +369,19 @@ function findFaceSurfaceBinding(
 		const edgeACX = cx - ax;
 		const edgeACY = cy - ay;
 		const determinant = edgeABX * edgeACY - edgeACX * edgeABY;
-		if (!isFiniteNumber(determinant) || Math.abs(determinant) <= FACE_TRIANGLE_AREA_EPSILON) {
+		if (
+			!isFiniteNumber(determinant) ||
+			Math.abs(determinant) <= FACE_TRIANGLE_AREA_EPSILON
+		) {
 			continue;
 		}
 
 		const targetOffsetX = targetX - ax;
 		const targetOffsetY = targetY - ay;
-		const weightB = (targetOffsetX * edgeACY - edgeACX * targetOffsetY) / determinant;
-		const weightC = (edgeABX * targetOffsetY - targetOffsetX * edgeABY) / determinant;
+		const weightB =
+			(targetOffsetX * edgeACY - edgeACX * targetOffsetY) / determinant;
+		const weightC =
+			(edgeABX * targetOffsetY - targetOffsetX * edgeABY) / determinant;
 		const weightA = 1 - weightB - weightC;
 		if (
 			!isFiniteNumber(weightA) ||
@@ -402,7 +433,11 @@ function faceSurfaceCoordinate(
 	return isFiniteNumber(value) ? value : Number.NaN;
 }
 
-function maxDistanceFromPivot(positions: Float32Array, rootX: number, rootY: number): number {
+function maxDistanceFromPivot(
+	positions: Float32Array,
+	rootX: number,
+	rootY: number,
+): number {
 	let maximumDistance = 0;
 	for (let vertex = 0; vertex < positions.length; vertex += 2) {
 		const dx = positions[vertex] - rootX;
@@ -427,7 +462,9 @@ function makeDistanceWeight(
 		const dx = positions[vertex * 2] - rootX;
 		const dy = positions[vertex * 2 + 1] - rootY;
 		const distance = Math.sqrt(dx * dx + dy * dy) / maximumDistance;
-		result[vertex] = smoothstep((distance - rootRigidFraction) / (1 - rootRigidFraction));
+		result[vertex] = smoothstep(
+			(distance - rootRigidFraction) / (1 - rootRigidFraction),
+		);
 	}
 	return result;
 }
@@ -453,7 +490,10 @@ function makeVerticalWeight(
 	return result;
 }
 
-function makeSkirtWeight(positions: Float32Array, bounds: Bounds): Float32Array {
+function makeSkirtWeight(
+	positions: Float32Array,
+	bounds: Bounds,
+): Float32Array {
 	const result = new Float32Array(positions.length / 2);
 	// The upper chest and apron remain in the public body field. Only the lower
 	// skirt gets this extra, very small horizontal inertia field.
@@ -480,7 +520,11 @@ function modelSwayWeight(y: number, bounds: Bounds): number {
 	return bodyFieldWeight(y, bounds);
 }
 
-function headBoundaryWeight(y: number, neckY: number, modelHeight: number): number {
+function headBoundaryWeight(
+	y: number,
+	neckY: number,
+	modelHeight: number,
+): number {
 	// The chin, side locks and neck must use the same anchored field. Moving
 	// FaceBase rigidly while only pinning NeckHairEdges opens the collar seam.
 	const start = neckY - modelHeight * NECK_BLEND_START_FRACTION;
@@ -501,7 +545,11 @@ export function createWhaleSecondaryRig(
 	restPositions: readonly Float32Array[],
 	triangleIndices?: readonly Uint16Array[],
 ): WhaleSecondaryRig | null {
-	if (!Array.isArray(ids) || !Array.isArray(restPositions) || ids.length !== restPositions.length) {
+	if (
+		!Array.isArray(ids) ||
+		!Array.isArray(restPositions) ||
+		ids.length !== restPositions.length
+	) {
 		return null;
 	}
 
@@ -514,7 +562,7 @@ export function createWhaleSecondaryRig(
 		const id = ids[index];
 		const input = restPositions[index];
 		if (
-			typeof id !== 'string' ||
+			typeof id !== "string" ||
 			id.length === 0 ||
 			seen.has(id) ||
 			!(input instanceof Float32Array)
@@ -576,38 +624,79 @@ export function createWhaleSecondaryRig(
 	const hairL = hairLIndex === undefined ? null : drawables[hairLIndex];
 	const mouthOpenIndex = indexById.get(MOUTH_OPEN_ID);
 	const mouthClosedIndex = indexById.get(MOUTH_CLOSED_ID);
-	const mouthOpen = mouthOpenIndex === undefined ? null : drawables[mouthOpenIndex];
-	const mouthClosed = mouthClosedIndex === undefined ? null : drawables[mouthClosedIndex];
-	const mouthCenterX = mouthClosed?.bounds.centerX ?? mouthOpen?.bounds.centerX ?? 0;
-	const mouthCenterY = mouthClosed?.bounds.centerY ?? mouthOpen?.bounds.centerY ?? 0;
-	const faceBaseIndex = indexById.get('FaceBase');
-	const faceBase = faceBaseIndex === undefined ? null : drawables[faceBaseIndex];
-	const faceBaseTriangles = faceBaseIndex === undefined ? undefined : triangleIndices?.[faceBaseIndex];
-	const mouthHalfWidth = mouthClosed && isFiniteNumber(mouthClosed.bounds.width) && mouthClosed.bounds.width > 0
-		? mouthClosed.bounds.width / 2
-		: 0.02;
-	const faceCenterBinding = faceBase && faceBaseTriangles
-		? findFaceSurfaceBinding(faceBase.rest, faceBaseTriangles, mouthCenterX, mouthCenterY)
-		: null;
-	const faceLeftBinding = faceBase && faceBaseTriangles
-		? findFaceSurfaceBinding(faceBase.rest, faceBaseTriangles, mouthCenterX - mouthHalfWidth, mouthCenterY)
-		: null;
-	const faceRightBinding = faceBase && faceBaseTriangles
-		? findFaceSurfaceBinding(faceBase.rest, faceBaseTriangles, mouthCenterX + mouthHalfWidth, mouthCenterY)
-		: null;
+	const mouthOpen =
+		mouthOpenIndex === undefined ? null : drawables[mouthOpenIndex];
+	const mouthClosed =
+		mouthClosedIndex === undefined ? null : drawables[mouthClosedIndex];
+	const mouthCenterX =
+		mouthClosed?.bounds.centerX ?? mouthOpen?.bounds.centerX ?? 0;
+	const mouthCenterY =
+		mouthClosed?.bounds.centerY ?? mouthOpen?.bounds.centerY ?? 0;
+	const faceBaseIndex = indexById.get("FaceBase");
+	const faceBase =
+		faceBaseIndex === undefined ? null : drawables[faceBaseIndex];
+	const faceBaseTriangles =
+		faceBaseIndex === undefined ? undefined : triangleIndices?.[faceBaseIndex];
+	const mouthHalfWidth =
+		mouthClosed &&
+		isFiniteNumber(mouthClosed.bounds.width) &&
+		mouthClosed.bounds.width > 0
+			? mouthClosed.bounds.width / 2
+			: 0.02;
+	const faceCenterBinding =
+		faceBase && faceBaseTriangles
+			? findFaceSurfaceBinding(
+					faceBase.rest,
+					faceBaseTriangles,
+					mouthCenterX,
+					mouthCenterY,
+				)
+			: null;
+	const faceLeftBinding =
+		faceBase && faceBaseTriangles
+			? findFaceSurfaceBinding(
+					faceBase.rest,
+					faceBaseTriangles,
+					mouthCenterX - mouthHalfWidth,
+					mouthCenterY,
+				)
+			: null;
+	const faceRightBinding =
+		faceBase && faceBaseTriangles
+			? findFaceSurfaceBinding(
+					faceBase.rest,
+					faceBaseTriangles,
+					mouthCenterX + mouthHalfWidth,
+					mouthCenterY,
+				)
+			: null;
 	const faceSurfaceBindings: FaceSurfaceBindings | null =
 		faceCenterBinding && faceLeftBinding && faceRightBinding
-			? { center: faceCenterBinding, left: faceLeftBinding, right: faceRightBinding }
+			? {
+					center: faceCenterBinding,
+					left: faceLeftBinding,
+					right: faceRightBinding,
+				}
 			: null;
 
-	const neckRootIndex = nearestVertexIndex(body.rest, body.bounds.centerX, body.bounds.maxY);
+	const neckRootIndex = nearestVertexIndex(
+		body.rest,
+		body.bounds.centerX,
+		body.bounds.maxY,
+	);
 	const neckRootRestX = body.rest[neckRootIndex * 2];
 	const neckRootRestY = body.rest[neckRootIndex * 2 + 1];
 	let cachedNeckRootX = neckRootRestX;
 	let cachedNeckRootY = neckRootRestY;
 
-	arm.pivotIndex = nearestVertexIndex(arm.rest, arm.bounds.centerX, arm.bounds.maxY);
-	arm.armWeight.set(makeVerticalWeight(arm.rest, arm.bounds.minY, arm.bounds.maxY, true));
+	arm.pivotIndex = nearestVertexIndex(
+		arm.rest,
+		arm.bounds.centerX,
+		arm.bounds.maxY,
+	);
+	arm.armWeight.set(
+		makeVerticalWeight(arm.rest, arm.bounds.minY, arm.bounds.maxY, true),
+	);
 
 	finR.pivotIndex = nearestVertexIndex(
 		finR.rest,
@@ -623,16 +712,34 @@ export function createWhaleSecondaryRig(
 	const finRPivotRestY = finR.rest[finR.pivotIndex * 2 + 1];
 	const finLPivotRestX = finL.rest[finL.pivotIndex * 2];
 	const finLPivotRestY = finL.rest[finL.pivotIndex * 2 + 1];
-	const finRRadius = maxDistanceFromPivot(finR.rest, finRPivotRestX, finRPivotRestY);
-	const finLRadius = maxDistanceFromPivot(finL.rest, finLPivotRestX, finLPivotRestY);
-	finR.finWeight.set(makeDistanceWeight(finR.rest, finRPivotRestX, finRPivotRestY, finRRadius));
-	finL.finWeight.set(makeDistanceWeight(finL.rest, finLPivotRestX, finLPivotRestY, finLRadius));
+	const finRRadius = maxDistanceFromPivot(
+		finR.rest,
+		finRPivotRestX,
+		finRPivotRestY,
+	);
+	const finLRadius = maxDistanceFromPivot(
+		finL.rest,
+		finLPivotRestX,
+		finLPivotRestY,
+	);
+	finR.finWeight.set(
+		makeDistanceWeight(finR.rest, finRPivotRestX, finRPivotRestY, finRRadius),
+	);
+	finL.finWeight.set(
+		makeDistanceWeight(finL.rest, finLPivotRestX, finLPivotRestY, finLRadius),
+	);
 
 	if (bow) {
 		// The bow uses FinR's current Core root and FinR's fixed rest radius. It
 		// therefore remains joined even when render order changes.
-		bow.pivotIndex = nearestVertexIndex(bow.rest, finRPivotRestX, finRPivotRestY);
-		bow.finWeight.set(makeDistanceWeight(bow.rest, finRPivotRestX, finRPivotRestY, finRRadius));
+		bow.pivotIndex = nearestVertexIndex(
+			bow.rest,
+			finRPivotRestX,
+			finRPivotRestY,
+		);
+		bow.finWeight.set(
+			makeDistanceWeight(bow.rest, finRPivotRestX, finRPivotRestY, finRRadius),
+		);
 	}
 
 	ahoge.pivotIndex = nearestVertexIndex(
@@ -642,15 +749,36 @@ export function createWhaleSecondaryRig(
 	);
 	const ahogePivotRestX = ahoge.rest[ahoge.pivotIndex * 2];
 	const ahogePivotRestY = ahoge.rest[ahoge.pivotIndex * 2 + 1];
-	const ahogeRadius = maxDistanceFromPivot(ahoge.rest, ahogePivotRestX, ahogePivotRestY);
-	ahoge.ahogeWeight.set(makeDistanceWeight(ahoge.rest, ahogePivotRestX, ahogePivotRestY, ahogeRadius, 0.2));
+	const ahogeRadius = maxDistanceFromPivot(
+		ahoge.rest,
+		ahogePivotRestX,
+		ahogePivotRestY,
+	);
+	ahoge.ahogeWeight.set(
+		makeDistanceWeight(
+			ahoge.rest,
+			ahogePivotRestX,
+			ahogePivotRestY,
+			ahogeRadius,
+			0.2,
+		),
+	);
 
 	if (tail) {
-		tail.pivotIndex = nearestVertexIndex(tail.rest, tail.bounds.centerX, tail.bounds.maxY);
+		tail.pivotIndex = nearestVertexIndex(
+			tail.rest,
+			tail.bounds.centerX,
+			tail.bounds.maxY,
+		);
 		const tailPivotX = tail.rest[tail.pivotIndex * 2];
 		const tailPivotY = tail.rest[tail.pivotIndex * 2 + 1];
 		tail.tailWeight.set(
-			makeDistanceWeight(tail.rest, tailPivotX, tailPivotY, maxDistanceFromPivot(tail.rest, tailPivotX, tailPivotY)),
+			makeDistanceWeight(
+				tail.rest,
+				tailPivotX,
+				tailPivotY,
+				maxDistanceFromPivot(tail.rest, tailPivotX, tailPivotY),
+			),
 		);
 	}
 	body.skirtWeight.set(makeSkirtWeight(body.rest, body.bounds));
@@ -659,11 +787,26 @@ export function createWhaleSecondaryRig(
 		if (!drawable) {
 			return;
 		}
-		drawable.hairRootIndex = nearestVertexIndex(drawable.rest, drawable.bounds.centerX, drawable.bounds.maxY);
+		drawable.hairRootIndex = nearestVertexIndex(
+			drawable.rest,
+			drawable.bounds.centerX,
+			drawable.bounds.maxY,
+		);
 		const rootX = drawable.rest[drawable.hairRootIndex * 2];
 		const rootY = drawable.rest[drawable.hairRootIndex * 2 + 1];
-		drawable.hairRootDistance = maxDistanceFromPivot(drawable.rest, rootX, rootY);
-		drawable.hairLagWeight.set(makeDistanceWeight(drawable.rest, rootX, rootY, drawable.hairRootDistance));
+		drawable.hairRootDistance = maxDistanceFromPivot(
+			drawable.rest,
+			rootX,
+			rootY,
+		);
+		drawable.hairLagWeight.set(
+			makeDistanceWeight(
+				drawable.rest,
+				rootX,
+				rootY,
+				drawable.hairRootDistance,
+			),
+		);
 	};
 	initializeHair(hairR);
 	initializeHair(hairL);
@@ -671,7 +814,8 @@ export function createWhaleSecondaryRig(
 	const globalAmplitude = modelBounds.height * GLOBAL_SWAY_HEIGHT_FRACTION;
 	const skirtAmplitude = modelBounds.height * SKIRT_SWAY_HEIGHT_FRACTION;
 	const bodyPivotX = modelBounds.centerX;
-	const bodyPivotY = modelBounds.minY + modelBounds.height * BODY_PIVOT_Y_FRACTION;
+	const bodyPivotY =
+		modelBounds.minY + modelBounds.height * BODY_PIVOT_Y_FRACTION;
 
 	let globalSway = 0;
 	let bodyAngle = 0;
@@ -740,8 +884,10 @@ export function createWhaleSecondaryRig(
 		const rootDY = currentRootY - cachedNeckRootY;
 		const cosine = Math.cos(headAngle);
 		const sine = Math.sin(headAngle);
-		const transformedRootX = cachedNeckRootX + rootDX * cosine - rootDY * sine + headShiftX;
-		const transformedRootY = cachedNeckRootY + rootDX * sine + rootDY * cosine + headShiftY;
+		const transformedRootX =
+			cachedNeckRootX + rootDX * cosine - rootDY * sine + headShiftX;
+		const transformedRootY =
+			cachedNeckRootY + rootDX * sine + rootDY * cosine + headShiftY;
 		const targetShiftX = transformedRootX - currentRootX;
 		const targetShiftY = transformedRootY - currentRootY;
 		drawable.hairLiveShiftX = targetShiftX;
@@ -768,12 +914,25 @@ export function createWhaleSecondaryRig(
 	for (const id of HEAD_IDS) {
 		addSummaryID(id);
 	}
-	for (const id of [HAIR_BACK_R_ID, HAIR_BACK_L_ID, TAIL_ID, ARM_ID, BODY_ID, FIN_R_ID, FIN_L_ID, BOW_R_EDGE_ID, AHOGE_ID]) {
+	for (const id of [
+		HAIR_BACK_R_ID,
+		HAIR_BACK_L_ID,
+		TAIL_ID,
+		ARM_ID,
+		BODY_ID,
+		FIN_R_ID,
+		FIN_L_ID,
+		BOW_R_EDGE_ID,
+		AHOGE_ID,
+	]) {
 		addSummaryID(id);
 	}
 	const summary: WhaleSecondarySummary = Object.freeze(enabledSummary);
 
-	const update = (pose: WhaleSecondaryPose, corePositions: readonly Float32Array[]): void => {
+	const update = (
+		pose: WhaleSecondaryPose,
+		corePositions: readonly Float32Array[],
+	): void => {
 		frameMaxDisplacement = 0;
 		const seconds = Math.max(0, safePoseValue(pose.seconds, 0));
 		const firstMotionUpdate = !motionInitialized;
@@ -825,40 +984,126 @@ export function createWhaleSecondaryRig(
 		const bootScale = smoothstep(seconds / 2);
 		sleepingScale = pose.sleeping === true ? SLEEP_LOCAL_SCALE : 1;
 		headScale = sleepingScale * bootScale;
-		const globalScale = (pose.sleeping === true ? SLEEP_GLOBAL_SCALE : 1) * bootScale;
+		const globalScale =
+			(pose.sleeping === true ? SLEEP_GLOBAL_SCALE : 1) * bootScale;
 
 		const currentBodyPositions = corePositions[indexById.get(BODY_ID)!];
-		cachedNeckRootX = currentCoordinate(currentBodyPositions, neckRootIndex, 0, neckRootRestX);
-		cachedNeckRootY = currentCoordinate(currentBodyPositions, neckRootIndex, 1, neckRootRestY);
+		cachedNeckRootX = currentCoordinate(
+			currentBodyPositions,
+			neckRootIndex,
+			0,
+			neckRootRestX,
+		);
+		cachedNeckRootY = currentCoordinate(
+			currentBodyPositions,
+			neckRootIndex,
+			1,
+			neckRootRestY,
+		);
 		const currentFinRPositions = corePositions[indexById.get(FIN_R_ID)!];
 		const currentFinLPositions = corePositions[indexById.get(FIN_L_ID)!];
 		const currentAhogePositions = corePositions[indexById.get(AHOGE_ID)!];
 		const currentArmPositions = corePositions[indexById.get(ARM_ID)!];
-		cachedFinRPivotX = currentCoordinate(currentFinRPositions, finR.pivotIndex, 0, finRPivotRestX);
-		cachedFinRPivotY = currentCoordinate(currentFinRPositions, finR.pivotIndex, 1, finRPivotRestY);
-		cachedFinLPivotX = currentCoordinate(currentFinLPositions, finL.pivotIndex, 0, finLPivotRestX);
-		cachedFinLPivotY = currentCoordinate(currentFinLPositions, finL.pivotIndex, 1, finLPivotRestY);
-		cachedAhogePivotX = currentCoordinate(currentAhogePositions, ahoge.pivotIndex, 0, ahogePivotRestX);
-		cachedAhogePivotY = currentCoordinate(currentAhogePositions, ahoge.pivotIndex, 1, ahogePivotRestY);
-		cachedArmPivotX = currentCoordinate(currentArmPositions, arm.pivotIndex, 0, cachedArmPivotX);
-		cachedArmPivotY = currentCoordinate(currentArmPositions, arm.pivotIndex, 1, cachedArmPivotY);
+		cachedFinRPivotX = currentCoordinate(
+			currentFinRPositions,
+			finR.pivotIndex,
+			0,
+			finRPivotRestX,
+		);
+		cachedFinRPivotY = currentCoordinate(
+			currentFinRPositions,
+			finR.pivotIndex,
+			1,
+			finRPivotRestY,
+		);
+		cachedFinLPivotX = currentCoordinate(
+			currentFinLPositions,
+			finL.pivotIndex,
+			0,
+			finLPivotRestX,
+		);
+		cachedFinLPivotY = currentCoordinate(
+			currentFinLPositions,
+			finL.pivotIndex,
+			1,
+			finLPivotRestY,
+		);
+		cachedAhogePivotX = currentCoordinate(
+			currentAhogePositions,
+			ahoge.pivotIndex,
+			0,
+			ahogePivotRestX,
+		);
+		cachedAhogePivotY = currentCoordinate(
+			currentAhogePositions,
+			ahoge.pivotIndex,
+			1,
+			ahogePivotRestY,
+		);
+		cachedArmPivotX = currentCoordinate(
+			currentArmPositions,
+			arm.pivotIndex,
+			0,
+			cachedArmPivotX,
+		);
+		cachedArmPivotY = currentCoordinate(
+			currentArmPositions,
+			arm.pivotIndex,
+			1,
+			cachedArmPivotY,
+		);
 		if (tail) {
 			const currentTailPositions = corePositions[indexById.get(TAIL_ID)!];
-			cachedTailPivotX = currentCoordinate(currentTailPositions, tail.pivotIndex, 0, cachedTailPivotX);
-			cachedTailPivotY = currentCoordinate(currentTailPositions, tail.pivotIndex, 1, cachedTailPivotY);
+			cachedTailPivotX = currentCoordinate(
+				currentTailPositions,
+				tail.pivotIndex,
+				0,
+				cachedTailPivotX,
+			);
+			cachedTailPivotY = currentCoordinate(
+				currentTailPositions,
+				tail.pivotIndex,
+				1,
+				cachedTailPivotY,
+			);
 		}
 
 		// Sample the native FaceBase surface on every update, including redraws
 		// with no elapsed time. The mouth uses only the current center and chord
 		// orientation; FaceBase shear and scale remain excluded from the local
 		// mouth attachment.
-		const currentFacePositions = faceBaseIndex === undefined ? undefined : corePositions[faceBaseIndex];
-		const currentFaceCenterX = faceSurfaceCoordinate(faceSurfaceBindings?.center ?? null, currentFacePositions, 0);
-		const currentFaceCenterY = faceSurfaceCoordinate(faceSurfaceBindings?.center ?? null, currentFacePositions, 1);
-		const currentFaceLeftX = faceSurfaceCoordinate(faceSurfaceBindings?.left ?? null, currentFacePositions, 0);
-		const currentFaceLeftY = faceSurfaceCoordinate(faceSurfaceBindings?.left ?? null, currentFacePositions, 1);
-		const currentFaceRightX = faceSurfaceCoordinate(faceSurfaceBindings?.right ?? null, currentFacePositions, 0);
-		const currentFaceRightY = faceSurfaceCoordinate(faceSurfaceBindings?.right ?? null, currentFacePositions, 1);
+		const currentFacePositions =
+			faceBaseIndex === undefined ? undefined : corePositions[faceBaseIndex];
+		const currentFaceCenterX = faceSurfaceCoordinate(
+			faceSurfaceBindings?.center ?? null,
+			currentFacePositions,
+			0,
+		);
+		const currentFaceCenterY = faceSurfaceCoordinate(
+			faceSurfaceBindings?.center ?? null,
+			currentFacePositions,
+			1,
+		);
+		const currentFaceLeftX = faceSurfaceCoordinate(
+			faceSurfaceBindings?.left ?? null,
+			currentFacePositions,
+			0,
+		);
+		const currentFaceLeftY = faceSurfaceCoordinate(
+			faceSurfaceBindings?.left ?? null,
+			currentFacePositions,
+			1,
+		);
+		const currentFaceRightX = faceSurfaceCoordinate(
+			faceSurfaceBindings?.right ?? null,
+			currentFacePositions,
+			0,
+		);
+		const currentFaceRightY = faceSurfaceCoordinate(
+			faceSurfaceBindings?.right ?? null,
+			currentFacePositions,
+			1,
+		);
 		const faceChordX = currentFaceRightX - currentFaceLeftX;
 		const faceChordY = currentFaceRightY - currentFaceLeftY;
 		const faceChordLength = Math.hypot(faceChordX, faceChordY);
@@ -879,7 +1124,12 @@ export function createWhaleSecondaryRig(
 			cachedFaceSine = 0;
 		}
 
-		const rawHeadAngle = clamp(smoothedHeadZ * 0.95 + smoothedHeadY * 0.18, -HEAD_MAX_ROTATION_DEGREES, HEAD_MAX_ROTATION_DEGREES) * DEGREES_TO_RADIANS;
+		const rawHeadAngle =
+			clamp(
+				smoothedHeadZ * 0.95 + smoothedHeadY * 0.18,
+				-HEAD_MAX_ROTATION_DEGREES,
+				HEAD_MAX_ROTATION_DEGREES,
+			) * DEGREES_TO_RADIANS;
 		headAngle = rawHeadAngle * headScale;
 		// A rigid head turns around the collar/chin anchor. Independent head
 		// translations and a y-varying face field caused stretching and gaps.
@@ -887,13 +1137,24 @@ export function createWhaleSecondaryRig(
 		headShiftY = 0;
 
 		const globalSignal =
-			Math.sin((seconds * TWO_PI) / GLOBAL_PERIOD_A_SECONDS) * (0.65 + smoothedLookX * 0.1) +
+			Math.sin((seconds * TWO_PI) / GLOBAL_PERIOD_A_SECONDS) *
+				(0.65 + smoothedLookX * 0.1) +
 			Math.sin((seconds * TWO_PI) / GLOBAL_PERIOD_B_SECONDS) * 0.25;
 		globalSway = globalAmplitude * globalSignal * globalScale;
 
-		const publicBodyDegrees = clamp(smoothedBodyZ, -BODY_MAX_ROTATION_DEGREES, BODY_MAX_ROTATION_DEGREES);
-		const tinyBodyDegrees = Math.sin((seconds * TWO_PI) / BODY_PERIOD_SECONDS + 0.7) * BODY_TINY_SWAY_DEGREES;
-		bodyAngle = (publicBodyDegrees + tinyBodyDegrees * (pose.sleeping === true ? SLEEP_GLOBAL_SCALE : 1)) * DEGREES_TO_RADIANS * globalScale;
+		const publicBodyDegrees = clamp(
+			smoothedBodyZ,
+			-BODY_MAX_ROTATION_DEGREES,
+			BODY_MAX_ROTATION_DEGREES,
+		);
+		const tinyBodyDegrees =
+			Math.sin((seconds * TWO_PI) / BODY_PERIOD_SECONDS + 0.7) *
+			BODY_TINY_SWAY_DEGREES;
+		bodyAngle =
+			(publicBodyDegrees +
+				tinyBodyDegrees * (pose.sleeping === true ? SLEEP_GLOBAL_SCALE : 1)) *
+			DEGREES_TO_RADIANS *
+			globalScale;
 		const skirtSignal =
 			Math.sin((seconds * TWO_PI) / BODY_PERIOD_SECONDS + 0.5) * 0.72 +
 			clamp(smoothedBodyZ / BODY_MAX_ROTATION_DEGREES, -1, 1) * 0.28;
@@ -903,13 +1164,24 @@ export function createWhaleSecondaryRig(
 		const phase = idleSeconds % WAVE_PERIOD_SECONDS;
 		const liftIn = smoothstep((phase - 28) / 0.9);
 		const liftOut = 1 - smoothstep((phase - 31.1) / 0.9);
-		const cycleLift = pose.reaction === null ? clamp(liftIn * liftOut, 0, 1) : 0;
-		const reactionProgress = clamp(safePoseValue(pose.reactionProgress, 0), 0, 1);
+		const cycleLift =
+			pose.reaction === null ? clamp(liftIn * liftOut, 0, 1) : 0;
+		const reactionProgress = clamp(
+			safePoseValue(pose.reactionProgress, 0),
+			0,
+			1,
+		);
 		const reactionEnvelope = Math.sin(Math.PI * reactionProgress);
-		const waveExtra = pose.reaction === 'wave'
-			? (WAVE_ARM_EXTRA_DEGREES + 5 * Math.sin(reactionProgress * TWO_PI * 2)) * reactionEnvelope
-			: pose.reaction === 'greet' ? 28 * reactionEnvelope
-				: pose.reaction === 'pet' ? 20 * reactionEnvelope : 0;
+		const waveExtra =
+			pose.reaction === "wave"
+				? (WAVE_ARM_EXTRA_DEGREES +
+						5 * Math.sin(reactionProgress * TWO_PI * 2)) *
+					reactionEnvelope
+				: pose.reaction === "greet"
+					? 28 * reactionEnvelope
+					: pose.reaction === "pet"
+						? 20 * reactionEnvelope
+						: 0;
 		const armTargetDegrees =
 			(ARM_SWAY_DEGREES * Math.sin((seconds * TWO_PI) / ARM_PERIOD_SECONDS) +
 				ARM_LIFT_DEGREES * cycleLift +
@@ -917,33 +1189,50 @@ export function createWhaleSecondaryRig(
 			sleepingScale *
 			bootScale;
 		if (deltaSeconds > 0) {
-			smoothedArmDegrees += (armTargetDegrees - smoothedArmDegrees) * exponentialBlend(10, deltaSeconds);
+			smoothedArmDegrees +=
+				(armTargetDegrees - smoothedArmDegrees) *
+				exponentialBlend(10, deltaSeconds);
 		}
 		armAngle = smoothedArmDegrees * DEGREES_TO_RADIANS;
 
-		const earElastic = clamp((smoothedHeadX - earLagX) * 0.08 + (smoothedHeadZ - earLagZ) * 0.04, -1.5, 1.5);
+		const earElastic = clamp(
+			(smoothedHeadX - earLagX) * 0.08 + (smoothedHeadZ - earLagZ) * 0.04,
+			-1.5,
+			1.5,
+		);
 		finRAngle =
-			(FIN_SWAY_DEGREES * Math.sin((seconds * TWO_PI) / FIN_R_PERIOD_SECONDS) + earElastic) *
+			(FIN_SWAY_DEGREES * Math.sin((seconds * TWO_PI) / FIN_R_PERIOD_SECONDS) +
+				earElastic) *
 			DEGREES_TO_RADIANS *
 			sleepingScale *
 			bootScale;
 		finLAngle =
-			(-FIN_SWAY_DEGREES * Math.sin((seconds * TWO_PI) / FIN_L_PERIOD_SECONDS) - earElastic) *
+			(-FIN_SWAY_DEGREES * Math.sin((seconds * TWO_PI) / FIN_L_PERIOD_SECONDS) -
+				earElastic) *
 			DEGREES_TO_RADIANS *
 			sleepingScale *
 			bootScale;
 		ahogeAngle =
-			(AHOGE_SWAY_DEGREES * Math.sin((seconds * TWO_PI) / AHOGE_PERIOD_SECONDS) + earElastic * 0.8) *
+			(AHOGE_SWAY_DEGREES *
+				Math.sin((seconds * TWO_PI) / AHOGE_PERIOD_SECONDS) +
+				earElastic * 0.8) *
 			DEGREES_TO_RADIANS *
 			sleepingScale *
 			bootScale;
-		tailAngle = clamp(safePoseValue(pose.tail, 0) * TAIL_CORE_DEGREES, -8, 8) * DEGREES_TO_RADIANS * sleepingScale * bootScale;
+		tailAngle =
+			clamp(safePoseValue(pose.tail, 0) * TAIL_CORE_DEGREES, -8, 8) *
+			DEGREES_TO_RADIANS *
+			sleepingScale *
+			bootScale;
 
 		refreshHairTarget(hairR, corePositions, 2.5, deltaSeconds);
 		refreshHairTarget(hairL, corePositions, 3.5, deltaSeconds);
 	};
 
-	const positions = (drawableIndex: number, currentPositions: Float32Array): Float32Array => {
+	const positions = (
+		drawableIndex: number,
+		currentPositions: Float32Array,
+	): Float32Array => {
 		const drawable = drawables[drawableIndex];
 		if (
 			!drawable ||
@@ -966,7 +1255,9 @@ export function createWhaleSecondaryRig(
 		const isMouthOpen = id === MOUTH_OPEN_ID;
 		const isMouthClosed = id === MOUTH_CLOSED_ID;
 		const positiveMouthShape = Math.max(0, mouthShape);
-		const closedWidthScale = MOUTH_CLOSED_X_SCALE_BASE + MOUTH_CLOSED_X_SCALE_PER_FORM * positiveMouthShape;
+		const closedWidthScale =
+			MOUTH_CLOSED_X_SCALE_BASE +
+			MOUTH_CLOSED_X_SCALE_PER_FORM * positiveMouthShape;
 		const openWidthScale = clamp(
 			MOUTH_OPEN_X_SCALE_BASE +
 				MOUTH_OPEN_X_SCALE_PER_FORM * positiveMouthShape +
@@ -980,7 +1271,8 @@ export function createWhaleSecondaryRig(
 			MOUTH_OPEN_Y_SCALE_MAX,
 		);
 		const openVisibleTopY = mouthOpen
-			? mouthOpen.bounds.maxY - mouthOpen.bounds.height * MOUTH_OPEN_VISIBLE_TOP_FRACTION
+			? mouthOpen.bounds.maxY -
+				mouthOpen.bounds.height * MOUTH_OPEN_VISIBLE_TOP_FRACTION
 			: 0;
 
 		let localPivotX = 0;
@@ -1014,26 +1306,40 @@ export function createWhaleSecondaryRig(
 			if (isMouthOpen && mouthOpen) {
 				const neutralX = mouthOpen.rest[vertex];
 				const neutralY = mouthOpen.rest[vertex + 1];
-				x = mouthCenterX + (neutralX - mouthOpen.bounds.centerX) * openWidthScale;
+				x =
+					mouthCenterX + (neutralX - mouthOpen.bounds.centerX) * openWidthScale;
 				y = mouthCenterY + (neutralY - openVisibleTopY) * openHeightScale;
 			} else if (isMouthClosed && mouthClosed) {
 				const neutralX = mouthClosed.rest[vertex];
 				const neutralY = mouthClosed.rest[vertex + 1];
 				const halfWidth = mouthClosed.bounds.width / 2;
-				const normalizedX = halfWidth > 0
-					? clamp((neutralX - mouthClosed.bounds.centerX) / halfWidth, -1, 1)
-					: 0;
-				x = mouthCenterX + (neutralX - mouthClosed.bounds.centerX) * closedWidthScale;
-				y = neutralY + mouthShape * mouthClosed.bounds.height * MOUTH_CLOSED_CURVATURE_FRACTION *
-					(2 * normalizedX * normalizedX - 1);
+				const normalizedX =
+					halfWidth > 0
+						? clamp((neutralX - mouthClosed.bounds.centerX) / halfWidth, -1, 1)
+						: 0;
+				x =
+					mouthCenterX +
+					(neutralX - mouthClosed.bounds.centerX) * closedWidthScale;
+				y =
+					neutralY +
+					mouthShape *
+						mouthClosed.bounds.height *
+						MOUTH_CLOSED_CURVATURE_FRACTION *
+						(2 * normalizedX * normalizedX - 1);
 			}
 			if ((isMouthOpen && mouthOpen) || (isMouthClosed && mouthClosed)) {
 				// Attach the locally shaped mouth to native FaceBase center and
 				// in-plane rotation before applying the supplemental fields below.
 				const mouthDX = x - mouthCenterX;
 				const mouthDY = y - mouthCenterY;
-				x = cachedFaceCenterX + mouthDX * cachedFaceCosine - mouthDY * cachedFaceSine;
-				y = cachedFaceCenterY + mouthDX * cachedFaceSine + mouthDY * cachedFaceCosine;
+				x =
+					cachedFaceCenterX +
+					mouthDX * cachedFaceCosine -
+					mouthDY * cachedFaceSine;
+				y =
+					cachedFaceCenterY +
+					mouthDX * cachedFaceSine +
+					mouthDY * cachedFaceCosine;
 			}
 
 			// Local rotations are applied first, using current Core roots so Core
@@ -1067,9 +1373,14 @@ export function createWhaleSecondaryRig(
 				const rootX = currentPositions[drawable.hairRootIndex * 2];
 				const rootY = currentPositions[drawable.hairRootIndex * 2 + 1];
 				const lagWeight = drawable.hairLagWeight[weightIndex];
-				const appliedAngle = headAngle + (drawable.hairLagAngle - headAngle) * lagWeight;
-				const appliedShiftX = drawable.hairLiveShiftX + (drawable.hairLagShiftX - drawable.hairLiveShiftX) * lagWeight;
-				const appliedShiftY = drawable.hairLiveShiftY + (drawable.hairLagShiftY - drawable.hairLiveShiftY) * lagWeight;
+				const appliedAngle =
+					headAngle + (drawable.hairLagAngle - headAngle) * lagWeight;
+				const appliedShiftX =
+					drawable.hairLiveShiftX +
+					(drawable.hairLagShiftX - drawable.hairLiveShiftX) * lagWeight;
+				const appliedShiftY =
+					drawable.hairLiveShiftY +
+					(drawable.hairLagShiftY - drawable.hairLiveShiftY) * lagWeight;
 				const dx = x - rootX;
 				const dy = y - rootY;
 				const cosine = Math.cos(appliedAngle);
@@ -1081,8 +1392,10 @@ export function createWhaleSecondaryRig(
 			// Face, eyes, mouth and head silhouette rotate rigidly together.
 			// Only the neck-covering hair bridges into the fixed collar.
 			if (isHead) {
-				const weight = id === 'NeckHairEdges'
-					? headBoundaryWeight(y, cachedNeckRootY, modelBounds!.height) : 1;
+				const weight =
+					id === "NeckHairEdges"
+						? headBoundaryWeight(y, cachedNeckRootY, modelBounds!.height)
+						: 1;
 				const angle = headAngle * weight;
 				const dx = x - cachedNeckRootX;
 				const dy = y - cachedNeckRootY;
@@ -1106,7 +1419,11 @@ export function createWhaleSecondaryRig(
 
 			const displacementX = Math.abs(x - currentX);
 			const displacementY = Math.abs(y - currentY);
-			frameMaxDisplacement = Math.max(frameMaxDisplacement, displacementX, displacementY);
+			frameMaxDisplacement = Math.max(
+				frameMaxDisplacement,
+				displacementX,
+				displacementY,
+			);
 			drawable.output[vertex] = x;
 			drawable.output[vertex + 1] = y;
 		}
@@ -1115,7 +1432,10 @@ export function createWhaleSecondaryRig(
 
 	const opacity = (drawableIndex: number, currentOpacity: number): number => {
 		const drawable = drawables[drawableIndex];
-		if (!drawable || (drawable.id !== MOUTH_OPEN_ID && drawable.id !== MOUTH_CLOSED_ID)) {
+		if (
+			!drawable ||
+			(drawable.id !== MOUTH_OPEN_ID && drawable.id !== MOUTH_CLOSED_ID)
+		) {
 			return currentOpacity;
 		}
 		if (!isFiniteNumber(currentOpacity)) {
